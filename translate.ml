@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.21 1999-02-04 16:21:50 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.22 1999-02-08 10:15:13 filliatr Exp $ *)
 
 (* options *)
 
@@ -117,15 +117,32 @@ let footer ch =
 
 (* links (other than BibTeX entry, when available) *)
 
+let compression_suffixes = [ ".gz"; ".Z" ]
+
+let decompressed f = 
+  let rec test_comp = function
+      [] -> (false,f)
+    | suff :: r -> 
+	if Filename.check_suffix f suff then
+	  (true,Filename.chop_suffix f suff)
+	else
+	  test_comp r
+  in
+  test_comp compression_suffixes
+
+let file_types = [ ".dvi","DVI"; ".ps","PS"; ".pdf","PDF"; ".rtf","RTF" ]
+
 let file_type f =
-  if List.exists (fun s -> Filename.check_suffix f s) 
-    [ ".dvi" ; ".dvi.gz" ; ".dvi.Z" ] then 
-    "DVI"
-  else if List.exists (fun s -> Filename.check_suffix f s) 
-    [ ".ps" ; ".ps.gz" ; ".ps.Z" ] then
-    "PS"
-  else
-    "Available here"
+  let (comp,f) = decompressed f in
+  let rec test_type = function
+      [] -> "Available here"
+    | (suff,name)::rem ->
+	if Filename.check_suffix f suff then
+	  (if comp then "Compressed " else "") ^ name
+	else
+	  test_type rem
+  in
+  test_type file_types
 
 let rec is_url s =
   (String.length s > 3 & String.lowercase (String.sub s 0 4) = "http")
@@ -150,8 +167,8 @@ let make_links ch ((t,k,_) as e) =
 		   Html.close_href ch
 	       with Not_found -> ())
     (!fields @ 
-     [ "FTP"; "HTTP"; "URL" ; "DVI" ; "PS" ; 
-       "DOCUMENTURL" ; "URLPS" ; "URLDVI" ]);
+     [ "FTP"; "HTTP"; "URL"; "DVI"; "PS"; "PDF";
+       "DOCUMENTURL"; "URLPS"; "URLDVI"; "URLPDF" ]);
 
   (* abstract *)
   if !print_abstract then begin

@@ -1,4 +1,7 @@
 
+  o macros \DH, \th
+  o file types prefixed by "Compressed" when it is the case
+  o file suffixes PDF and RTF recognized
   o abstracts printed in smaller font (<font size=-1>)
 
 Version 0.72, 1999/01/21
@@ -9,7 +12,6 @@ Version 0.71, 1999/01/11
   o translation for macros \o, \O, \ae, \AE, \aa, \AA
   
 Version 0.7, 1998/11/18
-
   o on-line documentation
   o option -f, --field
   o long names for all options

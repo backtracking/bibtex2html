@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.16 1999-01-21 15:10:12 filliatr Exp $ *)
+(* $Id: latexmacros.ml,v 1.17 1999-02-08 10:15:12 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -107,8 +107,10 @@ def "\\AA" [Print "&Aring;"];
 def "\\&" [Print "&amp;"];
 def "\\_" [Print "_"];
 def "\\copyright" [Print "(c)"];
+def "\\th" [Print "&thorn;"];
 def "\\TH" [Print "\222"];
 def "\\dh" [Print "\240"];
+def "\\DH" [Print "&ETH;"];
 def "\\'" [Raw_arg(function "e" -> print_c 'é'
                           | "E" -> print_c 'É'
 			  | "a" -> print_c 'á'
