@@ -117,6 +117,8 @@ sunos4:
 binary: bibtex2html bib2bib
 	mkdir -p export/$(BINARY)
 	cp README COPYING GPL bibtex2html bib2bib export/$(BINARY)
+	cp bibtex2html.man export/$(BINARY)/bibtex2html.1
+	cp bibtex2html.man export/$(BINARY)/bib2bib.1
 	(cd export; tar czf $(BINARY).tar.gz $(BINARY))
 	cp export/$(BINARY).tar.gz $(FTP)
 
