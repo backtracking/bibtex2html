@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: main.ml,v 1.56 2004-07-06 15:22:33 marche Exp $ i*)
+(*i $Id: main.ml,v 1.57 2004-09-02 07:22:36 filliatr Exp $ i*)
 
 (*s Main module of bibtex2html. *)
 
@@ -295,58 +295,58 @@ let read_macros f =
 
 (*s Command line parsing. *)
 
-let usage () =
-  prerr_endline "";
-  prerr_endline "Usage: bibtex2html <options> [filename]";
-  prerr_endline "  -s style   BibTeX style (plain, alpha, ...)";
-  prerr_endline "  -c command BibTeX command (otherwise bibtex is searched in your path)";
-  prerr_endline "  -d         sort by date";
-  prerr_endline "  -a         sort as BibTeX (usually by author)";
-  prerr_endline "  -u         unsorted i.e. same order as in .bib file (default)";
-  prerr_endline "  -r         reverse the sort";
-  prerr_endline "  -t title   title of the HTML file (default is the filename)";
-  prerr_endline "  -bg color  background color of the HTML file (default is none)";
-  prerr_endline "  -css file  specify a style sheet file";
-  prerr_endline "  -o file    redirect the output";
-  prerr_endline "  -footer    additional footer in the HTML file";
-  prerr_endline "  -i         ignore BibTeX errors";
-  prerr_endline "  -both      produce versions with and without abstracts";
-  prerr_endline "  -multiple  produce one file per entry";
-  prerr_endline "  -single    produce a single page (with BibTeX input and output)";
-  prerr_endline "  -nodoc     only produces the body of the HTML documents";
-  prerr_endline "  -nokeys    do not print the BibTeX keys";
-  (*i prerr_endline "  -titleurl  URLs wrapped around titles"; i*)
-  prerr_endline "  -rawurl    print URL instead of file type";
-  prerr_endline "  -heveaurl  use HeVeA's \\url macro";
-  prerr_endline "  -noabstract";
-  prerr_endline "             do not print the abstracts (if any)";
-  prerr_endline "  -noheader  do not print the header (bibtex2html command)";
-  prerr_endline "  -nofooter  do not print the footer (bibtex2html web link)";
-  prerr_endline "  -noexpand  do not expand abbreviations in the BibTeX output";
-  prerr_endline "  -nobibsource";
-  prerr_endline "             do not produce the BibTeX entries file";
-  prerr_endline "  -fsuffix   give an alternate suffix for HTML files";
-  prerr_endline "  -lsuffix   give an alternate suffix for HTML links";
-  prerr_endline "  -suffix s  give an alternate suffix for HTML files and links";
-  prerr_endline "  -citefile f";
-  prerr_endline "             read keys to include from file f";
-  prerr_endline "  -e key     exclude an entry";
-  prerr_endline "  -m file    read (La)TeX macros in file";
-  prerr_endline "  -f field   add a web link for that BibTeX field";
-  prerr_endline "  -nf field name";
-  prerr_endline "             add a web link for that BibTeX field, with the supplied name";
-  prerr_endline "  -note field";
-  prerr_endline "             declare a note field";
-  prerr_endline "  -dl        use DL lists instead of TABLEs";
-  prerr_endline "  -labelname use the label name when inserting a link";
-  prerr_endline "  -debug     verbose mode (to find incorrect BibTeX entries)";
-  prerr_endline "  -q         quiet mode";
-  prerr_endline "  -w         stop on warning";
-  prerr_endline "  -v         print version and exit";
-  prerr_endline "";
-  prerr_endline 
-    "On-line documentation at http://www.lri.fr/~filliatr/bibtex2html/\n";
-  exit 1
+let usage ?(error=true) () =
+  if error then prerr_endline "bibtex2html: bad command line syntax";
+  (if error then prerr_endline else print_endline) "
+Usage: bibtex2html <options> [filename]
+  -s style   BibTeX style (plain, alpha, ...)
+  -c command BibTeX command (otherwise bibtex is searched in your path)
+  -d         sort by date
+  -a         sort as BibTeX (usually by author)
+  -u         unsorted i.e. same order as in .bib file (default)
+  -r         reverse the sort
+  -t title   title of the HTML file (default is the filename)
+  -bg color  background color of the HTML file (default is none)
+  -css file  specify a style sheet file
+  -o file    redirect the output
+  -footer    additional footer in the HTML file
+  -i         ignore BibTeX errors
+  -both      produce versions with and without abstracts
+  -multiple  produce one file per entry
+  -single    produce a single page (with BibTeX input and output)
+  -nodoc     only produces the body of the HTML documents
+  -nokeys    do not print the BibTeX keys
+  -rawurl    print URL instead of file type
+  -heveaurl  use HeVeA's \\url macro
+  -noabstract
+             do not print the abstracts (if any)
+  -noheader  do not print the header (bibtex2html command)
+  -nofooter  do not print the footer (bibtex2html web link)
+  -noexpand  do not expand abbreviations in the BibTeX output
+  -nobibsource
+             do not produce the BibTeX entries file
+  -fsuffix   give an alternate suffix for HTML files
+  -lsuffix   give an alternate suffix for HTML links
+  -suffix s  give an alternate suffix for HTML files and links
+  -citefile f
+             read keys to include from file f
+  -e key     exclude an entry
+  -m file    read (La)TeX macros in file
+  -f field   add a web link for that BibTeX field
+  -nf field name
+             add a web link for that BibTeX field, with the supplied name
+  -note field
+             declare a note field
+  -dl        use DL lists instead of TABLEs
+  -labelname use the label name when inserting a link
+  -debug     verbose mode (to find incorrect BibTeX entries)
+  -q         quiet mode
+  -w         stop on warning
+  -v         print version and exit
+
+On-line documentation at http://www.lri.fr/~filliatr/bibtex2html/
+";
+  exit (if error then 1 else 0)
 
 let parse () =
   let rec parse_rec = function
@@ -474,7 +474,7 @@ i*)
     | ("-c" | "-command" | "--command") :: [] ->
 	usage()
     | ("-h" | "-help" | "-?" | "--help") :: rem ->
-	usage ()
+	usage ~error:false ()
     | ("-v" | "-version" | "--version") :: _ ->
 	Copying.banner "bibtex2html"; exit 0
     | ("-warranty" | "--warranty") :: _ ->
@@ -498,7 +498,7 @@ i*)
 	if Filename.check_suffix basename ".bib" then
 	  (fbib, Filename.chop_suffix basename ".bib")
 	else begin
-	  prerr_endline "BibTeX file must have suffix .bib";
+	  prerr_endline "bibtex2html: BibTeX file must have suffix .bib";
 	  exit 1
 	end
     | [] ->
