@@ -126,6 +126,7 @@ def "\\^" [Raw_arg(function "a" -> print_c 'â'
                           | "e" -> print_c 'ê'
                           | "E" -> print_c 'Ê'
                           | "i" -> print_c 'î'
+                          | "\\i" -> print_c 'î'
                           | "I" -> print_c 'Î'
                           | "o" -> print_c 'ô'
                           | "O" -> print_c 'Ô'
@@ -153,4 +154,5 @@ List.iter (fun symbol -> def ("\\" ^ symbol) [Print ("<I>" ^ symbol ^ "</I>")])
 def "\\," [];
 def "\\mapsto" [Print "<tt>|-&gt;</tt>"];
 ();;
+
 
