@@ -17,7 +17,7 @@ CAMLDEP  = ocamldep
 ZLIBS    =
 DEBUG    =
 FLAGS    = $(ZLIBS) $(DEBUG)
-PROFILE  = -p
+PROFILE  =
 
 STRLIB = -cclib -lstr 
 
