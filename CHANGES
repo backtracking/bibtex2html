@@ -1,4 +1,7 @@
-
+ 
+ o options --output and --nobibsource for bibtex2html
+ o bibtex2html now reads on standard input if no input file is given, 
+   and writes on standard output (if no output file is specified).
  o new option of bib2bib: --expand expands the abbreviations
  o macro \neq -> <>
  o Readbib now outputs messages on standard error, not standard output
