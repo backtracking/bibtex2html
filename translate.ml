@@ -8,6 +8,7 @@ let nodoc = ref false
 let suffix = ref ".html"
 let title = ref ""
 let title_spec = ref false
+let debug = ref false
 
 (* first pass to get the crossrefs *)
 
@@ -141,6 +142,9 @@ let make_links ch ((t,k,_) as e) =
 (* summary file f.html *)
 
 let one_entry_summary basen ch (_,b,((_,k,f) as e)) =
+  if !debug then begin
+    Printf.printf "[%s]" k; flush stdout
+  end;
   output_string ch "\n\n";
   Html.open_balise ch "tr valign=top";
 
@@ -164,7 +168,9 @@ let one_entry_summary basen ch (_,b,((_,k,f) as e)) =
   output_string ch "\n"
 
 let summary basen el =
-  let ch = open_out (basen ^ !suffix) in
+  let filename = basen ^ !suffix in
+  Printf.printf "Making HTML document (%s)..." filename; flush stdout;
+  let ch = open_out filename in
     if not !nodoc then
       Html.open_document ch (fun () -> output_string ch !title);
     if !title_spec then begin
@@ -182,7 +188,8 @@ let summary basen el =
       footer ch;
       Html.close_document ch
     end;
-    close_out ch
+    close_out ch;
+    Printf.printf "ok\n"; flush stdout
 ;;
 
 
@@ -190,6 +197,8 @@ let summary basen el =
 
 let bib_file f l =
   let fn = f ^ "-bib.html" in
+  Printf.printf "Making HTML list of BibTeX entries (%s)..." fn;
+  flush stdout;
   let ch = open_out fn in
 
   if not !nodoc then
@@ -223,8 +232,8 @@ let bib_file f l =
   footer ch;
   if not !nodoc then Html.close_document ch;
   flush ch;
-  close_out ch
-
+  close_out ch;
+  Printf.printf "ok\n"; flush stdout
 
 
 (* main function *)

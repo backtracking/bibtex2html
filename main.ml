@@ -161,6 +161,7 @@ let usage () =
   prerr_endline "  -nodoc     only produces the body of the HTML documents";
   prerr_endline "  -suffix s  give an alternate suffix for HTML files";
   prerr_endline "  -e key     exclude an entry";
+  prerr_endline "  -debug     verbose mode (to find incorrect BibTeX entries)";
   exit 1
 
 let parse () =
@@ -179,6 +180,8 @@ let parse () =
 	ignore_bibtex_errors := true ; parse_rec rem
     | "-h" :: rem ->
 	usage ()
+    | "-debug" :: rem ->
+	Translate.debug := true ; parse_rec rem
     | "-suffix" :: s :: rem ->
 	Translate.suffix := s ; parse_rec rem
     | "-suffix" :: [] ->
@@ -215,7 +218,7 @@ let main () =
       Filename.chop_suffix basename ".bib"
     else begin
       prerr_endline "BibTeX file must have suffix .bib !";
-      exit 1
+      usage ()
     end
   in
 
