@@ -15,7 +15,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexscan.mll,v 1.8 1998-11-10 09:32:24 filliatr Exp $ *)
+(* $Id: latexscan.mll,v 1.9 1999-06-28 13:49:21 marche Exp $ *)
 
 (* This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -194,14 +194,21 @@ and skip_arg = parse
 
 and raw_arg = parse
     " "         { raw_arg lexbuf }
-  | '{' [^ '}'] * '}'
-                { let s = Lexing.lexeme lexbuf in
-                  String.sub s 1 (String.length s - 2) }
+  | '{'         { incr brace_nesting; nested_arg lexbuf }
   | "["         { skip_optional_arg lexbuf; raw_arg lexbuf }
   | '\\' ['A'-'Z' 'a'-'z']+
                 { Lexing.lexeme lexbuf }
   | eof         { "" }
   | _           { Lexing.lexeme lexbuf }
+
+and nested_arg = parse
+    '}'         { decr brace_nesting;
+                  if !brace_nesting > 0 then "}" ^ (nested_arg lexbuf) 
+		  else "" }
+  | '{'         { incr brace_nesting; "{" ^ (nested_arg lexbuf)   }
+  | eof         { "" }
+  | [^ '{' '}']+{ let x = Lexing.lexeme lexbuf in
+		  x ^ (nested_arg lexbuf)   }
 
 and skip_optional_arg = parse
     "]"         { () }
@@ -221,13 +228,13 @@ and read_def = parse
     '\\' ['a'-'z' 'A'-'Z']+
       { let s = Lexing.lexeme lexbuf in
 	let b = raw_arg lexbuf in
-	  Printf.printf "macro: %s\n" s; flush stdout;
+	  Printf.printf "macro: %s = %s\n" s b; flush stdout;
 	  def s [Recursive b] }
   | "{\\" ['a'-'z' 'A'-'Z']+ "}"
       { let l = Lexing.lexeme lexbuf in
 	let s = String.sub l 1 (String.length l - 2) in
 	let b = raw_arg lexbuf in
-	  Printf.printf "macro: %s\n" s; flush stdout;
+	  Printf.printf "macro: %s = %s\n" s b; flush stdout;
 	  def s [Recursive b] }
   | [' ' '\t' '\n']* 
       { read_def lexbuf }

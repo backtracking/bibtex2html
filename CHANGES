@@ -1,4 +1,5 @@
 
+ o macros with nested braces now recognized correctly in @PREAMBLE
  o macros \textrm and \textsl
  o option -citefile to read keys to cite from a file
  o macros \sim, \symbol; macros for accents without argument (\~{}, \'{}, etc.)
