@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.17 1998-10-19 11:54:24 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.18 1998-11-03 19:53:20 filliatr Exp $ *)
 
 (* options *)
 
@@ -23,6 +23,9 @@ let nokeys = ref false
 let suffix = ref ".html"
 let title = ref ""
 let title_spec = ref false
+let print_abstract = ref true
+let print_footer = ref true
+
 let debug = ref false
 
 (* first pass to get the crossrefs *)
@@ -65,20 +68,19 @@ let cite k =
       print_s (Printf.sprintf "<A HREF=\"%s\">[%s]</A>" url c)
   with
       Not_found -> print_s "[?]"
-;;
 
-def "\\cite" [ Raw_arg cite ];;
-def "\\etalchar" [ Print "<sup>" ; Raw_arg print_s ; Print "</sup>" ];;
-def "\\newblock" [Print " "];;
+let _ = def "\\cite" [ Raw_arg cite ]
+let _ = def "\\etalchar" [ Print "<sup>" ; Raw_arg print_s ; Print "</sup>" ]
+let _ = def "\\newblock" [Print " "]
 
 let r = Str.regexp "[ \t\n]+"
 let remove_whitespace u = Str.global_replace r "" u
 
 let latex_url u =
   let u = remove_whitespace u in
-  print_s (Printf.sprintf "<A HREF=\"%s\">%s</A>" u u);;
+  print_s (Printf.sprintf "<A HREF=\"%s\">%s</A>" u u)
   
-def "\\url" [Raw_arg latex_url];;
+let _ = def "\\url" [Raw_arg latex_url]
 
 let latex2html ch s =
   Latexmacros.out_channel := ch;
@@ -149,7 +151,7 @@ let make_links ch ((t,k,_) as e) =
       "DVI" ; "PS" ; "DOCUMENTURL" ; "URLPS" ; "URLDVI" ];
 
   (* abstract *)
-  begin
+  if !print_abstract then begin
     try
       let a = Bibtex.get_field e "abstract" in
 	if is_url a then begin
@@ -224,12 +226,11 @@ let summary basen bl =
       bl;
     in_summary := false;
     if not !nodoc then begin
-      footer ch;
+      if !print_footer then footer ch;
       Html.close_document ch
     end;
     close_out ch;
     Printf.printf "ok\n"; flush stdout
-;;
 
 
 (* HTML file with BibTeX entries f-bib.html *)

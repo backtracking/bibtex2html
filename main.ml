@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.17 1998-10-19 11:56:01 filliatr Exp $ *)
+(* $Id: main.ml,v 1.18 1998-11-03 19:53:18 filliatr Exp $ *)
 
 (* options *)
 
@@ -31,7 +31,7 @@ let ignore_bibtex_errors = ref false
 
 (* sort of entries *)
 
-module KeyMap = Map.Make(struct type t = string let compare = compare end);;
+module KeyMap = Map.Make(struct type t = string let compare = compare end)
 
 let keep_combine combine l1 l2 =
   let map = List.fold_left (fun m ((_,k,_) as e) -> KeyMap.add k e m)
@@ -212,10 +212,13 @@ let usage () =
   prerr_endline "  -t         title of the HTML file (default is the filename)";
   prerr_endline "  -i         ignore BibTeX errors";
   prerr_endline "  -nodoc     only produces the body of the HTML documents";
+  prerr_endline "  -nokeys    do not print the BibTeX keys";
+  prerr_endline "  -noabstract";
+  prerr_endline "             do not print the abstracts (if any)";
+  prerr_endline "  -nofooter  do not print the footer (bibtex2html web link)";
   prerr_endline "  -suffix s  give an alternate suffix for HTML files";
   prerr_endline "  -e key     exclude an entry";
   prerr_endline "  -m file    read (La)TeX macros in file";
-  prerr_endline "  -nokeys    do not print the BibTeX keys";
   prerr_endline "  -debug     verbose mode (to find incorrect BibTeX entries)";
   prerr_endline "  -v         print version and exit";
   exit 1
@@ -229,9 +232,13 @@ let banner () =
 
 let parse () =
   let rec parse_rec = function
-      "-nodoc" :: rem -> 
+      ("-nodoc" | "--no-doc") :: rem -> 
 	Translate.nodoc := true ; parse_rec rem
-    | "-nokeys" :: rem -> 
+    | ("-noabstract" | "--no-abstract") :: rem ->
+	Translate.print_abstract := false; parse_rec rem
+    | ("-nofooter" | "--no-footer") :: rem ->
+	Translate.print_footer := false; parse_rec rem
+    | ("-nokeys" | "--no-keys") :: rem -> 
 	Translate.nokeys := true ; parse_rec rem
     | "-d" :: rem ->
 	sort := By_date ; parse_rec rem
@@ -271,7 +278,7 @@ let parse () =
 	read_macros f; parse_rec rem
     | "-m" :: [] ->
 	usage()
-    | "-v" :: _ ->
+    | ("-v" | "-version" | "--version") :: _ ->
 	exit 0
     | [f] -> f
     | _ -> usage ()
@@ -283,7 +290,7 @@ let parse () =
 
 let copying () =
   print_endline "bibtex2html - BibTeX bibliography to HTML converter
-Copyright (C) 1997 Jean-Christophe FILLIATRE
+Copyright (C) 1997-1998 Jean-Christophe FILLIATRE
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License version 2, as
@@ -315,6 +322,5 @@ let main () =
 
   (* producing the documents *)
   translate fbib f
-;;
 
-Printexc.catch main ()
+let _ = Printexc.catch main ()
