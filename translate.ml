@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.31 1999-10-20 12:39:52 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.32 1999-11-04 16:32:07 filliatr Exp $ *)
 
 (* options *)
 
@@ -28,7 +28,9 @@ let print_footer = ref true
 let multiple = ref false
 let both = ref false
 let user_footer = ref ""
-let filter = ref false
+let bib_entries = ref true
+let standard_output = ref true
+let output_file = ref ""
 
 let (fields : string list ref) = ref []
 let add_field s = fields := s :: !fields
@@ -105,10 +107,10 @@ let own_address = "http://www.lri.fr/~filliatr/bibtex2html/"
 
 let header ch =
   Printf.fprintf ch "
-<!-- This document was automatically generated with bibtex2html
+<!-- This document was automatically generated with bibtex2html %s
      (see http://www.lri.fr/~filliatr/bibtex2html/),
      with the following command:
-     ";
+     " Version.version;
   Array.iter (Printf.fprintf ch "%s ") Sys.argv;
   Printf.fprintf ch " -->\n\n"
 
@@ -119,6 +121,7 @@ let footer ch =
   Html.open_href ch own_address;
   output_string ch "bibtex2html";
   Html.close_href ch;
+  output_string ch " "; output_string ch Version.version;
   output_string ch !user_footer
 
 (* links (other than BibTeX entry, when available) *)
@@ -242,7 +245,7 @@ let separate_file (b,((_,k,f) as e)) =
 
 let one_entry_summary ch (_,b,((_,k,f) as e)) =
   if !debug then begin
-    Printf.printf "[%s]" k; flush stdout
+    Printf.eprintf "[%s]" k; flush stderr
   end;
   output_string ch "\n\n";
   Html.open_balise ch "tr valign=top";
@@ -267,8 +270,8 @@ let one_entry_summary ch (_,b,((_,k,f) as e)) =
   if !multiple then
     separate_file (b,e)
   else begin
-    bibtex_entry ch k;
-    make_links ch e false;
+    if !bib_entries then bibtex_entry ch k;
+    make_links ch e (not !bib_entries);
     make_abstract ch e
   end;
 
@@ -278,37 +281,45 @@ let one_entry_summary ch (_,b,((_,k,f) as e)) =
 (* summary file f.html *)
 
 let summary bl =
-  let filename = !file_basename ^ !suffix in
-  Printf.printf "Making HTML document (%s)..." filename; flush stdout;
-  let ch = open_out filename in
-    if not !nodoc then
-      Html.open_document ch (fun () -> output_string ch !title);
-    header ch;
-    if !title_spec then Html.h1_title ch !title;
-    output_string ch "\n";
-
-    in_summary := true;
-    List.iter
-      (fun (name,el) ->
-	 begin match name with
-	     None -> ()
-	   | Some s ->
-	       Html.open_balise ch "H2";
-	       latex2html ch s;
-	       Html.close_balise ch "H2";
-	       output_string ch "\n"
-	 end;
-	 Html.open_balise ch "table";
-	 List.iter (one_entry_summary ch) el;
-	 Html.close_balise ch "table")
-      bl;
-    in_summary := false;
-    if not !nodoc then begin
-      if !print_footer then footer ch;
-      Html.close_document ch
-    end;
-    close_out ch;
-    Printf.printf "ok\n"; flush stdout
+  let (ch,filename) = 
+    if !standard_output then 
+      (stdout, "standard output")
+    else
+      let filename = 
+	(if !output_file <> "" then !output_file else !file_basename) 
+	^ !suffix
+      in
+      (open_out filename, filename)
+  in
+  Printf.eprintf "Making HTML document (%s)..." filename; flush stderr;
+  if not !nodoc then
+    Html.open_document ch (fun () -> output_string ch !title);
+  header ch;
+  if !title_spec then Html.h1_title ch !title;
+  output_string ch "\n";
+  
+  in_summary := true;
+  List.iter
+    (fun (name,el) ->
+       begin match name with
+	 | None -> ()
+	 | Some s ->
+	     Html.open_balise ch "H2";
+	     latex2html ch s;
+	     Html.close_balise ch "H2";
+	     output_string ch "\n"
+       end;
+       Html.open_balise ch "table";
+       List.iter (one_entry_summary ch) el;
+       Html.close_balise ch "table")
+    bl;
+  in_summary := false;
+  if not !nodoc then begin
+    if !print_footer then footer ch;
+    Html.close_document ch
+  end;
+  close_out ch;
+  Printf.eprintf "ok\n"; flush stderr
 
 
 (* HTML file with BibTeX entries f-bib.html *)
@@ -323,9 +334,9 @@ let print_list print sep l =
 
 
 let bib_file f bl keys =
-  let fn = f ^ "-bib" ^ !suffix in
-  Printf.printf "Making HTML list of BibTeX entries (%s)..." fn;
-  flush stdout;
+  let fn = !bibfile_basename ^ !suffix in
+  Printf.eprintf "Making HTML list of BibTeX entries (%s)..." fn;
+  flush stderr;
   let ch = open_out fn in
 
   if not !nodoc then
@@ -343,15 +354,20 @@ let bib_file f bl keys =
   if not !nodoc then Html.close_document ch;
   flush ch;
   close_out ch;
-  Printf.printf "ok\n"; flush stdout
+  Printf.eprintf "ok\n"; flush stderr
 
 
 (* main function *)
 
 let format_list basename entries sorted_bl keys =
   first_pass sorted_bl;
-  file_basename := basename;
-  bibfile_basename := basename ^ "-bib";
+  if !output_file <> "" then begin
+    file_basename := !output_file;
+    bibfile_basename := !output_file ^ "-bib"
+  end else begin
+    file_basename := basename;
+    bibfile_basename := basename ^ "-bib"
+  end;
   if !both then begin
     (* short version *)
     print_abstract := false;
@@ -364,5 +380,5 @@ let format_list basename entries sorted_bl keys =
   end else
     summary sorted_bl;
   (* BibTeX entries file *)
-  bib_file basename entries keys
+  if !bib_entries then bib_file basename entries keys
 

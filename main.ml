@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.29 1999-10-21 16:21:04 marche Exp $ *)
+(* $Id: main.ml,v 1.30 1999-11-04 16:32:07 filliatr Exp $ *)
 
 (* options *)
 
@@ -35,53 +35,50 @@ let expand_abbrev_in_bib_output = ref true
 
 let use_cite_file = ref false
 let citations = ref ([] : string list)
+
 let add_citations file =
   try
     let chan = open_in file
     and buf = Buffer.create 1024 in
-      try
-	while true do
-	  Buffer.add_char buf (input_char chan)
-	done
-      with
-	  End_of_file ->
-	    close_in chan;
-	    citations :=
-	      (Str.split (Str.regexp "[ \t\n]+") (Buffer.contents buf)) @
-	      !citations
-  with
-      Sys_error msg ->
-	prerr_endline ("Cannot open citation file ("^msg^")");
-	exit 1
-
+    try
+      while true do Buffer.add_char buf (input_char chan) done
+    with End_of_file ->
+      close_in chan;
+      citations :=
+        (Str.split (Str.regexp "[ \t\n]+") (Buffer.contents buf)) @
+        !citations
+  with Sys_error msg ->
+    prerr_endline ("Cannot open citation file ("^msg^")");
+    exit 1
   
 (* sort of entries *)
 
 module KeyMap = Map.Make(struct type t = string let compare = compare end)
 
 let keep_combine combine l1 l2 =
-  let map = List.fold_left (fun m ((_,k,_) as e) -> KeyMap.add k e m)
-	      KeyMap.empty l2 in
+  let map = 
+    List.fold_left (fun m ((_,k,_) as e) -> KeyMap.add k e m)
+      KeyMap.empty l2 
+  in
   let rec keep_rec = function
-      [] ->
+    | [] ->
 	[]
     | ((_,k,_) as x)::rem ->
 	if not (List.mem k !excluded) then
 	  try
-	    let y = KeyMap.find k map in
-	      (combine x y) :: (keep_rec rem)
+	    let y = KeyMap.find k map in (combine x y) :: (keep_rec rem)
 	  with Not_found -> keep_rec rem
 	else
 	  keep_rec rem
   in
-    keep_rec l1
+  keep_rec l1
 
 let combine_f (c,_,b) e = c,b,e
 
 let rev_combine_f x y = combine_f y x
 
 let sort_entries entries bibitems =
-  Printf.printf "Sorting..."; flush stdout;
+  Printf.eprintf "Sorting..."; flush stderr;
   let el =
     if !sort = By_author then 
       keep_combine combine_f bibitems entries
@@ -93,7 +90,7 @@ let sort_entries entries bibitems =
       Sort.list (fun (_,_,e1) (_,_,e2) -> Expand.date_order e1 e2) el
     else
       el in
-  Printf.printf "ok.\n"; flush stdout;
+  Printf.eprintf "ok.\n"; flush stderr;
   if !reverse_sort then List.rev sl else sl
 
 
@@ -131,17 +128,18 @@ let clean tmp =
   end
 
 let call_bibtex tmp =
-  Printf.printf "calling BibTeX..."; flush stdout;
+  Printf.eprintf "calling BibTeX..."; flush stderr;
   match 
-    Sys.command (Printf.sprintf "%s %s" !command tmp)
+    let redir = if !Translate.standard_output then ">& /dev/null" else "" in
+    Sys.command (Printf.sprintf "%s %s %s" !command tmp redir)
   with
-      0 -> Printf.printf "\n"; flush stdout
+    | 0 -> Printf.printf "\n"; flush stdout
     | n ->
 	if !ignore_bibtex_errors then begin
-	  Printf.printf "error %d (ignored)\n" n;
-	  flush stdout
+	  Printf.eprintf "error %d (ignored)\n" n;
+	  flush stderr
       	end else begin
-	  Printf.fprintf stderr "error %d while running bibtex\n" n;
+	  Printf.eprintf "error %d while running bibtex\n" n;
 	  exit n
 	end
 
@@ -150,7 +148,7 @@ let read_one_biblio lb =
     try
       let (_,k,_) as item = Bbl_lexer.bibitem lb in
 	if !Translate.debug then begin
-	  Printf.printf "[%s]" k; flush stdout
+	  Printf.eprintf "[%s]" k; flush stderr
   	end;
       read_items (item::acc) lb
     with
@@ -172,17 +170,17 @@ let read_biblios lb =
 
 let read_bbl tmp =
   let fbbl = tmp ^ ".bbl" in
-  Printf.printf "Reading %s..." fbbl; flush stdout;
+  Printf.eprintf "Reading %s..." fbbl; flush stderr;
   let ch = open_in fbbl in
   let lexbuf = Lexing.from_channel ch in
   let biblios = read_biblios lexbuf in
   close_in ch;
   clean tmp;
-  Printf.printf "ok ";
+  Printf.eprintf "ok ";
   List.iter (fun (_,items) ->
-	       Printf.printf "(%d entries)" (List.length items))
+	       Printf.eprintf "(%d entries)" (List.length items))
     biblios;
-  Printf.printf "\n"; flush stdout;
+  Printf.eprintf "\n"; flush stderr;
   biblios
 
 let get_biblios fbib =
@@ -198,10 +196,23 @@ let get_biblios fbib =
 let translate fullname basename =
   let input_bib = Readbib.read_entries_from_file fullname in
   let entries = Expand.expand input_bib in
-  let biblios = get_biblios fullname in
-  let sb = List.map 
-	     (fun (name,bibitems) -> (name,sort_entries entries bibitems))
-	     biblios in
+  let biblios = 
+    if fullname = "" then begin
+      let tmp = Filename.temp_file "bibtex2htmlinput" ".bib" in
+      let ch = open_out tmp in
+      Biboutput.output_bib false ch input_bib None;
+      close_out ch;
+      let bbl = get_biblios tmp in
+      Sys.remove tmp;
+      bbl
+    end else
+      get_biblios fullname 
+  in
+  let sb =
+    List.map 
+      (fun (name,bibitems) -> (name,sort_entries entries bibitems))
+      biblios 
+  in
   Translate.format_list 
     basename 
     (if !expand_abbrev_in_bib_output then 
@@ -232,7 +243,7 @@ let read_macros f =
 
 let usage () =
   prerr_endline "";
-  prerr_endline "Usage: bibtex2html <options> filename";
+  prerr_endline "Usage: bibtex2html <options> [filename]";
   prerr_endline "  -s style   BibTeX style (plain, alpha, ...)";
   prerr_endline "  -c command BibTeX command (otherwise bibtex is searched in your path)";
   prerr_endline "  -d         sort by date";
@@ -240,6 +251,7 @@ let usage () =
   prerr_endline "  -u         unsorted i.e. same order as in .bib file (default)";
   prerr_endline "  -r         reverse the sort";
   prerr_endline "  -t         title of the HTML file (default is the filename)";
+  prerr_endline "  -o file    redirect the output";
   prerr_endline "  -footer    additional footer in the HTML file";
   prerr_endline "  -i         ignore BibTeX errors";
   prerr_endline "  -both      produce versions with and without abstracts";
@@ -250,6 +262,8 @@ let usage () =
   prerr_endline "             do not print the abstracts (if any)";
   prerr_endline "  -nofooter  do not print the footer (bibtex2html web link)";
   prerr_endline "  -noexpand  do not expand abbreviations in the BibTeX output";
+  prerr_endline "  -nobibsource";
+  prerr_endline "             do not produce the BibTeX entries file";
   prerr_endline "  -suffix s  give an alternate suffix for HTML files";
   prerr_endline "  -citefile f";
   prerr_endline "             read keys to include from file f";
@@ -258,6 +272,9 @@ let usage () =
   prerr_endline "  -f field   add a web link for that BibTeX field";
   prerr_endline "  -debug     verbose mode (to find incorrect BibTeX entries)";
   prerr_endline "  -v         print version and exit";
+  prerr_endline "";
+  prerr_endline 
+    "On-line documentation at http://www.lri.fr/~filliatr/bibtex2html/\n";
   exit 1
 
 let parse () =
@@ -320,6 +337,14 @@ let parse () =
 	usage()
  
     (* Miscellaneous options *)
+    | ("-o" | "--output") :: f :: rem ->
+	Translate.standard_output := false;
+	Translate.output_file := f;
+	parse_rec rem
+    | ("-o" | "--output") :: [] ->
+	usage()
+    | ("-nobibsource" | "--nobibsource") :: rem ->
+	Translate.bib_entries := false; parse_rec rem
     | ("-nodoc" | "--no-doc") :: rem -> 
 	Translate.nodoc := true ; parse_rec rem
     | ("-noexpand" | "--no-expand") :: rem -> 
@@ -335,8 +360,6 @@ let parse () =
     | ("-c" | "--command") :: [] ->
 	usage()
     | ("-h" | "-help" | "-?" | "--help") :: rem ->
-	Printf.printf
-     "\nOn-line documentation at http://www.lri.fr/~filliatr/bibtex2html/\n\n";
 	usage ()
     | ("-v" | "-version" | "--version") :: _ ->
 	exit 0
@@ -346,7 +369,16 @@ let parse () =
     | ("-debug" | "--debug") :: rem ->
 	Translate.debug := true ; parse_rec rem
 
-    | [f] -> f
+    | [fbib] -> 
+	let basename = Filename.basename fbib in
+	if Filename.check_suffix basename ".bib" then
+	  (fbib, Filename.chop_suffix basename ".bib")
+	else begin
+	  prerr_endline "BibTeX file must have suffix .bib !";
+	  usage ()
+	end
+    | [] ->
+	("","")
     | _ -> usage ()
   in 
     parse_rec (List.tl (Array.to_list Sys.argv))
@@ -356,21 +388,14 @@ let parse () =
 
 let main () =
   Copying.banner "bibtex2html";
-  let fbib = parse () in
-  let f =
-    let basename = Filename.basename fbib in
-    if Filename.check_suffix basename ".bib" then
-      Filename.chop_suffix basename ".bib"
-    else begin
-      prerr_endline "BibTeX file must have suffix .bib !";
-      usage ()
-    end
-  in
-
+  let (fbib,f) = parse () in
+  if fbib = "" then 
+    Translate.title := "bibtex2html output"
+  else begin
+    Translate.standard_output := false;
+    if not !Translate.title_spec then Translate.title := f
+  end;
   Latexmacros.init_style_macros !style;
-
-  if not !Translate.title_spec then Translate.title := f;
-
   (* producing the documents *)
   translate fbib f
 
