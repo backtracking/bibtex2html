@@ -72,6 +72,9 @@ if test "$OCAMLC" = no ; then
 	AC_MSG_ERROR(Cannot find ocamldep.)
 fi
 
+# where is perl
+AC_PATH_PROG(PERL,perl,/usr/bin/perl)
+
 # substitutions to perform
 AC_SUBST(OCAMLC)
 AC_SUBST(OCAMLOPT)
@@ -79,7 +82,9 @@ AC_SUBST(OCAMLDEP)
 AC_SUBST(OCAMLBEST)
 AC_SUBST(OCAMLVERSION)
 AC_SUBST(OCAMLLIB)
+AC_SUBST(PERL)
 
 # Finally create all the generated files
-AC_OUTPUT(Makefile)
+AC_OUTPUT(Makefile auxtobib)
+chmod a+x auxtobib
 chmod a-w Makefile
