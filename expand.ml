@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: expand.ml,v 1.11 2004-07-06 15:22:33 marche Exp $ i*)
+(*i $Id: expand.ml,v 1.12 2004-07-21 13:40:59 filliatr Exp $ i*)
 
 (*s Expansion of abbreviations in BibTeX databases. *)
 
@@ -104,11 +104,20 @@ let int_of_month = function
   | "October" -> 9
   | "November" -> 10 
   | "December" -> 11
-  | _ -> 0 (* TODO *)
+  | _ -> invalid_arg "int_of_month"
 
-type date = { year : int; month : int }
+let parse_month m =
+  try
+    Scanf.sscanf m "%s %d" (fun m d -> int_of_month m, d)
+  with _ ->
+  try
+    Scanf.sscanf m "%s~%d" (fun m d -> int_of_month m, d)
+  with _ ->
+    int_of_month m, 1
 
-let dummy_date = { year = 0; month = 0 }
+type date = { year : int; month : int; day : int }
+
+let dummy_date = { year = 0; month = 0; day = 0 }
 
 let extract_year k f =
   try
@@ -121,14 +130,13 @@ let extract_year k f =
 
 let extract_month k f =
   try
-    int_of_month (List.assoc "MONTH" f)
+    parse_month (List.assoc "MONTH" f)
   with 
-    | Failure "int_of_string" ->
+    | _ ->
 	if not !Options.quiet then
 	  eprintf "Warning: incorrect month in entry %s\n" k; 
 	if !Options.warn_error then exit 2;
-	0
-    | Not_found -> 0
+	0,1
 
 let rec find_entry k = function
   | [] -> raise Not_found
@@ -137,8 +145,8 @@ let rec find_entry k = function
 let rec extract_date el (_,k,f) =
   try
     let y = extract_year k f in
-    let m = extract_month k f in
-    { year = y; month = m }
+    let m,d = extract_month k f in
+    { year = y; month = m; day = d }
   with Not_found ->
     try extract_date el (find_entry (List.assoc "CROSSREF" f) el)
     with Not_found -> dummy_date
@@ -146,7 +154,9 @@ let rec extract_date el (_,k,f) =
 let date_order el e1 e2 =
   let d1 = extract_date el e1 in
   let d2 = extract_date el e2 in
-  (d1.year < d2.year) or (d1.year == d2.year & d1.month < d2.month)
+  (d1.year < d2.year) ||
+  (d1.year == d2.year && d1.month < d2.month) ||
+  (d1.year == d2.year && d1.month == d2.month && d1.day < d2.day)
 
 (*s Access to the fields. *)
 

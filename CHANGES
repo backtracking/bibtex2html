@@ -1,4 +1,5 @@
 
+ o improved date sorting algorithm to handle days (e.g. month = "June 29")
  o bib2bib: crossrefs are expanded before conditions are checked 
  o bib2bib: '_' allowed in field identifiers 
  o added option -w (--warn-error) to stop immediately when a warning
