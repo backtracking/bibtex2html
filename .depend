@@ -2,10 +2,12 @@ bibfilter.cmi: bibtex.cmi
 biboutput.cmi: bibtex.cmi 
 bibtex_parser.cmi: bibtex.cmi 
 expand.cmi: bibtex.cmi 
-bib2bib.cmo: bibfilter.cmi biboutput.cmi bibtex.cmi bibtex_lexer.cmo \
-    bibtex_parser.cmi 
-bib2bib.cmx: bibfilter.cmx biboutput.cmx bibtex.cmx bibtex_lexer.cmx \
-    bibtex_parser.cmx 
+parse_condition.cmi: condition.cmi 
+readbib.cmi: bibtex.cmi 
+bib2bib.cmo: bibfilter.cmi biboutput.cmi bibtex.cmi condition.cmi \
+    parse_condition.cmi readbib.cmi 
+bib2bib.cmx: bibfilter.cmx biboutput.cmx bibtex.cmx condition.cmx \
+    parse_condition.cmx readbib.cmx 
 bibfilter.cmo: bibtex.cmi bibfilter.cmi 
 bibfilter.cmx: bibtex.cmx bibfilter.cmi 
 biboutput.cmo: bibtex.cmi html.cmo biboutput.cmi 
@@ -16,15 +18,23 @@ bibtex_lexer.cmo: bibtex_parser.cmi
 bibtex_lexer.cmx: bibtex_parser.cmx 
 bibtex_parser.cmo: bibtex.cmi bibtex_parser.cmi 
 bibtex_parser.cmx: bibtex.cmx bibtex_parser.cmi 
+condition.cmo: condition.cmi 
+condition.cmx: condition.cmi 
 expand.cmo: bibtex.cmi latexscan.cmo expand.cmi 
 expand.cmx: bibtex.cmx latexscan.cmx expand.cmi 
 latexmacros.cmo: latexmacros.cmi 
 latexmacros.cmx: latexmacros.cmi 
 latexscan.cmo: latexmacros.cmi 
 latexscan.cmx: latexmacros.cmx 
-main.cmo: bbl_lexer.cmo bibtex_lexer.cmo bibtex_parser.cmi expand.cmi \
-    latexmacros.cmi latexscan.cmo translate.cmo version.cmo 
-main.cmx: bbl_lexer.cmx bibtex_lexer.cmx bibtex_parser.cmx expand.cmx \
-    latexmacros.cmx latexscan.cmx translate.cmx version.cmx 
-translate.cmo: expand.cmi html.cmo latexmacros.cmi latexscan.cmo 
-translate.cmx: expand.cmx html.cmx latexmacros.cmx latexscan.cmx 
+main.cmo: bbl_lexer.cmo bibfilter.cmi bibtex.cmi expand.cmi latexmacros.cmi \
+    latexscan.cmo readbib.cmi translate.cmo version.cmo 
+main.cmx: bbl_lexer.cmx bibfilter.cmx bibtex.cmx expand.cmx latexmacros.cmx \
+    latexscan.cmx readbib.cmx translate.cmx version.cmx 
+parse_condition.cmo: condition.cmi parse_condition.cmi 
+parse_condition.cmx: condition.cmx parse_condition.cmi 
+readbib.cmo: bibtex_lexer.cmo bibtex_parser.cmi readbib.cmi 
+readbib.cmx: bibtex_lexer.cmx bibtex_parser.cmx readbib.cmi 
+translate.cmo: biboutput.cmi expand.cmi html.cmo latexmacros.cmi \
+    latexscan.cmo 
+translate.cmx: biboutput.cmx expand.cmx html.cmx latexmacros.cmx \
+    latexscan.cmx 

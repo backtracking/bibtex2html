@@ -1,4 +1,6 @@
 
+ o bib2bib is able to parse conditions of the form field:regexp (but
+   only one condition at a time)
  o the bib output :
     . is in the same order as the original one
     . option -noexpand produces an bib output still containing @STRINGs 

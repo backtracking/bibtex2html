@@ -2,84 +2,9 @@
 
 open Printf;;
 open Bibtex;;
-
-
-(*
-let print_entry (entry_type,key,fields) = 
-  printf "@%s{%s,\n" entry_type key;
-  List.iter 
-    (fun (field,value) ->
-       printf "  %s = {%s}\n" field value)
-    fields;
-  printf "}\n\n"
-;;
-
-let string_of_atom = function
-    Id s -> s
-  | String s -> "{"^s^"}"
-;;
-
-let print_atom_list = function 
-    [] -> ()
-  | a::l ->
-      printf " %s" (string_of_atom a);
-      List.iter
-	(fun a -> printf " # %s" (string_of_atom a))
-	l
-;;
-
-
-let get_key = function
-    Entry(_,key,_) -> key
-  | Abbrev(key,_) -> key
-  | _ -> ""
-;;
-
-let print_command = function 
-    Comment -> 
-      printf "(comment)\n\n"
-  | Preamble s ->
-      printf "(preamble = %s)\n" s
-  | Abbrev(s,l) ->
-      printf "@string{%s =" s;
-      print_atom_list l;
-      printf "\n\n"
-  | Entry (entry_type,key,fields) ->
-      printf "@%s{%s" entry_type key;
-      List.iter
-	(fun (field,l) ->
-	   printf ",\n  %s =" field;
-           print_atom_list l)
-	fields;
-      printf "\n}\n\n"
-
-;;
-
-*)
   
 
-(* [(read_entries_from_file f)] returns the BibTeX entries of the
-   BibTeX file [f]. Raises [Syntax_error n] if a syntax error is met
-   on line [n] *)
-
-exception Syntax_error of int;;
-
-let read_entries_from_file f =
-
-  Bibtex_lexer.reset();
-  let chan = open_in f in
-  try
-    let el =
-      Bibtex_parser.command_list Bibtex_lexer.token (Lexing.from_channel chan)
-    in
-      close_in chan;
-      el
-
-  with
-      Parsing.Parse_error | Failure "unterminated string" ->
-	close_in chan;
-	raise (Syntax_error !Bibtex_lexer.line)
-	  
+  
 
 (*
 let test_criteria fields =
@@ -91,6 +16,7 @@ let test_criteria fields =
 ;;
 *)
 
+(*
 let test_criteria fields =
   try
     let [String(author)] = List.assoc "AUTHOR" fields
@@ -107,28 +33,7 @@ let test_criteria fields =
   with
       Not_found -> false
 ;;
-
-
-
-let do_file file =
-  try
-    printf "Reading %s..." file; 
-    flush stdout;
-    let entries = read_entries_from_file file
-    in
-      printf "ok (%d entries).\n" (List.length entries); 
-      flush stdout;    
-      (*
-	List.iter print_command entries;
-      *)
-      entries
-
-  with
-      Syntax_error n ->
-	printf "Parse error line %d.\n" !Bibtex_lexer.line;
-      flush stdout;
-      exit 1 
-;;
+*)
 
 
 
@@ -143,13 +48,21 @@ let cite_output_file_name = ref "";;
 let get_input_file_name f =
   input_file_names := f :: !input_file_names;;
 
+let condition = ref Condition.False;;
+
 let args_spec =
   [
     ("-ob", 
      Arg.String(fun f -> bib_output_file_name := f),"bib output file name");
     ("-oc",
      Arg.String(fun f -> cite_output_file_name := f),"citations output file name");
+    ("-c",
+     Arg.String(fun f -> condition := Parse_condition.condition f),"filter condition")
   ]
+
+
+let test_criteria fields =
+  Condition.evaluate_cond fields !condition;;
 
 
 let output_cite_file keys = 
@@ -191,12 +104,14 @@ let main () =
   Arg.parse args_spec get_input_file_name "Usage: bib2bib [options] <input file names>\nOptions are:";
   let all_entries =
     List.fold_left
-      (fun l file -> l@(do_file file))
+      (fun l file -> l@(Readbib.read_entries_from_file file))
       []
       (List.rev !input_file_names)
-  in    
+  in 
+  let expanded = Bibtex.expand_abbrevs all_entries
+  in
   let matching_keys =
-    Bibfilter.filter all_entries test_criteria 
+    Bibfilter.filter expanded test_criteria 
   in
   let needed_keys =
     Bibfilter.saturate all_entries matching_keys

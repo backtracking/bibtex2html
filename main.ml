@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.25 1999-06-29 15:48:56 marche Exp $ *)
+(* $Id: main.ml,v 1.26 1999-06-29 16:50:53 marche Exp $ *)
 
 (* options *)
 
@@ -194,27 +194,9 @@ let get_biblios fbib =
   with
     e -> clean tmp ; raise e
 
-(* [get_bibtex_entries] returns the BibTeX entries of a BibTeX file *)
-
-let get_bibtex_entries fbib =
-  Printf.printf "Reading %s..." fbib; flush stdout;
-  Bibtex_lexer.reset();
-  let chan = open_in fbib in
-  let el =
-    try
-      Bibtex_parser.command_list Bibtex_lexer.token (Lexing.from_channel chan)
-    with
-	Parsing.Parse_error | Failure "unterminated string" ->
-	  close_in chan;
-	  Printf.printf "Parse error line %d.\n" !Bibtex_lexer.line;
-	  flush stdout;
-	  exit 1 in
-  close_in chan;
-  Printf.printf "ok (%d entries).\n" (List.length el); flush stdout;
-  el
 
 let translate fullname basename =
-  let input_bib = get_bibtex_entries fullname in
+  let input_bib = Readbib.read_entries_from_file fullname in
   let entries = Expand.expand input_bib in
   let biblios = get_biblios fullname in
   let sb = List.map 
