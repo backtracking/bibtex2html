@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.45 2000-08-10 20:55:53 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.46 2001-01-11 11:52:21 filliatr Exp $ *)
 
 open Printf
 
@@ -219,7 +219,8 @@ let make_abstract ch ((t,k,_) as e) =
 
 let bibtex_entry ch k =
   Html.open_href ch 
-    (Printf.sprintf "%s%s#%s" !bibentries_file !link_suffix k);
+    (Printf.sprintf "%s%s#%s" 
+       (Filename.basename !bibentries_file) !link_suffix k);
   output_string ch "BibTeX entry";
   Html.close_href ch
 

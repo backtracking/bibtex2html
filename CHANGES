@@ -1,10 +1,14 @@
 
+Version 1.44 11/1/2001
+======================
+
+ o bibtex2html: href bugfix for generation in output dir (Jan Nieuwenhuizen)
  o macros \lor and \land (translation of raw ASCII)
  o brackets { } are now ignored when comparing or matching strings in
    bib2bib conditions
 
-Version 1.41 ??????
-=================== 
+Version 1.41 30/6/2000
+======================
  o configured by GNU autoconf
  o option -labelname to use the label name when inserting a link
  o fixed bug in option -t when bibtex file read on standard input
