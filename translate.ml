@@ -2,13 +2,25 @@
  * Translate BibTeX entries into HTML documents.
  *)
 
+(* options *)
+
 let nodoc = ref false
 let sort_by_date = ref false
 let suffix = ref ".html"
 
+(* latex2html : to print LaTeX strings in HTML format *)
+
 let latex2html ch s =
   Latexmacros.out_channel := ch;
   Latexscan.main (Lexing.from_string s)
+
+(* to format BibTeX entries *)
+
+let safe_title e =
+  try Bibtex.get_title e with Not_found -> "No title"
+
+let safe_author e =
+  try Bibtex.get_author e with Not_found -> "No author"
 
 let format_date ch e =
   output_string ch
@@ -18,27 +30,100 @@ let format_date ch e =
     (try Bibtex.get_year e with Not_found -> "");
   flush ch
 
+type command = 
+    Comma
+  | Dot
+  | String of string * (out_channel -> string -> unit)
+  | Field  of string * (out_channel -> string -> unit) * bool
+
+let normal = latex2html
+
+let emphasize ch s =
+  Html.open_em ch;
+  latex2html ch s;
+  Html.close_em ch
+
+let date_dot = [ Field ("month",normal,false) ; 
+		 String (" ",output_string);
+		 Field ("year",normal,true) ; 
+		 Dot ]
+
+let get_fields = function
+    "BOOK"          -> 
+      [ Field ("publisher",normal,true) ; Comma ] @ date_dot
+	
+  | "INPROCEEDINGS" -> 
+      [ String ("In ",normal) ; Field ("booktitle",emphasize,true) ; Dot ]
+      @ date_dot
+
+  | "ARTICLE" -> 
+      [ Field ("journal",emphasize,true) ; Comma ]
+      @ date_dot
+
+  | "TECHREPORT" ->
+      [ Field ("institution",normal,true) ; Comma ]
+      @ date_dot
+
+  | "UNPUBLISHED" ->
+      [ String ("Unpublished",normal) ; Comma ]
+      @ date_dot
+
+  | "INCOLLECTION" ->
+      [ String ("In ",normal) ; Field ("booktitle",emphasize,true) ; Dot ]
+      @ date_dot
+
+  | "PHDTHESIS" ->
+      [ String ("Ph. D. Thesis",normal) ; Comma ;
+	Field ("school",normal,true) ; Comma ]
+      @ date_dot
+
+  | _               ->
+      date_dot
+
+let warning k name =
+  Printf.fprintf stderr "Warning: field %s is missing in entry %s\n" name k
+
+let print_commands ch ((_,k,f) as e) fi =
+  let rec print = function
+      [] -> ()
+    | Comma :: rem -> 
+	output_string ch ", " ; print rem 
+    | Dot :: rem -> 
+	output_string ch ". " ; print rem
+    | String (s,f) :: rem -> 
+	f ch s; print rem
+    | Field (n,f,nec) :: rem ->
+	begin
+	  try  let s = Bibtex.get_field e n in f ch s
+	  with Not_found -> if nec then warning k n
+	end;
+	print rem
+  in
+    print fi
+
+let format_type ch ((t,_,_) as e) =
+  print_commands ch e (get_fields t)
+
 (* summary file f.html *)
 
 let one_entry_summary basen ch ((_,k,f) as e) =
-  output_string ch "<li> ";
+  Html.open_balise ch "li"; output_string ch " ";
   let url = Filename.concat basen (k ^ !suffix) in
   Html.open_href ch url;
-  latex2html ch
-    (try Bibtex.get_title e with Not_found -> "");
+  latex2html ch (safe_title e);
   Html.close_href ch;
-  output_string ch ", ";
-  format_date ch e;
-  output_string ch ".";
-  output_string ch "\n<p>\n"
+  output_string ch ". ";
+  format_type ch e;
+  Html.paragraph ch;
+  output_string ch "\n"
 
 let summary basen el =
   let ch = open_out (basen ^ !suffix) in
     if not !nodoc then
       Html.open_document ch (fun () -> output_string ch basen);
-    output_string ch "<ul>";
+    Html.open_balise ch "ul";
     List.iter (one_entry_summary basen ch) el;
-    output_string ch "</ul>";
+    Html.close_balise ch "ul";
     if not !nodoc then Html.close_document ch;
     close_out ch
 ;;
@@ -78,7 +163,7 @@ let file_type f =
 let html_file f ((t,k,_) as e) =
   let fn = Filename.concat f (k ^ !suffix) in
   let ch = open_out fn in
-  let title = try Bibtex.get_title e with Not_found -> "No title" in
+  let title = safe_title e in
   
     if not !nodoc then 
       Html.open_document ch (fun () -> latex2html ch title);
@@ -88,23 +173,29 @@ let html_file f ((t,k,_) as e) =
     latex2html ch title;
     Html.close_h ch 1;
     output_string ch "\n";
-    output_string ch "<font size=4>\n\n";
+    Html.open_balise ch "font size=4";
+    output_string ch "\n\n";
 
-    let author = try Bibtex.get_author e with Not_found -> "No author" in
+    let author = safe_author e in
     latex2html ch author;
-    output_string ch "<p>\n";
+    Html.paragraph ch;
+    output_string ch "\n";
 
-    format_date ch e; 
-    output_string ch "\n<p>\n";
+    format_type ch e; 
+    output_string ch "\n";
+    Html.paragraph ch;
+    output_string ch "\n";
 
     (* abstract *)
     begin
       try
       	let a = Bibtex.get_field e "abstract" in
-	  output_string ch "<b>Abstract:</b><p>\n";
-	  output_string ch "<quote>\n";
+	  Html.open_b ch; output_string ch "Abstract:"; Html.close_b ch;
+	  Html.paragraph ch; output_string ch "\n";
+	  Html.open_balise ch "blockquote"; output_string ch "\n";
 	  latex2html ch a;
-	  output_string ch "</quote>\n<p>\n"
+	  Html.close_balise ch "blockquote"; output_string ch "\n";
+	  Html.paragraph ch; output_string ch "\n"
       with Not_found -> ()
     end;
 
@@ -126,7 +217,7 @@ let html_file f ((t,k,_) as e) =
     output_string ch "BibTeX reference";
     Html.close_href ch;
 
-    output_string ch "</dl>\n";
+    output_string ch "\n";
     if not !nodoc then Html.close_document ch;
     flush ch;
     close_out ch
