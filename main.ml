@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: main.ml,v 1.44 2001-10-10 13:06:19 filliatr Exp $ i*)
+(*i $Id: main.ml,v 1.45 2001-10-12 07:39:03 filliatr Exp $ i*)
 
 (*s Main module of bibtex2html. *)
 
@@ -303,6 +303,7 @@ let usage () =
   prerr_endline "  -r         reverse the sort";
   prerr_endline "  -t title   title of the HTML file (default is the filename)";
   prerr_endline "  -bg color  background color of the HTML file (default is none)";
+  prerr_endline "  -css file  background color of the HTML file (default is none)";
   prerr_endline "  -o file    redirect the output";
   prerr_endline "  -footer    additional footer in the HTML file";
   prerr_endline "  -i         ignore BibTeX errors";
@@ -349,6 +350,10 @@ let parse () =
     | ("-bg" | "--background") :: s :: rem ->
 	Html.bgcolor := Some s; parse_rec rem
     | ("-bg" | "--background") :: [] ->
+	usage()
+    | ("-css" | "--style-sheet") :: f :: rem ->
+	Html.css := Some f; parse_rec rem
+    | ("-css" | "--style-sheet") :: [] ->
 	usage()
     | ("-footer" | "--footer") :: s :: rem ->
 	user_footer := s; parse_rec rem

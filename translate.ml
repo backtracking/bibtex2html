@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.49 2001-07-13 12:37:57 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.50 2001-10-12 07:39:03 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -138,36 +138,22 @@ let footer ch =
 
 let compression_suffixes = [ ".gz"; ".Z"; ".zip" ]
 
-let decompressed f = 
-  let rec test_comp = function
-      [] -> (false,f)
-    | suff :: r -> 
-	if Filename.check_suffix f suff then
-	  (true,Filename.chop_suffix f suff)
-	else
-	  test_comp r
-  in
-  test_comp compression_suffixes
-
-let file_types = [ ".dvi","DVI"; ".DVI","DVI"; ".ps","PS"; ".PS","PS";
-		   ".pdf","PDF"; ".PDF","PDF"; ".rtf","RTF"; ".RTF","RTF" ]
+let file_suffixes =
+  List.flatten 
+    (List.map (fun s -> List.map ((^) s) compression_suffixes)
+       [ ".dvi"; ".DVI"; ".ps"; ".PS"; ".pdf"; ".PDF"; ".rtf"; ".RTF" ])
 
 let file_type f =
-  let (comp,f) = decompressed f in
   let rec test_type = function
-    | [] -> "Available here"
-    | (suff,name)::rem ->
-	if Filename.check_suffix f suff then
-	  (if comp then "Compressed " else "") ^ name
-	else
-	  test_type rem
+    | [] -> "here"
+    | suff::rem -> if Filename.check_suffix f suff then suff else test_type rem
   in
-  test_type file_types
+  test_type file_suffixes
 
-let rec is_url s =
-  (String.length s > 3 & String.lowercase (String.sub s 0 4) = "http")
-  or (String.length s > 2 & String.lowercase (String.sub s 0 3) = "ftp")
-  or (String.length s > 3 & String.lowercase (String.sub s 0 4) = "www:")
+let is_url s =
+  (String.length s > 3 & String.lowercase (String.sub s 0 4) = "http") || 
+  (String.length s > 2 & String.lowercase (String.sub s 0 3) = "ftp") ||
+  (String.length s > 3 & String.lowercase (String.sub s 0 4) = "www:")
 
 let get_url s =
   if (String.length s > 3 & String.lowercase (String.sub s 0 4) = "www:") then
@@ -195,7 +181,7 @@ let make_links ch ((t,k,_) as e) startb =
        try
 	 let u = Expand.get_uppercase_field e f in
 	 let s = file_type u in
-	 if !first then first := false else output_string ch ",\n";
+	 if !first then first := false else output_string ch " | \n";
 	 let url = get_url u in
 	 Html.open_href ch url;
 	 output_string ch (link_name info url s);
@@ -208,11 +194,13 @@ let make_abstract ch ((t,k,_) as e) =
     let a = Expand.get_uppercase_field e "ABSTRACT" in
       if is_url a then begin
 	(* 1. it is an URL *)
-	output_string ch ", ";
+	output_string ch " | ";
 	Html.open_href ch (get_url a);
 	output_string ch "Abstract";
 	Html.close_href ch;
+	output_string ch " ]\n"
       end else if !print_abstract then begin
+	output_string ch " ]\n";
 	(* 2. we have to print it right here *)
 	Html.paragraph ch; output_string ch "\n";
 	Html.open_balise ch "blockquote";
@@ -225,14 +213,16 @@ let make_abstract ch ((t,k,_) as e) =
 	Html.paragraph ch; output_string ch "\n"
       end else if !both then begin
 	(* 3. we have to insert a link to the file f-abstracts *)
-	output_string ch ", ";
+	output_string ch " | ";
 	let url = 
 	  Printf.sprintf "%s-abstracts%s#%s" !output_file !link_suffix k in
 	Html.open_href ch url;
 	output_string ch "Abstract";
 	Html.close_href ch;
+	output_string ch " ]\n"
       end
-  with Not_found -> ()
+  with Not_found -> 
+    output_string ch " ]\n"
 
 (* Printing of one entry *)  
 
@@ -240,7 +230,7 @@ let bibtex_entry ch k =
   Html.open_href ch 
     (Printf.sprintf "%s%s#%s" 
        (Filename.basename !bibentries_file) !link_suffix k);
-  output_string ch "BibTeX entry";
+  output_string ch "bib";
   Html.close_href ch
 
 let separate_file (b,((_,k,f) as e)) =
@@ -298,6 +288,7 @@ let one_entry_summary ch (_,b,((_,k,f) as e)) =
   if !multiple then
     separate_file (b,e)
   else begin
+    output_string ch "[ ";
     if !bib_entries then bibtex_entry ch k;
     make_links ch e (not !bib_entries);
     make_abstract ch e

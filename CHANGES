@@ -1,23 +1,24 @@
 
+Version 1.5 10/10/2001
+======================
+ o less invasive links (to BibTeX entries and files)
+ o option -css to specify a style sheet
  o macro \textcolor now translated (patch by François Pottier)
  o option -bg to set background color (patch by François Pottier)
  o fixed HTML errors (unclosed tags)
 
 Version 1.46 21/2/2001
 ======================
-
  o code documented with ocamlweb (but still poor comments)
  o fixed bug for links' names 
  o fixed a minor HTML error (inversion of <blockquote> and <font>)
 
 Version 1.45 31/1/2001
 ======================
-
  o option -nf to specify how to display the link (patch by François Pottier)
 
 Version 1.44 11/1/2001
 ======================
-
  o bibtex2html: href bugfix for generation in output dir (Jan Nieuwenhuizen)
  o macros \lor and \land (translation of raw ASCII)
  o brackets { } are now ignored when comparing or matching strings in
