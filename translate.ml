@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.34 1999-12-09 14:17:45 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.35 2000-02-10 18:11:18 filliatr Exp $ *)
 
 (* options *)
 
@@ -32,6 +32,7 @@ let user_footer = ref ""
 let bib_entries = ref true
 let input_file = ref ""
 let output_file = ref ""
+let bibentries_file = ref ""
 
 let (fields : string list ref) = ref []
 let add_field s = fields := s :: !fields
@@ -214,7 +215,7 @@ let make_abstract ch ((t,k,_) as e) =
 (* Printing of one entry *)  
 
 let bibtex_entry ch k =
-  Html.open_href ch (Printf.sprintf "%s-bib%s#%s" !output_file !suffix k);
+  Html.open_href ch (Printf.sprintf "%s#%s" !bibentries_file k);
   output_string ch "BibTeX entry";
   Html.close_href ch
 
@@ -331,7 +332,7 @@ let print_list print sep l =
 
 
 let bib_file bl keys =
-  let fn = !output_file ^ "-bib" ^ !suffix in
+  let fn = !bibentries_file in
   Printf.eprintf "Making HTML list of BibTeX entries (%s)..." fn;
   flush stderr;
   let ch = open_out fn in
@@ -358,6 +359,7 @@ let bib_file bl keys =
 
 let format_list entries sorted_bl keys =
   first_pass sorted_bl;
+  bibentries_file := !output_file ^ "-bib" ^ !suffix;
   if !both then begin
     (* short version *)
     print_abstract := false;

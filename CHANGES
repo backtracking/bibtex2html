@@ -1,4 +1,8 @@
 
+Version 1.2, 1999/02/10
+=======================
+ o manual.tex does not require hevea.sty anymore
+ o fixed wrong link to bibtex entries in the page with abstracts
  o implementation: use of the ocaml module Buffer
  o fixed bug: authorize & in keys
  o bib2bib conditions now take LaTeX accents into account. For example
@@ -7,7 +11,7 @@
    for that purpose.
  o much more LaTeX macros translated
  o macro \u (a romanian accent) recognized (but \u{s} simply outputs s) 
- o option --raw-url to print URL instaed of files's types.
+ o option --raw-url to print URL instead of files's types.
  
 Version 1.1, 1999/11/05
 =======================
