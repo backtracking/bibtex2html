@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexscan.mll,v 1.20 2001-10-15 07:28:17 filliatr Exp $ i*)
+(*i $Id: latexscan.mll,v 1.21 2001-10-17 13:26:23 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -145,7 +145,7 @@ rule main = parse
   | ("\\begin{" | "\\end{") ['A'-'Z' 'a'-'z']+ "}" |
     "\\" (['A'-'Z' 'a'-'z']+ '*'? | [^ 'A'-'Z' 'a'-'z'])
                 { let rec exec_action = function
-                      Print str -> print_s str
+                    | Print str -> print_s str
                     | Print_arg -> print_arg lexbuf
                     | Raw_arg f -> f (raw_arg lexbuf)
                     | Skip_arg -> save_nesting skip_arg lexbuf
