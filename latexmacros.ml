@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.48 2003-07-15 15:11:07 filliatr Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.49 2004-02-27 08:06:02 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -283,7 +283,7 @@ def "\\right" [];
 def "\\smallskip" [];
 def "\\medskip" [];
 def "\\bigskip" [];
-def "\\hskip" [];
+def "\\relax" [];
 def "\\markboth" [Skip_arg; Skip_arg];
 def "\\dots" [Print "..."];
 def "\\ldots" [Print "..."];

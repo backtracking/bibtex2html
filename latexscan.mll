@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexscan.mll,v 1.25 2003-07-15 15:11:07 filliatr Exp $ i*)
+(*i $Id: latexscan.mll,v 1.26 2004-02-27 08:06:02 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -54,6 +54,11 @@
     print_s (sprintf "<A HREF=\"%s\">%s</A>" u t)
 
 }
+
+let space = [' ' '\t' '\n' '\r']
+let float = '-'? (['0'-'9']+ | ['0'-'9']* '.' ['0'-'9']*)
+let dimension = float ("sp" | "pt" | "bp" | "dd" | "mm" | "pc" |
+		       "cc" | "cm" | "in" | "ex" | "em" | "mu")
 
 rule main = parse
 (* Comments *)
@@ -115,6 +120,10 @@ rule main = parse
                   then print_s "<blockquote>"
                   else print_s "\n</blockquote>";
                   main lexbuf }
+(* \hkip *)
+  | "\\hskip" space* dimension 
+    (space* "plus" space* dimension)? (space* "minus" space* dimension)?
+                { print_s " " }
 (* Special characters *)
   | "\\char" ['0'-'9']+
                 { let lxm = Lexing.lexeme lexbuf in
