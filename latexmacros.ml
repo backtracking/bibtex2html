@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.38 2000-08-08 17:59:29 filliatr Exp $ *)
+(* $Id: latexmacros.ml,v 1.39 2001-01-09 07:40:47 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -232,7 +232,9 @@ def "\\Leftarrow" [Print "&lt;="];
 def "\\leftrightarrow" [Print "&lt;-&gt;"];
 def "\\sqrt" [Print "sqrt("; Print_arg; Print ")"];
 def "\\vee" [Print "V"];
+def "\\lor" [Print "V"];
 def "\\wedge" [Print "/\\"];
+def "\\land" [Print "/\\"];
 def "\\parallel" [Print "||"];
 def "\\mid" [Print "|"];
 def "\\cup" [Print "U"];

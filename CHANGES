@@ -1,4 +1,5 @@
 
+ o macros \lor and \land (translation of raw ASCII)
  o brackets { } are now ignored when comparing or matching strings in
    bib2bib conditions
 
