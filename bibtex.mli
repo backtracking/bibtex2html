@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibtex.mli,v 1.11 2000-06-02 19:37:31 filliatr Exp $ *)
+(* $Id: bibtex.mli,v 1.12 2000-06-05 21:50:22 filliatr Exp $ *)
 
 type entry_type = string
 		    
@@ -46,7 +46,7 @@ val add_new_entry : command -> biblio -> biblio
 
 (* [merge_biblios b1 b2] merges biblios [b1] and [b2]. Commands in the
    resulting biblio are the commands of b1, then the commands of b2,
-   except for dupliacates: any abbrev in [b2] that already exists in
+   except for duplicates: any abbrev in [b2] that already exists in
    [b1] is ignored, and conversely every regular entries of [b1] which
    key exists also in [b2] is ignored. This behaviour is because
    abbrevs are supposed to be used by entries AFTER the definition of

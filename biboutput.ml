@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: biboutput.ml,v 1.5 2000-06-02 19:37:30 filliatr Exp $ *)
+(* $Id: biboutput.ml,v 1.6 2000-06-05 21:50:22 filliatr Exp $ *)
 
 open Bibtex;;
 
@@ -108,16 +108,9 @@ let print_command html ch keys = function
 	    fields;
 	  output_string ch "\n}\n\n"
 	end
-;;
 
 let output_bib html ch bib keys =
   Bibtex.fold
     (fun entry () -> print_command html ch keys entry)    
     bib
     ()
-;;
-
-
-
-
-		    

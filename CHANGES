@@ -1,4 +1,9 @@
 
+ o added options -fsuffix / -lsuffix to specify different suffixes for
+   HTML files and links (-suffix s is equivalent to -fsuffix s -lsuffix s)
+ o fixed bug: entries were sorted in reverse order when no order specified
+ o remove nested tags <a> (incorrect HTML)
+ o closed tags <td> with </td>
  o added macro \html (raw HTML)
  o fixed bug with both -nodoc and -multiple
 

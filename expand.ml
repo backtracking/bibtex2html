@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: expand.ml,v 1.4 2000-06-02 19:59:43 filliatr Exp $ *)
+(* $Id: expand.ml,v 1.5 2000-06-05 21:50:23 filliatr Exp $ *)
 
 open Format
 open Bibtex
@@ -77,16 +77,16 @@ let rec expand biblio =
        match command with
 	 | Abbrev (a,l) ->
 	     let s = expand_list l in
-	     add_abbrev (a,s) ; accu
+	     add_abbrev (a,s); 
+	     accu
 	 | Entry (t,k,f) ->
 	     (t,k,expand_fields f) :: accu
-	 | Preamble(s) ->
+	 | Preamble s ->
 	     macros_in_preamble s;
 	     accu
-	 | Comment(_) -> accu)	
+	 | Comment _ -> accu)	
     biblio
     []
-;;
 
 (* sort BibTeX entries by decreasing dates *)
 

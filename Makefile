@@ -13,7 +13,7 @@ MANDIR = /usr/local/man
 #########################################
 
 MAJORVN=1
-MINORVN=31
+MINORVN=32
 
 CAMLC    = ocamlc
 CAMLCOPT = ocamlopt 

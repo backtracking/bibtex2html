@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.35 2000-06-02 19:59:43 filliatr Exp $ *)
+(* $Id: main.ml,v 1.36 2000-06-05 21:50:23 filliatr Exp $ *)
 
 open Translate
 
@@ -50,7 +50,7 @@ let add_citations file =
         (Str.split (Str.regexp "[ \t\n]+") (Buffer.contents buf)) @
         !citations
   with Sys_error msg ->
-    prerr_endline ("Cannot open citation file ("^msg^")");
+    prerr_endline ("Cannot open citation file (" ^ msg ^ ")");
     exit 1
   
 (* sort of entries *)
@@ -59,8 +59,7 @@ module KeyMap = Map.Make(struct type t = string let compare = compare end)
 
 let keep_combine combine l1 l2 =
   let map = 
-    List.fold_left (fun m ((_,k,_) as e) -> KeyMap.add k e m)
-      KeyMap.empty l2 
+    List.fold_left (fun m ((_,k,_) as e) -> KeyMap.add k e m) KeyMap.empty l2 
   in
   let rec keep_rec = function
     | [] ->
@@ -91,7 +90,8 @@ let sort_entries entries bibitems =
     if !sort = By_date then
       Sort.list (fun (_,_,e1) (_,_,e2) -> Expand.date_order entries e1 e2) el
     else
-      el in
+      el 
+  in
   Printf.eprintf "ok.\n"; flush stderr;
   if !reverse_sort then List.rev sl else sl
 
@@ -192,12 +192,12 @@ let get_biblios fbib =
     call_bibtex tmp;
     read_bbl tmp
   with
-    e -> clean tmp ; raise e
+    e -> clean tmp; raise e
 
 
 let translate fullname =
   let input_bib = Readbib.read_entries_from_file fullname in
-  let entries = Expand.expand input_bib in
+  let entries = List.rev (Expand.expand input_bib) in
   let biblios = 
     if fullname = "" then begin
       let tmp = Filename.temp_file "bibtex2htmlinput" ".bib" in
@@ -267,7 +267,9 @@ let usage () =
   prerr_endline "  -noexpand  do not expand abbreviations in the BibTeX output";
   prerr_endline "  -nobibsource";
   prerr_endline "             do not produce the BibTeX entries file";
-  prerr_endline "  -suffix s  give an alternate suffix for HTML files";
+  prerr_endline "  -fsuffix   give an alternate suffix for HTML files";
+  prerr_endline "  -lsuffix   give an alternate suffix for HTML links";
+  prerr_endline "  -suffix s  give an alternate suffix for HTML files and links";
   prerr_endline "  -citefile f";
   prerr_endline "             read keys to include from file f";
   prerr_endline "  -e key     exclude an entry";
@@ -285,7 +287,7 @@ let parse () =
 
     (* General aspect of the web page *)
     | ("-t" | "--title") :: s :: rem ->
-	title := s ; title_spec := true; parse_rec rem
+	title := s; title_spec := true; parse_rec rem
     | ("-t" | "--title") :: [] ->
 	usage()
     | ("-footer" | "--footer") :: s :: rem ->
@@ -293,17 +295,17 @@ let parse () =
     | ("-footer" | "--footer") :: [] ->
 	usage()
     | ("-s" | "--style") :: s :: rem ->
-	style := s ; parse_rec rem
+	style := s; parse_rec rem
     | ("-s" | "--style") :: [] ->
 	usage()
     | ("-noabstract" | "--no-abstract") :: rem ->
 	print_abstract := false; parse_rec rem
     | ("-nokeys" | "--no-keys") :: rem -> 
-	nokeys := true ; parse_rec rem
+	nokeys := true; parse_rec rem
     | ("-rawurl" | "--raw-url") :: rem -> 
-	raw_url := true ; parse_rec rem
+	raw_url := true; parse_rec rem
     | ("-heveaurl" | "--hevea-url") :: rem -> 
-	Latexscan.hevea_url := true ; parse_rec rem
+	Latexscan.hevea_url := true; parse_rec rem
     | ("-nofooter" | "--no-footer") :: rem ->
 	print_footer := false; parse_rec rem
     | ("-f" | "--field") :: s :: rem ->
@@ -323,13 +325,13 @@ let parse () =
  
     (* Sorting the entries *)
     | ("-d" | "--sort-by-date") :: rem ->
-	sort := By_date ; parse_rec rem
+	sort := By_date; parse_rec rem
     | ("-a" | "--sort-as-bibtex") :: rem ->
-	sort := By_author ; parse_rec rem
+	sort := By_author; parse_rec rem
     | ("-u" | "--unsorted") :: rem ->
-	sort := Unsorted ; parse_rec rem
+	sort := Unsorted; parse_rec rem
     | ("-r" | "--reverse-sort") :: rem ->
-	reverse_sort := true ; parse_rec rem
+	reverse_sort := true; parse_rec rem
 
     (* Options for selecting keys *)
     | ("-citefile") :: f :: rem ->
@@ -339,7 +341,7 @@ let parse () =
     | ("--citefile") :: [] ->
 	usage()
     | ("-e" | "--exclude") :: k :: rem ->
-	add_exclude k ; parse_rec rem
+	add_exclude k; parse_rec rem
     | ("-e" | "--exclude") :: [] ->
 	usage()
  
@@ -352,17 +354,24 @@ let parse () =
     | ("-nobibsource" | "--nobibsource") :: rem ->
 	bib_entries := false; parse_rec rem
     | ("-nodoc" | "--no-doc") :: rem -> 
-	nodoc := true ; parse_rec rem
+	nodoc := true; parse_rec rem
     | ("-noexpand" | "--no-expand") :: rem -> 
-	expand_abbrev_in_bib_output := false ; parse_rec rem
+	expand_abbrev_in_bib_output := false; parse_rec rem
     | ("-i" | "--ignore-errors") :: rem ->
-	ignore_bibtex_errors := true ; parse_rec rem
+	ignore_bibtex_errors := true; parse_rec rem
+
     | ("-suffix" | "--suffix") :: s :: rem ->
-	suffix := s ; parse_rec rem
-    | ("-suffix" | "--suffix") :: [] ->
+	file_suffix := s; link_suffix := s; parse_rec rem
+    | ("-fsuffix" | "--file-suffix") :: s :: rem ->
+	file_suffix := s; parse_rec rem
+    | ("-lsuffix" | "--link-suffix") :: s :: rem ->
+	link_suffix := s; parse_rec rem
+    | ("-suffix" | "--suffix" | "-fsuffix" | "--file-suffix" |
+       "-lsuffix" | "--link-suffix") :: [] ->
 	usage()
+
     | ("-c" | "--command") :: s :: rem ->
-	command := s ; parse_rec rem
+	command := s; parse_rec rem
     | ("-c" | "--command") :: [] ->
 	usage()
     | ("-h" | "-help" | "-?" | "--help") :: rem ->
@@ -373,7 +382,7 @@ let parse () =
 	Copying.copying(); exit 0
 
     | ("-debug" | "--debug") :: rem ->
-	debug := true ; parse_rec rem
+	debug := true; parse_rec rem
 
     | [fbib] -> 
 	if not (Sys.file_exists fbib) then begin

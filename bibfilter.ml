@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibfilter.ml,v 1.4 2000-06-02 19:37:29 filliatr Exp $ *)
+(* $Id: bibfilter.ml,v 1.5 2000-06-05 21:50:22 filliatr Exp $ *)
 
 open Bibtex;;
 
@@ -30,7 +30,6 @@ let filter biblio criterion =
 	 | _ -> keys)
     biblio
     KeySet.empty
-;;
 
 
 (* [needed_keys biblio field value keys] returns the set of keys
@@ -111,8 +110,6 @@ let saturate biblio s =
 	 | _ -> keys)
     biblio
     s
-;;
-
 
 
 

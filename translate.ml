@@ -14,13 +14,14 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.39 2000-06-02 21:24:54 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.40 2000-06-05 21:50:24 filliatr Exp $ *)
 
 (* options *)
 
 let nodoc = ref false
 let nokeys = ref false
-let suffix = ref ".html"
+let file_suffix = ref ".html"
+let link_suffix = ref ".html"
 let raw_url = ref false
 let title = ref ""
 let title_spec = ref false
@@ -73,7 +74,7 @@ let cite k =
       if !in_summary then 
 	Printf.sprintf "#%s" k
       else
-	Printf.sprintf "%s%s#%s" !output_file !suffix k in
+	Printf.sprintf "%s%s#%s" !output_file !link_suffix k in
     let c = Hashtbl.find cite_tab k in
       print_s (Printf.sprintf "<A HREF=\"%s\">[%s]</A>" url c)
   with
@@ -101,7 +102,7 @@ let header ch =
      with the following command:
      " Version.version;
   Array.iter (Printf.fprintf ch "%s ") Sys.argv;
-  Printf.fprintf ch " -->\n\n"
+  output_string ch " -->\n\n"
 
 let footer ch =
   Html.open_balise ch "HR";
@@ -111,7 +112,7 @@ let footer ch =
   output_string ch "bibtex2html";
   Html.close_href ch;
   output_string ch " "; output_string ch Version.version;
-  Html.close_balise ch "EM"; Printf.fprintf ch "\n";
+  Html.close_balise ch "EM"; output_string ch "\n";
   output_string ch !user_footer
 
 (* links (other than BibTeX entry, when available) *)
@@ -195,7 +196,7 @@ let make_abstract ch ((t,k,_) as e) =
 	(* 3. we have to insert a link to the file f-abstracts *)
 	output_string ch ", ";
 	let url = 
-	  Printf.sprintf "%s-abstracts%s#%s" !output_file !suffix k in
+	  Printf.sprintf "%s-abstracts%s#%s" !output_file !link_suffix k in
 	Html.open_href ch url;
 	output_string ch "Abstract";
 	Html.close_href ch;
@@ -205,13 +206,13 @@ let make_abstract ch ((t,k,_) as e) =
 (* Printing of one entry *)  
 
 let bibtex_entry ch k =
-  Html.open_href ch (Printf.sprintf "%s#%s" !bibentries_file k);
+  Html.open_href ch (Printf.sprintf "%s%s#%s" !bibentries_file !link_suffix k);
   output_string ch "BibTeX entry";
   Html.close_href ch
 
 let separate_file (b,((_,k,f) as e)) =
   in_summary := false;
-  let file = k ^ !suffix in
+  let file = k ^ !file_suffix in
   let ch = open_out file in
   let title = Printf.sprintf "%s : %s" !output_file k in
   if not !nodoc then
@@ -227,7 +228,7 @@ let separate_file (b,((_,k,f) as e)) =
   Html.paragraph ch;
   make_links ch e true;
   Html.paragraph ch;
-  Html.open_href ch (!output_file ^ !suffix);
+  Html.open_href ch (!output_file ^ !link_suffix);
   output_string ch "Back";
   Html.close_href ch;
   if !print_footer then footer ch;
@@ -243,18 +244,20 @@ let one_entry_summary ch (_,b,((_,k,f) as e)) =
   Html.open_balise ch "tr valign=top";
 
   output_string ch "\n";
-  Html.open_balise ch "td align=right"; Printf.fprintf ch "\n";
-  Html.open_anchor ch k;
+  Html.open_balise ch "td align=right"; output_string ch "\n";
+  Html.open_anchor ch k; Html.close_anchor ch;
   if (not !nokeys) or !multiple then begin
     output_string ch "[";
-    if !multiple then Html.open_href ch (k ^ !suffix);
+    if !multiple then Html.open_href ch (k ^ !link_suffix);
     latex2html ch (Hashtbl.find cite_tab k);
     if !multiple then Html.close_href ch;
     output_string ch "]"
   end;
-  Html.close_anchor ch;
+  (* Html.close_anchor ch; *)
+  output_string ch "\n"; 
+  Html.close_balise ch "td"; output_string ch "\n";
 
-  Html.open_balise ch "td";
+  Html.open_balise ch "td"; output_string ch "\n";
   latex2html ch b;
   Html.open_balise ch "BR";
   output_string ch "\n";
@@ -266,8 +269,8 @@ let one_entry_summary ch (_,b,((_,k,f) as e)) =
     make_links ch e (not !bib_entries);
     make_abstract ch e
   end;
-
-  output_string ch "\n"
+  output_string ch "\n"; 
+  Html.close_balise ch "td"; output_string ch "\n"
 
 (* summary file f.html *)
 
@@ -276,7 +279,7 @@ let summary bl =
     if !output_file = "" then 
       (stdout, "standard output")
     else
-      let filename = !output_file ^ !suffix in
+      let filename = !output_file ^ !file_suffix in
       (open_out filename, filename)
   in
   Printf.eprintf "Making HTML document (%s)..." filename; flush stderr;
@@ -320,7 +323,7 @@ let print_list print sep l =
 
 
 let bib_file bl keys =
-  let fn = !bibentries_file in
+  let fn = !bibentries_file ^ !file_suffix in
   Printf.eprintf "Making HTML list of BibTeX entries (%s)..." fn;
   flush stderr;
   let ch = open_out fn in
@@ -347,7 +350,7 @@ let bib_file bl keys =
 
 let format_list entries sorted_bl keys =
   first_pass sorted_bl;
-  bibentries_file := !output_file ^ "-bib" ^ !suffix;
+  bibentries_file := !output_file ^ "-bib";
   if !both then begin
     (* short version *)
     print_abstract := false;
