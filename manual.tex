@@ -527,11 +527,11 @@ Integer & \rightarrow & [\verb|0|-\verb|9|]^+
 \item According to BibTeX conventions, entry types, keys and field
   names have to be considered case insensitive, that is no distinction
   is made between uppercase and lowercase letters. Inside
-  \verb|bib2bib|, these are always converted to uppercase, so you make
+  \verb|bib2bib|, these are always converted to uppercase, so you may
   take this into account when writting conditions (see below).
 \item On the other hand, case matters when comparing strings, or
   matching them against regular expressions. For example, 
-  \verb|title : "Computer"| may returns \verb|true| if the title
+  \verb|title : "Computer"| may return \verb|true| if the title
   contains the word \verb|Computer| with a capital letter, whereas
   \verb|title : "computer"| would return \verb|false|.
 \item A consequence of the two previous remarks, is that if you want for
