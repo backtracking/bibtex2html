@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexscan.mll,v 1.24 2003-07-15 08:13:26 filliatr Exp $ i*)
+(*i $Id: latexscan.mll,v 1.25 2003-07-15 15:11:07 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -251,7 +251,6 @@ and skip_optional_arg = parse
     "]"         { () }
   | eof         { () }
   | _           { skip_optional_arg lexbuf }
-
 
 (* ajout personnel: [read_macros] pour lire les macros (La)TeX *)
 

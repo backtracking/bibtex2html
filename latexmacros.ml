@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.47 2003-07-15 08:13:26 filliatr Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.48 2003-07-15 15:11:07 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -308,7 +308,8 @@ def "\\html" [Raw_arg print_s];
 
 (* hyperref *)
 def "\\href" 
-  [Print "<a href=\""; Print_arg; Print "\">"; Print_arg; Print "</a>"];
+  [Print "<a href=\""; Raw_arg (fun s -> print_s (Html.quote_amp s)); 
+   Print "\">"; Print_arg; Print "</a>"];
 
 (* Bibliography *)
 def "\\begin{thebibliography}" [Print "<H2>References</H2>\n<dl>\n"; Skip_arg];

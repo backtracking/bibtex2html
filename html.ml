@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: html.ml,v 1.17 2002-06-24 07:27:08 filliatr Exp $ i*)
+(*i $Id: html.ml,v 1.18 2003-07-15 15:11:07 filliatr Exp $ i*)
 
 (*s Production of HTML syntax. *)
 
@@ -70,11 +70,19 @@ let is_absolute_url u =
   
 let is_relative_url u = not (is_absolute_url u)
 
+let quote_amp =
+  let re_qamp = Str.regexp_string "&amp;" in
+  let re_amp = Str.regexp_string "&" in
+  fun s -> 
+    let l = Str.split_delim re_qamp s in
+    let l = List.map (Str.global_replace re_amp "&amp;") l in
+    String.concat "&amp;" l
+
 let normalize_url u = 
   if is_relative_url u && Filename.is_implicit u then
-    "./" ^ u
+    "./" ^ quote_amp u
   else
-    u
+    quote_amp u
 
 let open_href ch s =
   open_balise ch ("a href=\"" ^ (normalize_url s) ^ "\"")
