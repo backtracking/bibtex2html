@@ -19,3 +19,5 @@ bib2bib
 bib2bib.byte
 tmpmanual.ps
 manual.ps
+bibtex2html.static
+bib2bib.static

@@ -24,8 +24,6 @@ FLAGS    = $(ZLIBS) $(DEBUG)
 PROFILE  =
 
 STRLIB = -cclib -lstr
-# ln -sf /usr/lib/libncurses.a libcurses.a
-# -cclib "-lstr -L. -static"
 
 OBJS =  latexmacros.cmx latexscan.cmx bbl_lexer.cmx \
 	bibtex.cmx bibtex_lexer.cmx bibtex_parser.cmx \
@@ -57,13 +55,26 @@ bibtex2html.byte: $(OBJS:.cmx=.cmo)
 	ocamlc -use-runtime ~demons/bin/$(OSTYPE)/ocamlcustomrun \
 		-o bibtex2html.byte str.cma $(OBJS:.cmx=.cmo)  
 
+bibtex2html.static: $(OBJS)
+	ocamlopt $(PROFILE) $(FLAGS) -o bibtex2html.static str.cmxa $(OBJS) $(STRLIB) -cclib "-L. -static"
+	strip bibtex2html.static
+
 bib2bib: $(BIB2BIBOBJS)
 	ocamlopt $(PROFILE) $(FLAGS) -o bib2bib str.cmxa $(BIB2BIBOBJS) $(STRLIB)
 	strip bib2bib
 
+bib2bib.static: $(BIB2BIBOBJS)
+	ocamlopt $(PROFILE) $(FLAGS) -o bib2bib.static str.cmxa $(BIB2BIBOBJS) $(STRLIB) -cclib "-L. -static"
+	strip bib2bib.static
+
 bib2bib.byte: $(BIB2BIBOBJS:.cmx=.cmo)
 	ocamlc -use-runtime ~demons/bin/$(OSTYPE)/ocamlcustomrun \
 		-o bib2bib.byte str.cma $(BIB2BIBOBJS:.cmx=.cmo) 
+
+static:
+	ln -sf /usr/lib/libncurses.a libcurses.a
+	make bibtex2html.static bib2bib.static
+	cp bibtex2html.static bib2bib.static $$HOME/bin/$$OSTYPE
 
 bibtex_parser.mli bibtex_parser.ml: bibtex_parser.mly
 	ocamlyacc bibtex_parser.mly
@@ -149,10 +160,10 @@ manual.html: manual.tex
 #################
 
 .SUFFIXES: .mli .ml .mll .cmi .cmo .cmx
- 
+
 .mli.cmi:
 	$(CAMLC) -c $(FLAGS) $<
- 
+
 .ml.cmo:
 	$(CAMLC) -c $(FLAGS) $<
 
@@ -174,6 +185,7 @@ clean:
 	rm -f latexscan.ml bibtex2html bbl_lexer.ml
 	rm -f bib2bib condition_parser.mli condition_parser.ml
 	rm -f condition_lexer.ml manual.html
+	rm -f bibtex2html.static bib2bib.static
 
 
 depend .depend: \
