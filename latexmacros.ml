@@ -69,6 +69,7 @@ def "\\smallskip" [];
 def "\\medskip" [];
 def "\\bigskip" [];
 def "\\hskip" [];
+def "\\footnotesize" [];
 def "\\markboth" [Skip_arg; Skip_arg];
 def "\\dots" [Print "..."];
 def "\\ldots" [Print "..."];
