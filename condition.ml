@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: condition.ml,v 1.7 2000-07-10 19:39:37 marche Exp $ *)
+(* $Id: condition.ml,v 1.8 2000-10-16 11:46:52 marche Exp $ *)
 
 open Printf;;
 
@@ -45,12 +45,7 @@ let evaluate_constante entrytype key fields = function
       begin
 	try
 	  match List.assoc f fields with
-	    | [Bibtex.String(v)] -> 
-		let v' = Latex_accents.normalize v in
-		(*
-		  Printf.eprintf "normalize(%s) -> %s\n" v v';
-		*)
-		v'
+	    | [Bibtex.String(v)] -> Latex_accents.normalize v
 	    | [Bibtex.Id(v)] -> v
 	    | _ -> raise Unavailable
 	with

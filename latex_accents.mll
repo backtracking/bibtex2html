@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latex_accents.mll,v 1.4 2000-07-25 15:25:01 marche Exp $ *)
+(* $Id: latex_accents.mll,v 1.5 2000-10-16 11:46:52 marche Exp $ *)
 
 {
 
@@ -83,7 +83,7 @@ and left_accent = parse
   ('a'|"{a}")   { add_string "à" ; next_char lexbuf }
 | ('o'|"{o}")   { add_string "ò" ; next_char lexbuf }
 | ('u'|"{u}")   { add_string "ù" ; next_char lexbuf }
-| ('e'|"{e}")   { add_string "é" ; next_char lexbuf }
+| ('e'|"{e}")   { add_string "è" ; next_char lexbuf }
 | ('A'|"{A}")   { add_string "À" ; next_char lexbuf }
 | ('O'|"{O}")   { add_string "Ò" ; next_char lexbuf }
 | ('U'|"{U}")   { add_string "Ù" ; next_char lexbuf }
