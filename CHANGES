@@ -9,6 +9,7 @@ Version 1.74, 22/10/2004
     occurred is shown
  o new option -no-links to disable weblinks
  o fix bug in bib2bib: preamble now enclosed with a single pair of braces
+ o bibtex entries now in f_bib.html (instead of f-bib.html)
 
 Version 1.72, 3/9/2004
 ======================

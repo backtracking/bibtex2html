@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.69 2004-10-22 15:12:41 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.70 2005-01-19 13:52:02 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -452,7 +452,7 @@ let summary biblio bl =
   if not !Options.quiet then begin eprintf "ok\n"; flush stderr end
 
 
-(* HTML file with BibTeX entries f-bib.html *)
+(* HTML file with BibTeX entries f_bib.html *)
 
 let print_list print sep l = 
   let rec print_rec = function
