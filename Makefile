@@ -19,7 +19,9 @@ DEBUG    =
 FLAGS    = $(ZLIBS) $(DEBUG)
 PROFILE  =
 
-STRLIB = -cclib -lstr 
+STRLIB = -cclib -lstr
+# ln -sf /usr/lib/libncurses.a libcurses.a
+# -cclib "-lstr -L. -static"
 
 OBJS =  latexmacros.cmx latexscan.cmx bbl_lexer.cmx \
 	bibtex.cmx bibtex_lexer.cmx bibtex_parser.cmx \
