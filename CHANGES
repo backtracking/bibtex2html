@@ -1,4 +1,5 @@
 
+ o footer and bibtex entries now enclosed in HTML paragraphs (<p>...</p>)
  o in case of syntax error, the key of the entry where the error
     occurred is shown
  o new option -no-links to disable weblinks

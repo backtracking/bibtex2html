@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: biboutput.ml,v 1.16 2004-09-08 06:51:06 filliatr Exp $ i*)
+(*i $Id: biboutput.ml,v 1.17 2004-10-06 06:20:00 filliatr Exp $ i*)
 
 (*s Output a BibTeX bibliography. *)
 
@@ -121,6 +121,7 @@ i*)
   | Entry (entry_type,key,fields) ->
       if needs_output key keys then 
 	begin
+	  if html then Html.open_balise ch "p";
 	  if html then begin Html.open_anchor ch key; Html.close_anchor ch end;
 	  if html then output_string ch "<pre>\n";
 	  output_string ch ("@" ^ entry_type ^ "{" ^ key);
@@ -136,6 +137,7 @@ i*)
 	    fields;
 	  output_string ch "\n}\n";
 	  if html then output_string ch "</pre>\n";
+	  if html then Html.close_balise ch "p";
 	  output_string ch "\n"
 
 	end
