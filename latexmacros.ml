@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.30 2000-03-06 19:00:45 filliatr Exp $ *)
+(* $Id: latexmacros.ml,v 1.31 2000-04-07 17:23:40 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -85,6 +85,8 @@ def "\\mathbf" [Print "<b>" ; Print_arg ; Print "</b>"];
 def "\\emph" [Print "<em>" ; Print_arg ; Print "</em>"];
 def "\\mbox" [Print_arg];
 def "\\footnotesize" [];
+def "\\etalchar" [ Print "<sup>" ; Raw_arg print_s ; Print "</sup>" ];
+def "\\newblock" [Print " "];
 (* fonts without HTML equivalent *)
 def "\\textsf" [Print "<b>" ; Print_arg ; Print "</b>"];
 def "\\textsc" [Print_arg];

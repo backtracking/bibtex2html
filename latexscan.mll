@@ -15,27 +15,43 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexscan.mll,v 1.10 1999-06-30 12:14:04 marche Exp $ *)
+(* $Id: latexscan.mll,v 1.11 2000-04-07 17:23:40 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997 Xavier Leroy. *)
 
   open Latexmacros
 
-  let brace_nesting = ref 0;;
-  let math_mode = ref false;;
+  let brace_nesting = ref 0
+  let math_mode = ref false
+  let hevea_url = ref false
+
   let save_nesting f arg =
     let n = !brace_nesting in 
     brace_nesting := 0;
     f arg;
-    brace_nesting := n;;
+    brace_nesting := n
+
   let save_state f arg =
     let n = !brace_nesting and m = !math_mode in
     brace_nesting := 0;
     math_mode := false;
     f arg;
     brace_nesting := n;
-    math_mode := m;;
-  let verb_delim = ref (Char.chr 0);;
+    math_mode := m
+
+  let verb_delim = ref (Char.chr 0)
+
+  let r = Str.regexp "[ \t\n]+"
+  let remove_whitespace u = Str.global_replace r "" u
+
+  let print_latex_url u =
+    let u = remove_whitespace u in
+    print_s (Printf.sprintf "<A HREF=\"%s\">%s</A>" u u)
+  
+  let print_hevea_url u t = 
+    let u = remove_whitespace u in
+    print_s (Printf.sprintf "<A HREF=\"%s\">%s</A>" u t)
+
 }
 
 rule main = parse
@@ -114,6 +130,13 @@ rule main = parse
 		  end else
 		    print_s "_"; 
 		  main lexbuf }
+(* URLs *)
+  | "\\url" { let url = raw_arg lexbuf in
+	      if !hevea_url then
+		let text = raw_arg lexbuf in print_hevea_url url text
+	      else
+		print_latex_url url;
+	      main lexbuf }
 (* General case for environments and commands *)
   | ("\\begin{" | "\\end{") ['A'-'Z' 'a'-'z']+ "}" |
     "\\" (['A'-'Z' 'a'-'z']+ '*'? | [^ 'A'-'Z' 'a'-'z'])

@@ -1,4 +1,5 @@
 
+ o option --hevea-url to translate macro \url as HeVeA's instead of LaTeX's
  o bib2bib now takes care of repeated entries (See the manual)
  o \textsf now translated as \textbf (i.e. to bold face)
  o production of valid HTML (Thanks to John Kewley)

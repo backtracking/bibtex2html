@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.32 1999-12-09 14:17:44 filliatr Exp $ *)
+(* $Id: main.ml,v 1.33 2000-04-07 17:23:41 filliatr Exp $ *)
 
 open Translate
 
@@ -260,6 +260,7 @@ let usage () =
   prerr_endline "  -nodoc     only produces the body of the HTML documents";
   prerr_endline "  -nokeys    do not print the BibTeX keys";
   prerr_endline "  -rawurl    print URL instead of file type";
+  prerr_endline "  -heveaurl  use HeVeA's \\url macro";
   prerr_endline "  -noabstract";
   prerr_endline "             do not print the abstracts (if any)";
   prerr_endline "  -nofooter  do not print the footer (bibtex2html web link)";
@@ -301,6 +302,8 @@ let parse () =
 	nokeys := true ; parse_rec rem
     | ("-rawurl" | "--raw-url") :: rem -> 
 	raw_url := true ; parse_rec rem
+    | ("-heveaurl" | "--hevea-url") :: rem -> 
+	Latexscan.hevea_url := true ; parse_rec rem
     | ("-nofooter" | "--no-footer") :: rem ->
 	print_footer := false; parse_rec rem
     | ("-f" | "--field") :: s :: rem ->

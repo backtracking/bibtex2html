@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.36 2000-02-11 19:21:11 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.37 2000-04-07 17:23:41 filliatr Exp $ *)
 
 (* options *)
 
@@ -80,17 +80,6 @@ let cite k =
       Not_found -> print_s "[?]"
 
 let _ = def "\\cite" [ Raw_arg cite ]
-let _ = def "\\etalchar" [ Print "<sup>" ; Raw_arg print_s ; Print "</sup>" ]
-let _ = def "\\newblock" [Print " "]
-
-let r = Str.regexp "[ \t\n]+"
-let remove_whitespace u = Str.global_replace r "" u
-
-let latex_url u =
-  let u = remove_whitespace u in
-  print_s (Printf.sprintf "<A HREF=\"%s\">%s</A>" u u)
-  
-let _ = def "\\url" [Raw_arg latex_url]
 
 let latex2html ch s =
   Latexmacros.out_channel := ch;
