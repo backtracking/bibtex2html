@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: main.ml,v 1.51 2003-04-09 07:34:40 filliatr Exp $ i*)
+(*i $Id: main.ml,v 1.52 2003-09-30 07:57:30 filliatr Exp $ i*)
 
 (*s Main module of bibtex2html. *)
 
@@ -309,6 +309,7 @@ let usage () =
   prerr_endline "  -i         ignore BibTeX errors";
   prerr_endline "  -both      produce versions with and without abstracts";
   prerr_endline "  -multiple  produce one file per entry";
+  prerr_endline "  -single    produce a single page (with BibTeX input and output)";
   prerr_endline "  -nodoc     only produces the body of the HTML documents";
   prerr_endline "  -nokeys    do not print the BibTeX keys";
   (*i prerr_endline "  -titleurl  URLs wrapped around titles"; i*)
@@ -401,6 +402,9 @@ i*)
 	use_label_name := true; parse_rec rem
     | ("-multiple" | "--multiple") :: rem ->
 	multiple := true; parse_rec rem
+    | ("-single" | "--single") :: rem ->
+	multiple := false; both := false; 
+	bib_entries := false; single := true; parse_rec rem
     | ("-both" | "--both") :: rem ->
 	both := true; parse_rec rem
     | ("-dl" | "--dl") :: rem ->

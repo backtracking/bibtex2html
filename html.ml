@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: html.ml,v 1.18 2003-07-15 15:11:07 filliatr Exp $ i*)
+(*i $Id: html.ml,v 1.19 2003-09-30 07:57:30 filliatr Exp $ i*)
 
 (*s Production of HTML syntax. *)
 
@@ -59,8 +59,7 @@ let open_anchor ch s =
   open_balise ch ("a name=\"" ^ s ^ "\"")
     
 let close_anchor ch = 
-  close_balise ch "a";
-  output_string ch "\n"
+  close_balise ch "a"
 
 
 let absolute_url_regexp = Str.regexp "\\(.+://\\)\\|#\\|mailto:"

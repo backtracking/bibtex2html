@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: biboutput.ml,v 1.11 2002-10-11 16:07:53 filliatr Exp $ i*)
+(*i $Id: biboutput.ml,v 1.12 2003-09-30 07:57:30 filliatr Exp $ i*)
 
 (*s Output a BibTeX bibliography. *)
 
@@ -24,6 +24,9 @@ open Bibtex
 let needs_output k = function
   | None -> true
   | Some s -> KeySet.mem k s
+
+let url_re = Str.regexp "\\(ftp\\|http\\)://.*"
+let is_url s = Str.string_match url_re s 0
 
 let print_atom html ch keys = function
   | Id s -> 
@@ -35,6 +38,12 @@ let print_atom html ch keys = function
 	end
       else
 	output_string ch s
+  | String s when html & is_url s -> 
+      output_string ch "{";
+      Html.open_href ch s;
+      output_string ch s;
+      Html.close_href ch;
+      output_string ch "}"
   | String s -> 
       output_string ch ("{"^s^"}")
 

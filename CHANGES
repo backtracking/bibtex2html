@@ -1,4 +1,9 @@
 
+Version 1.62, 30/10/2003
+========================
+ o new option -single to put everything into a single page
+ o HTML links inserted in the BibTeX entries page
+
 Version 1.61, 15/7/2003
 =======================
  o quoted & in URLS (&amp;)

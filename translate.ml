@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.61 2003-07-15 08:13:26 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.62 2003-09-30 07:57:30 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -34,6 +34,7 @@ let print_keywords = ref true
 let print_header = ref true
 let print_footer = ref true
 let multiple = ref false
+let single = ref false
 let both = ref false
 let user_footer = ref ""
 let bib_entries = ref true
@@ -354,7 +355,7 @@ let close_row ch =
     Html.close_balise ch "dd"; output_string ch "\n"
   end
 
-let one_entry_summary ch (_,b,((_,k,f) as e)) =
+let one_entry_summary ch biblio (_,b,((_,k,f) as e)) =
   if !Options.debug then begin
     eprintf "[%s]" k; flush stderr
   end;
@@ -377,7 +378,13 @@ let one_entry_summary ch (_,b,((_,k,f) as e)) =
 
   if !multiple then
     separate_file (b,e)
-  else begin
+  else if !single then begin
+    let ks = Bibtex.KeySet.singleton k in
+    let ks = Bibfilter.saturate biblio ks in
+    Html.open_balise ch "pre";
+    Biboutput.output_bib true ch biblio (Some ks);
+    Html.close_balise ch "pre"
+  end else begin
     let links = make_links e in
     let links = if !bib_entries then bibtex_entry k :: links else links in
     match make_abstract e with
@@ -392,7 +399,7 @@ let one_entry_summary ch (_,b,((_,k,f) as e)) =
 
 (* summary file f.html *)
 
-let summary bl =
+let summary biblio bl =
   let (ch,filename) = 
     if !output_file = "" then 
       (stdout, "standard output")
@@ -421,7 +428,7 @@ let summary bl =
 	     output_string ch "\n"
        end;
        open_table ch;
-       List.iter (one_entry_summary ch) el;
+       List.iter (one_entry_summary ch biblio) el;
        close_table ch)
     bl;
   in_summary := false;
@@ -470,23 +477,23 @@ let bib_file bl keys =
 
 (* main function *)
 
-let format_list entries sorted_bl keys =
+let format_list biblio sorted_bl keys =
   first_pass sorted_bl;
   bibentries_file := !output_file ^ "-bib";
   if !both then begin
     (* short version *)
     print_abstract := false;
     print_keywords := false;
-    summary sorted_bl;
+    summary biblio sorted_bl;
     (* long version with abstracts and keywords *)
     print_abstract := true;
     print_keywords := true;
     let old_output = !output_file in
     output_file := !output_file ^ "-abstracts";
-    summary sorted_bl;
+    summary biblio sorted_bl;
     output_file := old_output
   end else
-    summary sorted_bl;
+    summary biblio sorted_bl;
   (* BibTeX entries file *)
-  if !bib_entries then bib_file entries keys
+  if !bib_entries then bib_file biblio keys
 
