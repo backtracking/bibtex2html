@@ -1,4 +1,5 @@
 
+ o new option -no-links to disable weblinks
  o fix bug in bib2bib: preamble now enclosed with a single pair of braces
 
 Version 1.72, 3/9/2004
