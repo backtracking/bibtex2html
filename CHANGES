@@ -1,4 +1,9 @@
 
+Version 1.75, 2/2/2005
+======================
+ o updated manual (the manual was not reflecting the change of f-bib
+   into f_bib in version 1.74; see below)
+
 Version 1.74, 22/10/2004
 ========================
  o bib2bib: special characters \n \r \t and \ddd in regular expressions
