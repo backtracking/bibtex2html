@@ -544,8 +544,13 @@ Table~\ref{table:regexp} for the meaning of the special characters.
 the set \\\hline 
 \verb|^| & matches the beginning of the string matched \\\hline
 \verb|$| & matches the end of the string matched \\\hline
+\verb|\r| & matches a carriage return \\\hline
+\verb|\n| & matches a linefeed \\\hline
+\verb|\t| & matches a tabulation \\\hline
 \verb|\b| & matches word boundaries \\\hline
-\verb|\| & quotes special characters \\\hline
+\verb|\|\textsl{ddd} & matches character with ASCII code \textsl{ddd} in decimal \\\hline
+\verb|\|\textsl{char} & quotes special character \textsl{char} among
+\verb#$^.*+?[]\# \\\hline 
 \textsl{regexp}\verb|*| & matches \textsl{regexp} zero, one or several
 times \\\hline 
 \textsl{regexp}\verb|+| & matches \textsl{regexp} one or several times

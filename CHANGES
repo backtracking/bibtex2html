@@ -1,4 +1,5 @@
 
+ o bib2bib: special characters \n \r \t and \ddd in regular expressions
  o fix minor bug: when looking for cross-references, comparison of
    keys is now case-insensitive
  o footer and bibtex entries now enclosed in HTML paragraphs (<p>...</p>)
