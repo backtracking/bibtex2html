@@ -467,6 +467,7 @@ references. Notice finally that bibtex2html will expand the strings
 the cross-references.
 
 \subsection{Filter conditions}
+\label{sec:conditions}
 
 A filter condition is a boolean expression that is evaluated against a
 BibTeX entry to decide whether this entry should be selected. A
@@ -503,6 +504,16 @@ Comparison operators are the usual ones: \texttt{=}, \texttt{<},
 
 The field names are any sequences of lowercase or uppercase letters (but no
 distinction is made between lowercase and uppercase letters).
+
+Be careful when writing conditions in a shell command: the shell must
+not interpret anything in a condition, such as \verb|$key|. So usually
+you need to put conditions inside quote characters that forbid shell
+interpretation: single quotes under Unix shell, or double quotes under
+Microsoft Windows shell. This is why strings in conditions may be put
+indifferently between single or double quotes: you will use the ones
+which are not the ones you use to forbid shell interpretation. In
+examples below, we will use Unix convention, so under Windows you have
+to permute the use of single and double quotes.
 
 Regular expressions must be put between single or double quotes, and must
 follow the GNU syntax of regular expressions, as for example in GNU Emacs. Any
@@ -715,7 +726,21 @@ The BibTeX file is written on the standard output.
   not in that list, then its fields will be expanded into all entries
   that cross-refers to it. (Technically, this work because bibtex2html
   calls bibtex with option \verb|-min-crossrefs=1000| by default.)
-  
+
+\item \textbf{When running}
+\begin{verbatim}
+bib2bib -oc knuth-citations -ob knuth.bib -c 'author : "Knuth"' biblio.bib
+\end{verbatim}
+\textbf{I get "Lexical error in condition: Unterminated
+  string". What's going wrong?}
+
+  You are probably running \verb|bib2bib| under Microsoft Windows, hence
+  you should permute the use of single quotes and double quotes, as
+  explained in Section~\ref{sec:conditions}:
+\begin{verbatim}
+bib2bib -oc knuth-citations -ob knuth.bib -c "author : 'Knuth'" biblio.bib
+\end{verbatim}
+
 \end{enumerate}
 
 %HEVEA\begin{rawhtml}<hr><img src="http://www.lri.fr/~filliatr/icons/mail.gif" ALIGN=middle><em><a href="mailto:Jean-Christophe.Filliatre@lri.fr, Claude.Marche@lri.fr">mail to authors</a> , Fri Feb 12 17:46:23 1999\end{rawhtml}
