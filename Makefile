@@ -2,7 +2,7 @@
 # Configuration part : where to install
 #########################################
 
-BINDIR = /home/coq/bin/`arch`
+BINDIR = /users/demons/filliatr/bin/$(OSTYPE)
 
 #########################################
 # End of configuration part
@@ -40,7 +40,7 @@ bbl_lexer.ml: bbl_lexer.mll
 # export
 ########
 
-FTP = /home/jcfillia/ftp/ocaml/bibtex2html
+FTP = /users/demons/filliatr/ftp/ocaml/bibtex2html
 FILES = bibtex.mli latexmacros.ml Makefile bibtex_lexer.mll latexmacros.mli \
 	translate.ml bbl_lexer.mll bibtex_parser.mly latexscan.mll \
 	bibtex.ml html.ml main.ml .depend README COPYING GPL
