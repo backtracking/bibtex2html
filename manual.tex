@@ -55,7 +55,8 @@ have a \textit{.bib} suffix. If this file is not given, then entries
 are input from standard input.
 
 
-Then two HTML documents are created: 
+Then two HTML documents are created (unless option
+\verb|-nobibsource| is selected or input is standard input, see below) : 
 \begin{itemize}
 \item \textit{file.html} which is the bibliography in HTML format
 %HEVEA, like \url{examples/biblio-these.html}{this}
@@ -69,6 +70,10 @@ a LaTeX document, and then this LaTeX document is translated into an
 HTML document.  The BibTeX file \textit{file.bib} is also parsed in
 order to collect additional fields (abstract, url, ps, http, etc.)
 that will be used in the translation.
+
+If input is standard input and option \verb|--output| is not given,
+the first file is output to standard output, and the second is not
+created.
 
 \begin{rawhtml}
 <a name=fields>
@@ -259,7 +264,11 @@ or in conjonction with \verb|bib2bib|.
   do not produce a full HTML document but only its body (useful to
   merge the HTML bibliography in a bigger HTML document).
 
-  
+\item[\texttt{-nobibsource}, \texttt{\mm{}nobibsource}] ~
+
+  do not produce the \verb|-bib.html| file. In that case, no ``BibTeX
+  entry'' link are inserted in the HTML file.
+
 \item[\texttt{-suffix} \textit{string}, \texttt{\mm{}suffix} \textit{string}] ~
 
   give an alternate suffix \textit{string} for the

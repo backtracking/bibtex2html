@@ -11,9 +11,9 @@ let read_entries_from_file f =
     let el =
       Bibtex_parser.command_list Bibtex_lexer.token (Lexing.from_channel chan)
     in
-      if f<>"" then close_in chan;
-      Printf.eprintf "ok (%d entries).\n" (List.length el); flush stderr;
-      el
+    if f<>"" then close_in chan;
+    Printf.eprintf "ok (%d entries).\n" (List.length el); flush stderr;
+    el
 
   with
       Parsing.Parse_error | Failure "unterminated string" ->
