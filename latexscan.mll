@@ -15,7 +15,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexscan.mll,v 1.9 1999-06-28 13:49:21 marche Exp $ *)
+(* $Id: latexscan.mll,v 1.10 1999-06-30 12:14:04 marche Exp $ *)
 
 (* This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -194,7 +194,7 @@ and skip_arg = parse
 
 and raw_arg = parse
     " "         { raw_arg lexbuf }
-  | '{'         { incr brace_nesting; nested_arg lexbuf }
+  | '{'         { nested_arg lexbuf }
   | "["         { skip_optional_arg lexbuf; raw_arg lexbuf }
   | '\\' ['A'-'Z' 'a'-'z']+
                 { Lexing.lexeme lexbuf }
@@ -202,10 +202,9 @@ and raw_arg = parse
   | _           { Lexing.lexeme lexbuf }
 
 and nested_arg = parse
-    '}'         { decr brace_nesting;
-                  if !brace_nesting > 0 then "}" ^ (nested_arg lexbuf) 
-		  else "" }
-  | '{'         { incr brace_nesting; "{" ^ (nested_arg lexbuf)   }
+    '}'         { "" }
+  | '{'         { let l = nested_arg lexbuf in
+		  "{" ^ l ^ "}" ^ (nested_arg lexbuf) }
   | eof         { "" }
   | [^ '{' '}']+{ let x = Lexing.lexeme lexbuf in
 		  x ^ (nested_arg lexbuf)   }
