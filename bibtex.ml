@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibtex.ml,v 1.10 2000-04-03 16:45:35 filliatr Exp $ *)
+(* $Id: bibtex.ml,v 1.11 2000-04-19 13:09:14 marche Exp $ *)
 
 type entry_type = string
 		    
@@ -101,7 +101,7 @@ let merge_biblios b1 b2 =
 	     if KeySet.mem key b2keys then accu else entry :: accu
 	 | _ -> entry :: accu)
       b1
-      []
+      empty_biblio
   in
   let new_bib =
     fold
