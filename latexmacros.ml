@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.22 1999-06-28 13:26:56 marche Exp $ *)
+(* $Id: latexmacros.ml,v 1.23 1999-06-30 12:45:56 marche Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -74,6 +74,7 @@ def "\\textit" [Print "<i>" ; Print_arg ; Print "</i>"];
 def "\\textsl" [Print "<i>" ; Print_arg ; Print "</i>"];
 def "\\textem" [Print "<em>" ; Print_arg ; Print "</em>"];
 def "\\textrm" [Print_arg];
+def "\\mathcal" [Print_arg];
 def "\\textbf" [Print "<b>" ; Print_arg ; Print "</b>"];
 def "\\emph" [Print "<em>" ; Print_arg ; Print "</em>"];
 def "\\mbox" [Print_arg];
@@ -125,7 +126,8 @@ def "\\'" [Raw_arg(function "e" -> print_c 'é'
 			  | "u" -> print_c 'ú'
 			  | "U" -> print_c 'Ú'
 			  | ""  -> print_c '\''
-                          | s   -> print_s s)];
+                          | s   -> Printf.printf "coucou ! s = %s\n" s;
+			      print_s s)];
 def "\\`" [Raw_arg(function "e" -> print_c 'è'
                           | "E" -> print_c 'È'
                           | "a" -> print_c 'à'

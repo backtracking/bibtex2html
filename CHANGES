@@ -1,4 +1,5 @@
 
+ o macro \mathcal 
  o bib2bib is able to parse conditions of the form field:regexp (but
    only one condition at a time)
  o the bib output :
