@@ -18,9 +18,9 @@ DOCDIR = /usr/doc/bibtex2html
 MAJORVN=1
 MINORVN=42
 
-CAMLC    = ocamlc
-CAMLCOPT = ocamlopt 
-CAMLDEP  = ocamldep
+CAMLC    = @OCAMLC@
+CAMLCOPT = @OCAMLOPT@ 
+CAMLDEP  = @OCAMLDEP@
 ZLIBS    =
 DEBUG    =
 FLAGS    = $(ZLIBS) $(DEBUG)
@@ -41,9 +41,7 @@ BIB2BIBOBJS = options.cmx bibtex.cmx bibtex_lexer.cmx \
 	bibfilter.cmx \
 	html.cmx biboutput.cmx version.cmx copying.cmx bib2bib.cmx
 
-all: 
-	if `ocamlopt >/dev/null 2>&1` ; then make -C . opt ; \
-		else make -C . byte ; fi
+all: @BEST@
 
 opt: bibtex2html bib2bib
 
@@ -51,7 +49,7 @@ byte: bibtex2html.byte bib2bib.byte
 
 install:
 	mkdir -p $(BINDIR)
-	if `ocamlopt >/dev/null 2>&1` ; then \
+	if test @BEST@ = opt ; then \
 		cp bibtex2html bib2bib $(BINDIR) ; \
 	else \
 		cp bibtex2html.byte $(BINDIR)/bibtex2html ; \
