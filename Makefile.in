@@ -20,9 +20,10 @@ DOCDIR = $(prefix)/doc/bibtex2html
 MAJORVN=1
 MINORVN=54
 
-CAMLC    = @OCAMLC@
-CAMLCOPT = @OCAMLOPT@ 
+OCAMLC   = @OCAMLC@
+OCAMLOPT = @OCAMLOPT@ 
 CAMLDEP  = @OCAMLDEP@
+OCAMLLEX = @OCAMLLEX@
 ZLIBS    =
 DEBUG    =
 FLAGS    = $(ZLIBS) $(DEBUG)
@@ -74,33 +75,33 @@ local: bibtex2html bib2bib
 	cp *.1 $$HOME/man/man1
 
 bibtex2html: $(OBJS)
-	ocamlopt $(PROFILE) $(FLAGS) -o bibtex2html str.cmxa $(OBJS) $(STRLIB)
+	$(OCAMLOPT) $(PROFILE) $(FLAGS) -o bibtex2html str.cmxa $(OBJS) $(STRLIB)
 	strip bibtex2html
 
 bibtex2html.byte: $(OBJS:.cmx=.cmo)
-	ocamlc $(PROFILE) $(FLAGS)-o bibtex2html.byte str.cma $(OBJS:.cmx=.cmo) $(STRLIB) 
+	$(OCAMLC) $(PROFILE) $(FLAGS)-o bibtex2html.byte str.cma $(OBJS:.cmx=.cmo) $(STRLIB) 
 
 bibtex2html.pbyte: $(OBJS:.cmx=.cmo)
-	ocamlc -use-runtime ~demons/bin/$(OSTYPE)/ocamlcustomrun \
+	$(OCAMLC) -use-runtime ~demons/bin/$(OSTYPE)/ocamlcustomrun \
 		-o bibtex2html.pbyte str.cma $(OBJS:.cmx=.cmo)  
 
 bibtex2html.static: $(OBJS)
-	ocamlopt $(PROFILE) $(FLAGS) -o $@ str.cmxa $(OBJS) $(STRLIB) -cclib "-L. -static"
+	$(OCAMLOPT) $(PROFILE) $(FLAGS) -o $@ str.cmxa $(OBJS) $(STRLIB) -cclib "-L. -static"
 	strip $@
 
 bib2bib: $(BIB2BIBOBJS)
-	ocamlopt $(PROFILE) $(FLAGS) -o bib2bib str.cmxa $(BIB2BIBOBJS) $(STRLIB)
+	$(OCAMLOPT) $(PROFILE) $(FLAGS) -o bib2bib str.cmxa $(BIB2BIBOBJS) $(STRLIB)
 	strip bib2bib
 
 bib2bib.byte: $(BIB2BIBOBJS:.cmx=.cmo)
-	ocamlc  $(PROFILE) $(FLAGS) -o bib2bib.byte str.cma $(BIB2BIBOBJS:.cmx=.cmo) $(STRLIB)
+	$(OCAMLC)  $(PROFILE) $(FLAGS) -o bib2bib.byte str.cma $(BIB2BIBOBJS:.cmx=.cmo) $(STRLIB)
 
 bib2bib.pbyte: $(BIB2BIBOBJS:.cmx=.cmo)
-	ocamlc -use-runtime ~demons/bin/$(OSTYPE)/ocamlcustomrun \
+	$(OCAMLC) -use-runtime ~demons/bin/$(OSTYPE)/ocamlcustomrun \
 		-o bib2bib.pbyte str.cma $(BIB2BIBOBJS:.cmx=.cmo) 
 
 bib2bib.static: $(BIB2BIBOBJS)
-	ocamlopt $(PROFILE) $(FLAGS) -o $@ str.cmxa $(BIB2BIBOBJS) $(STRLIB) -cclib "-L. -static"
+	$(OCAMLOPT) $(PROFILE) $(FLAGS) -o $@ str.cmxa $(BIB2BIBOBJS) $(STRLIB) -cclib "-L. -static"
 	strip $@
 
 static: bibtex2html.static bib2bib.static
@@ -118,10 +119,10 @@ version.ml: Makefile
 	echo "let date = \""`date`"\"" >> version.ml
 
 latexscan.ml: latexscan.mll
-	ocamllex latexscan.mll
+	$(OCAMLLEX) latexscan.mll
 
 bibtex_lexer.ml: bibtex_lexer.mll
-	ocamllex bibtex_lexer.mll
+	$(OCAMLLEX) bibtex_lexer.mll
 
 # literate programming
 ######################
@@ -225,19 +226,19 @@ manual.html: manual.tex
 .SUFFIXES: .mli .ml .mll .cmi .cmo .cmx
 
 .mli.cmi:
-	$(CAMLC) -c $(FLAGS) $<
+	$(OCAMLC) -c $(FLAGS) $<
 
 .ml.cmo:
-	$(CAMLC) -c $(FLAGS) $<
+	$(OCAMLC) -c $(FLAGS) $<
 
 .ml.o:
-	$(CAMLCOPT) -c $(FLAGS) $<
+	$(OCAMLOPT) -c $(FLAGS) $<
 
 .ml.cmx:
-	$(CAMLCOPT) -c $(PROFILE) $(FLAGS) $<
+	$(OCAMLOPT) -c $(PROFILE) $(FLAGS) $<
 
 .mll.ml:
-	ocamllex $<
+	$(OCAMLLEX) $<
 
 # Emacs tags
 ############

@@ -12,7 +12,7 @@ if test "$OCAMLC" = no ; then
 fi
 
 # we extract Ocaml version number and library path
-OCAMLVERSION=`$OCAMLC -v | sed -n -e 's|.*version* *\(.*\)$|\1|p' `
+OCAMLVERSION=`$OCAMLC -v | sed -n -e 's|.*version *\(.*\)$|\1|p' `
 echo "ocaml version is $OCAMLVERSION"
 OCAMLLIB=`$OCAMLC -v | tail -1 | cut -f 4 -d " "`
 echo "ocaml library path is $OCAMLLIB"
@@ -26,8 +26,8 @@ if test "$OCAMLOPT" = no ; then
 	AC_MSG_WARN(Cannot find ocamlopt; bytecode compilation only.)
 else
 	AC_MSG_CHECKING(ocamlopt version)
-	TMPVERSION=`$OCAMLOPT -v | sed -n -e 's|.*version* *\(.*\)$|\1|p' `
-	if test "$TMPVERSION" != $OCAMLVERSION ; then
+	TMPVERSION=`$OCAMLOPT -v | sed -n -e 's|.*version *\(.*\)$|\1|p' `
+	if test "$TMPVERSION" != "$OCAMLVERSION" ; then
 	    AC_MSG_RESULT(differs from ocamlc; ocamlopt discarded.)
 	    OCAMLOPT=no
 	else
@@ -40,8 +40,8 @@ fi
 AC_CHECK_PROG(OCAMLCDOTOPT,ocamlc.opt,ocamlc.opt,no)
 if test "$OCAMLCDOTOPT" != no ; then
 	AC_MSG_CHECKING(ocamlc.opt version)
-	TMPVERSION=`$OCAMLCDOTOPT -v | sed -n -e 's|.*version* *\(.*\)$|\1|p' `
-	if test "$TMPVERSION" != $OCAMLVERSION ; then
+	TMPVERSION=`$OCAMLCDOTOPT -v | sed -n -e 's|.*version *\(.*\)$|\1|p' `
+	if test "$TMPVERSION" != "$OCAMLVERSION" ; then
 	    AC_MSG_RESULT(differs from ocamlc; ocamlc.opt discarded.)
 	else
 	    AC_MSG_RESULT(ok)
@@ -54,13 +54,23 @@ if test "$OCAMLOPT" != no ; then
     AC_CHECK_PROG(OCAMLOPTDOTOPT,ocamlopt.opt,ocamlopt.opt,no)
     if test "$OCAMLOPTDOTOPT" != no ; then
 	AC_MSG_CHECKING(ocamlc.opt version)
-	TMPVER=`$OCAMLOPTDOTOPT -v | sed -n -e 's|.*version* *\(.*\)$|\1|p' `
-	if test "$TMPVER" != $OCAMLVERSION ; then
+	TMPVER=`$OCAMLOPTDOTOPT -v | sed -n -e 's|.*version *\(.*\)$|\1|p' `
+	if test "$TMPVER" != "$OCAMLVERSION" ; then
 	    AC_MSG_RESULT(differs from ocamlc; ocamlopt.opt discarded.)
 	else
 	    AC_MSG_RESULT(ok)
 	    OCAMLOPT=$OCAMLOPTDOTOPT
 	fi
+    fi
+fi
+
+AC_CHECK_PROG(OCAMLLEX,ocamllex,ocamllex,no)
+if test "$OCAMLLEX" = no ; then
+    AC_MSG_ERROR(Cannot find ocamllex.)
+else
+    AC_CHECK_PROG(OCAMLLEXDOTOPT,ocamllex.opt,ocamllex.opt,no)
+    if test "$OCAMLLEXDOTOPT" != no ; then
+	OCAMLLEX=$OCAMLLEXDOTOPT
     fi
 fi
 
@@ -77,6 +87,7 @@ AC_PATH_PROG(PERL,perl,/usr/bin/perl)
 AC_SUBST(OCAMLC)
 AC_SUBST(OCAMLOPT)
 AC_SUBST(OCAMLDEP)
+AC_SUBST(OCAMLLEX)
 AC_SUBST(OCAMLBEST)
 AC_SUBST(OCAMLVERSION)
 AC_SUBST(OCAMLLIB)

@@ -560,7 +560,7 @@ if test "$OCAMLC" = no ; then
 fi
 
 # we extract Ocaml version number and library path
-OCAMLVERSION=`$OCAMLC -v | sed -n -e 's|.*version* *\(.*\)$|\1|p' `
+OCAMLVERSION=`$OCAMLC -v | sed -n -e 's|.*version *\(.*\)$|\1|p' `
 echo "ocaml version is $OCAMLVERSION"
 OCAMLLIB=`$OCAMLC -v | tail -1 | cut -f 4 -d " "`
 echo "ocaml library path is $OCAMLLIB"
@@ -604,8 +604,8 @@ if test "$OCAMLOPT" = no ; then
 else
 	echo $ac_n "checking ocamlopt version""... $ac_c" 1>&6
 echo "configure:607: checking ocamlopt version" >&5
-	TMPVERSION=`$OCAMLOPT -v | sed -n -e 's|.*version* *\(.*\)$|\1|p' `
-	if test "$TMPVERSION" != $OCAMLVERSION ; then
+	TMPVERSION=`$OCAMLOPT -v | sed -n -e 's|.*version *\(.*\)$|\1|p' `
+	if test "$TMPVERSION" != "$OCAMLVERSION" ; then
 	    echo "$ac_t""differs from ocamlc; ocamlopt discarded." 1>&6
 	    OCAMLOPT=no
 	else
@@ -648,8 +648,8 @@ fi
 if test "$OCAMLCDOTOPT" != no ; then
 	echo $ac_n "checking ocamlc.opt version""... $ac_c" 1>&6
 echo "configure:651: checking ocamlc.opt version" >&5
-	TMPVERSION=`$OCAMLCDOTOPT -v | sed -n -e 's|.*version* *\(.*\)$|\1|p' `
-	if test "$TMPVERSION" != $OCAMLVERSION ; then
+	TMPVERSION=`$OCAMLCDOTOPT -v | sed -n -e 's|.*version *\(.*\)$|\1|p' `
+	if test "$TMPVERSION" != "$OCAMLVERSION" ; then
 	    echo "$ac_t""differs from ocamlc; ocamlc.opt discarded." 1>&6
 	else
 	    echo "$ac_t""ok" 1>&6
@@ -692,8 +692,8 @@ fi
     if test "$OCAMLOPTDOTOPT" != no ; then
 	echo $ac_n "checking ocamlc.opt version""... $ac_c" 1>&6
 echo "configure:695: checking ocamlc.opt version" >&5
-	TMPVER=`$OCAMLOPTDOTOPT -v | sed -n -e 's|.*version* *\(.*\)$|\1|p' `
-	if test "$TMPVER" != $OCAMLVERSION ; then
+	TMPVER=`$OCAMLOPTDOTOPT -v | sed -n -e 's|.*version *\(.*\)$|\1|p' `
+	if test "$TMPVER" != "$OCAMLVERSION" ; then
 	    echo "$ac_t""differs from ocamlc; ocamlopt.opt discarded." 1>&6
 	else
 	    echo "$ac_t""ok" 1>&6
@@ -702,11 +702,79 @@ echo "configure:695: checking ocamlc.opt version" >&5
     fi
 fi
 
+# Extract the first word of "ocamllex", so it can be a program name with args.
+set dummy ocamllex; ac_word=$2
+echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
+echo "configure:709: checking for $ac_word" >&5
+if eval "test \"`echo '$''{'ac_cv_prog_OCAMLLEX'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  if test -n "$OCAMLLEX"; then
+  ac_cv_prog_OCAMLLEX="$OCAMLLEX" # Let the user override the test.
+else
+  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS=":"
+  ac_dummy="$PATH"
+  for ac_dir in $ac_dummy; do
+    test -z "$ac_dir" && ac_dir=.
+    if test -f $ac_dir/$ac_word; then
+      ac_cv_prog_OCAMLLEX="ocamllex"
+      break
+    fi
+  done
+  IFS="$ac_save_ifs"
+  test -z "$ac_cv_prog_OCAMLLEX" && ac_cv_prog_OCAMLLEX="no"
+fi
+fi
+OCAMLLEX="$ac_cv_prog_OCAMLLEX"
+if test -n "$OCAMLLEX"; then
+  echo "$ac_t""$OCAMLLEX" 1>&6
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+if test "$OCAMLLEX" = no ; then
+    { echo "configure: error: Cannot find ocamllex." 1>&2; exit 1; }
+else
+    # Extract the first word of "ocamllex.opt", so it can be a program name with args.
+set dummy ocamllex.opt; ac_word=$2
+echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
+echo "configure:742: checking for $ac_word" >&5
+if eval "test \"`echo '$''{'ac_cv_prog_OCAMLLEXDOTOPT'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  if test -n "$OCAMLLEXDOTOPT"; then
+  ac_cv_prog_OCAMLLEXDOTOPT="$OCAMLLEXDOTOPT" # Let the user override the test.
+else
+  IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS=":"
+  ac_dummy="$PATH"
+  for ac_dir in $ac_dummy; do
+    test -z "$ac_dir" && ac_dir=.
+    if test -f $ac_dir/$ac_word; then
+      ac_cv_prog_OCAMLLEXDOTOPT="ocamllex.opt"
+      break
+    fi
+  done
+  IFS="$ac_save_ifs"
+  test -z "$ac_cv_prog_OCAMLLEXDOTOPT" && ac_cv_prog_OCAMLLEXDOTOPT="no"
+fi
+fi
+OCAMLLEXDOTOPT="$ac_cv_prog_OCAMLLEXDOTOPT"
+if test -n "$OCAMLLEXDOTOPT"; then
+  echo "$ac_t""$OCAMLLEXDOTOPT" 1>&6
+else
+  echo "$ac_t""no" 1>&6
+fi
+
+    if test "$OCAMLLEXDOTOPT" != no ; then
+	OCAMLLEX=$OCAMLLEXDOTOPT
+    fi
+fi
+
 # ocamldep should also be present in the path
 # Extract the first word of "ocamldep", so it can be a program name with args.
 set dummy ocamldep; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:710: checking for $ac_word" >&5
+echo "configure:778: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_prog_OCAMLDEP'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -741,7 +809,7 @@ fi
 # Extract the first word of "perl", so it can be a program name with args.
 set dummy perl; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:745: checking for $ac_word" >&5
+echo "configure:813: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_PERL'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -776,6 +844,7 @@ fi
 
 
 # substitutions to perform
+
 
 
 
@@ -933,6 +1002,8 @@ s%@OCAMLC@%$OCAMLC%g
 s%@OCAMLOPT@%$OCAMLOPT%g
 s%@OCAMLCDOTOPT@%$OCAMLCDOTOPT%g
 s%@OCAMLOPTDOTOPT@%$OCAMLOPTDOTOPT%g
+s%@OCAMLLEX@%$OCAMLLEX%g
+s%@OCAMLLEXDOTOPT@%$OCAMLLEXDOTOPT%g
 s%@OCAMLDEP@%$OCAMLDEP%g
 s%@PERL@%$PERL%g
 s%@OCAMLBEST@%$OCAMLBEST%g
