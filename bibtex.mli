@@ -1,6 +1,6 @@
 (*
  * bibtex2html - A BibTeX to HTML translator
- * Copyright (C) 1997 Jean-Christophe FILLIATRE
+ * Copyright (C) 1997-2000 Jean-Christophe Filliâtre and Claude Marché
  * 
  * This software is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibtex.mli,v 1.10 2000-04-03 16:45:36 filliatr Exp $ *)
+(* $Id: bibtex.mli,v 1.11 2000-06-02 19:37:31 filliatr Exp $ *)
 
 type entry_type = string
 		    

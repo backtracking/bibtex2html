@@ -1,6 +1,6 @@
 (*
  * bibtex2html - A BibTeX to HTML translator
- * Copyright (C) 1997 Jean-Christophe FILLIATRE
+ * Copyright (C) 1997-2000 Jean-Christophe Filliâtre and Claude Marché
  * 
  * This software is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: expand.ml,v 1.2 2000-04-03 14:14:47 marche Exp $ *)
+(* $Id: expand.ml,v 1.3 2000-06-02 19:37:34 filliatr Exp $ *)
 
 
 open Bibtex

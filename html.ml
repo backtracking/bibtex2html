@@ -1,6 +1,6 @@
 (*
  * bibtex2html - A BibTeX to HTML translator
- * Copyright (C) 1997 Jean-Christophe FILLIATRE
+ * Copyright (C) 1997-2000 Jean-Christophe Filliâtre and Claude Marché
  * 
  * This software is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: html.ml,v 1.9 2000-02-11 19:21:10 filliatr Exp $ *)
+(* $Id: html.ml,v 1.10 2000-06-02 19:37:34 filliatr Exp $ *)
 
 let open_document ch ftitle =
   output_string ch "<html>\n\n<head>\n";

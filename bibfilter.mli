@@ -1,6 +1,6 @@
 (*
  * bibtex2html - A BibTeX to HTML translator
- * Copyright (C) 1997 Jean-Christophe FILLIATRE
+ * Copyright (C) 1997-2000 Jean-Christophe Filliâtre and Claude Marché
  * 
  * This software is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -14,21 +14,18 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibfilter.mli,v 1.3 2000-04-03 14:14:46 marche Exp $ *)
+(* $Id: bibfilter.mli,v 1.4 2000-06-02 19:37:30 filliatr Exp $ *)
 
-open Bibtex;;
+open Bibtex
 
 (* [filter bib f] returns the set of keys of [bib] whose fields
    satisfy the filter criterion [f] *)
 
 val filter : 
-  biblio -> (key -> ((string * atom list) list) -> bool) -> KeySet.t;;
+  biblio -> (key -> ((string * atom list) list) -> bool) -> KeySet.t
 
 (* [saturate bib s] returns the smallest part of the bibliography
    [bib] containing all the keys in s together with all the necessary
    abbreviation strings and cross-references *)
 
-val saturate : biblio -> KeySet.t -> KeySet.t;;
-
-
-		    
+val saturate : biblio -> KeySet.t -> KeySet.t

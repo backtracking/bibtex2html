@@ -1,6 +1,6 @@
 (*
  * bibtex2html - A BibTeX to HTML translator
- * Copyright (C) 1997 Jean-Christophe FILLIATRE
+ * Copyright (C) 1997-2000 Jean-Christophe Filliâtre and Claude Marché
  * 
  * This software is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
@@ -14,9 +14,9 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: biboutput.mli,v 1.1 1999-06-29 15:48:54 marche Exp $ *)
+(* $Id: biboutput.mli,v 1.2 2000-06-02 19:37:30 filliatr Exp $ *)
 
-open Bibtex;;
+open Bibtex
 
 (* [output_bib html ch bib keys] outputs to the channel [ch] the
    fields of the bibliography [bib] whose key belong to [keys]. [html]
@@ -29,7 +29,4 @@ open Bibtex;;
    before. Notice finally that the channel [ch] is NOT closed by this
    function *)
 
-val output_bib : bool -> out_channel -> biblio -> KeySet.t option -> unit;;
-
-
-		    
+val output_bib : bool -> out_channel -> biblio -> KeySet.t option -> unit
