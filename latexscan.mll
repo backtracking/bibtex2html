@@ -124,6 +124,7 @@ and inverb = parse
     "<"         { print_s "&lt;"; inverb lexbuf }
   | ">"         { print_s "&gt;"; inverb lexbuf }
   | "&"         { print_s "&amp;"; inverb lexbuf }
+  | eof         { () }
   | _           { let c = Lexing.lexeme_char lexbuf 0 in
                   if c == !verb_delim then ()
                                       else (print_c c; inverb lexbuf) }
@@ -132,20 +133,24 @@ and inverbatim = parse
   | ">"         { print_s "&gt;"; inverbatim lexbuf }
   | "&"         { print_s "&amp;"; inverbatim lexbuf }
   | "\\end{verbatim}" { () }
+  | eof         { () }
   | _           { print_c(Lexing.lexeme_char lexbuf 0); inverbatim lexbuf }
   
 and rawhtml = parse
     "\\end{rawhtml}" { () }
+  | eof         { () }
   | _           { print_c(Lexing.lexeme_char lexbuf 0); rawhtml lexbuf }
 
 and latexonly = parse
     "\\end{latexonly}" { () }
+  | eof         { () }
   | _           { latexonly lexbuf }
 
 and print_arg = parse
     "{"         { save_nesting main lexbuf }
   | "["         { skip_optional_arg lexbuf; print_arg lexbuf }
   | " "         { print_arg lexbuf }
+  | eof         { () }
   | _           { print_c(Lexing.lexeme_char lexbuf 0); main lexbuf }
 
 and skip_arg = parse
@@ -155,6 +160,7 @@ and skip_arg = parse
   | "["         { if !brace_nesting = 0 then skip_optional_arg lexbuf;
                   skip_arg lexbuf }
   | " "         { skip_arg lexbuf }
+  | eof         { () }
   | _           { if !brace_nesting > 0 then skip_arg lexbuf }
 
 and raw_arg = parse
@@ -165,10 +171,12 @@ and raw_arg = parse
   | "["         { skip_optional_arg lexbuf; raw_arg lexbuf }
   | '\\' ['A'-'Z' 'a'-'z']+
                 { Lexing.lexeme lexbuf }
+  | eof         { "" }
   | _           { Lexing.lexeme lexbuf }
 
 and skip_optional_arg = parse
     "]"         { () }
+  | eof         { () }
   | _           { skip_optional_arg lexbuf }
 
 

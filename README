@@ -17,11 +17,12 @@ Options are:
   -nodoc     only produces the body of the HTML documents
   -suffix s  give an alternate suffix for HTML files
   -e key     exclude an entry
+  -m file    read (La)TeX macros in file
 
-It will create a file  foo.html with the  list of the references and a
+It will create a file foo.html  with the list of  the references and a
 file foo-bib.html with  the BibTeX entries (in  ASCII format) The file
-foo.html contains links  if fields of  the kind "ftp", "http",  "url",
-etc. are presen and gives the astract if there  is a field "abstract".
+foo.html  contains links if fields of  the kind  "ftp", "http", "url",
+etc. are present and gives the astract if there is a field "abstract".
 Crossrefs are correctly handled.
 
 

@@ -43,21 +43,34 @@ bbl_lexer.ml: bbl_lexer.mll
 ########
 
 MAJORVN=0
-MINORVN=4
+MINORVN=5
 NAME=bibtex2html-$(MAJORVN).$(MINORVN)
 
 FTP = /users/demons/filliatr/ftp/ocaml/bibtex2html
+
 FILES = bibtex.mli latexmacros.ml Makefile bibtex_lexer.mll latexmacros.mli \
 	translate.ml bbl_lexer.mll bibtex_parser.mly latexscan.mll \
 	bibtex.ml html.ml main.ml .depend README COPYING GPL
 
-export: $(FILES)
+export: move-olds source binary
+
+move-olds:
+	mv $(FTP)/bibtex2html* $(FTP)/olds
+
+source: $(FILES)
 	mkdir -p export/bibtex2html
 	cp $(FILES) export/bibtex2html
 	(cd export ; tar cf $(NAME).tar bibtex2html ; \
 	gzip -f --best $(NAME).tar)
-	mv $(FTP)/bibtex2html* $(FTP)/olds
 	cp README COPYING GPL export/$(NAME).tar.gz $(FTP)
+
+BINARY = bibtex2html-$(MAJORVN).$(MINORVN)-$(OSTYPE)
+
+binary: bibtex2html
+	mkdir -p export/$(BINARY)
+	cp README COPYING GPL bibtex2html export/$(BINARY)
+	(cd export; tar czf $(BINARY).tar.gz $(BINARY))
+	cp export/$(BINARY).tar.gz $(FTP)
 
 # generic rules :
 #################

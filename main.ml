@@ -157,7 +157,7 @@ let get_bibtex_entries fbib =
     try
       Bibtex_parser.entry_list Bibtex_lexer.token (Lexing.from_channel chan)
     with
-	Parsing.Parse_error ->
+	Parsing.Parse_error | Failure "unterminated string" ->
 	  close_in chan;
 	  Printf.printf "Parse error line %d.\n" !Bibtex_lexer.line;
 	  flush stdout;

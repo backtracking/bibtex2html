@@ -70,9 +70,18 @@ let safe_title e =
   try Bibtex.get_title e with Not_found -> "No title"
 
 
-(* footer of HTML files *)
+(* header and footer of HTML files *)
 
 let own_address = "http://www.lri.fr/~filliatr/bibtex2html.en.html"
+
+let header ch =
+  Printf.fprintf ch "
+<!-- This document was automatically generated with bibtex2html
+     (see http://www.lri.fr/~filliatr/bibtex2html.en.html),
+     with the following command:
+     ";
+  Array.iter (Printf.fprintf ch "%s ") Sys.argv;
+  Printf.fprintf ch " -->\n\n"
 
 let footer ch =
   Html.open_balise ch "HR";
@@ -174,6 +183,7 @@ let summary basen bl =
   let ch = open_out filename in
     if not !nodoc then
       Html.open_document ch (fun () -> output_string ch !title);
+    header ch;
     if !title_spec then Html.h1_title ch !title;
     output_string ch "\n";
 
