@@ -90,7 +90,7 @@ AIX=bibtex2html-$(MAJORVN).$(MINORVN)-AIX
 aix:
 	mkdir -p export/$(AIX)
 	cp README COPYING GPL bibtex2html export/$(AIX)
-	(cd export; tar cf $(AIX).tar.gz $(AIX); gzip --best $(AIX))
+	(cd export; tar cf $(AIX).tar $(AIX); gzip --best $(AIX).tar)
 
 # generic rules :
 #################
