@@ -1,8 +1,13 @@
 #########################################
-# Configuration part : where to install
+# Configuration part 
 #########################################
 
-BINDIR = $(HOME)/bin/$(OSTYPE)
+# where to put executable files
+BINDIR = /usr/local/bin
+# BINDIR = $(HOME)/bin/$(OSTYPE)
+
+# where to install the man pages
+MANDIR = /usr/local/man
 
 #########################################
 # End of configuration part
@@ -39,6 +44,8 @@ all: bibtex2html bib2bib
 
 install:
 	cp bibtex2html bib2bib $(BINDIR)
+	cp bibtex2html.man $(MANDIR)/man1/bibtex2html.1
+	cp bibtex2html.man $(MANDIR)/man1/bib2bib.1
 
 bibtex2html: $(OBJS)
 	ocamlopt $(PROFILE) $(FLAGS) -o bibtex2html str.cmxa $(OBJS) $(STRLIB)
