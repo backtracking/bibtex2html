@@ -15,7 +15,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexscan.mll,v 1.15 2000-07-21 15:16:56 filliatr Exp $ *)
+(* $Id: latexscan.mll,v 1.16 2000-07-24 21:22:36 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -62,15 +62,19 @@ rule main = parse
                 { print_s "<P>\n"; main lexbuf }
 (* Font changes *)
   | "{\\it" " "* | "{\\em" " "* | "{\\sl" " "*
+  | "{\\itshape" " "* | "{\\slshape" " "*
                   { print_s "<i>";
                     save_state main lexbuf;
                     print_s "</i>"; main lexbuf }
-  | "{\\bf" " "* | "{\\sf" " "*
+  | "{\\bf" " "* | "{\\sf" " "* | "{\\bfseries" " "* | "{\\sffamily" " "*
                   { print_s "<b>";
                     save_state main lexbuf;
                     print_s "</b>"; main lexbuf }
-  | "{\\sc" " "*  { save_state main lexbuf; main lexbuf }
-  | "{\\tt" " "*  { print_s "<tt>";
+  | "{\\sc" " "*  | "{\\scshape" " "* | "{\\normalfont" " "* 
+  | "{\\upshape" " "* | "{\\mdseries" " "* | "{\\rmfamily" " "* 
+                  { save_state main lexbuf; main lexbuf }
+  | "{\\tt" " "* | "{\\ttfamily" " "* 
+                  { print_s "<tt>";
                     save_state main lexbuf;
                     print_s "</tt>"; main lexbuf }
   | '"'           { print_s "<tt>"; indoublequote lexbuf;

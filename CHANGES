@@ -1,4 +1,5 @@
- 
+
+ o all macros \xxfamily, \xxseries and \xxshape
  o fixed bug in translating unbalanced quotes to HTML
  o bib2bib: predicate "exists" added in conditions to check existence
    of a field

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.36 2000-07-03 18:31:10 filliatr Exp $ *)
+(* $Id: latexmacros.ml,v 1.37 2000-07-24 21:22:36 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -70,24 +70,26 @@ def "\\paragraph"
 def "\\begin{alltt}" [Print "<pre>"];
 def "\\end{alltt}" [Print "</pre>"];
 def "\\textbf" [Print "<b>" ; Print_arg ; Print "</b>"];
+def "\\mathbf" [Print "<b>" ; Print_arg ; Print "</b>"];
 def "\\texttt" [Print "<tt>" ; Print_arg ; Print "</tt>"];
+def "\\mathtt" [Print "<tt>" ; Print_arg ; Print "</tt>"];
 def "\\textit" [Print "<i>" ; Print_arg ; Print "</i>"];
+def "\\mathit" [Print "<i>" ; Print_arg ; Print "</i>"];
 def "\\textsl" [Print "<i>" ; Print_arg ; Print "</i>"];
 def "\\textem" [Print "<em>" ; Print_arg ; Print "</em>"];
 def "\\textrm" [Print_arg];
-
 def "\\mathrm" [Print_arg];
-def "\\mathit" [Print "<i>" ; Print_arg ; Print "</i>"];
+def "\\textmd" [Print_arg];
+def "\\textup" [Print_arg];
+def "\\textnormal" [Print_arg];
 def "\\mathnormal" [Print "<i>" ; Print_arg ; Print "</i>"];
-def "\\mathtt" [Print "<tt>" ; Print_arg ; Print "</tt>"];
 def "\\mathcal" [Print_arg];
 def "\\mathbb" [Print_arg];
-def "\\mathbf" [Print "<b>" ; Print_arg ; Print "</b>"];
 
 (* fonts without HTML equivalent *)
 def "\\textsf" [Print "<b>" ; Print_arg ; Print "</b>"];
-def "\\textsc" [Print_arg];
 def "\\mathsf" [Print "<b>" ; Print_arg ; Print "</b>"];
+def "\\textsc" [Print_arg];
 
 def "\\rm" [];
 def "\\cal" [];
