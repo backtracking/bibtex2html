@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: biboutput.ml,v 1.9 2001-02-21 09:51:52 filliatr Exp $ i*)
+(*i $Id: biboutput.ml,v 1.10 2001-07-13 12:37:57 filliatr Exp $ i*)
 
 (*s Output a BibTeX bibliography. *)
 
@@ -75,7 +75,7 @@ i*)
   | Abbrev(s,l) ->
       if needs_output s keys then 
 	begin
-	  if html then Html.open_anchor ch s;
+	  if html then begin Html.open_anchor ch s; Html.close_anchor ch end;
 	  output_string ch ("@STRING{" ^ s ^ " = ");
 	  print_atom_list html ch keys l;
 	  output_string ch "}\n\n"
@@ -83,7 +83,7 @@ i*)
   | Entry (entry_type,key,fields) ->
       if needs_output key keys then 
 	begin
-	  if html then Html.open_anchor ch key;
+	  if html then begin Html.open_anchor ch key; Html.close_anchor ch end;
 	  output_string ch ("@" ^ entry_type ^ "{" ^ key);
 	  List.iter
 	    (fun (field,l) ->

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.48 2001-02-21 09:51:54 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.49 2001-07-13 12:37:57 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -303,7 +303,8 @@ let one_entry_summary ch (_,b,((_,k,f) as e)) =
     make_abstract ch e
   end;
   output_string ch "\n"; 
-  Html.close_balise ch "td"; output_string ch "\n"
+  Html.close_balise ch "td"; output_string ch "\n";
+  Html.close_balise ch "tr"; output_string ch "\n"
 
 (* summary file f.html *)
 

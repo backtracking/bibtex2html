@@ -59,7 +59,7 @@ install:
 	cp bibtex2html.1 $(MANDIR)/man1/bibtex2html.1
 	cp bibtex2html.1 $(MANDIR)/man1/bib2bib.1
 
-local:
+local: bibtex2html bib2bib
 	cp bibtex2html bib2bib $$HOME/bin/$$OSTYPE
 
 bibtex2html: $(OBJS)
