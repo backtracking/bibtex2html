@@ -12,7 +12,7 @@ MAJORVN=0
 MINORVN=9
 
 CAMLC    = ocamlc
-CAMLCOPT = ocamlopt
+CAMLCOPT = ocamlopt 
 CAMLDEP  = ocamldep
 ZLIBS    =
 DEBUG    =
@@ -36,7 +36,7 @@ bibtex2html: $(OBJS)
 bibtex_parser.mli bibtex_parser.ml: bibtex_parser.mly
 	ocamlyacc bibtex_parser.mly
 
-version.ml::
+version.ml: Makefile
 	echo "let version = \""$(MAJORVN).$(MINORVN)"\"" > version.ml
 	echo "let date = \""`date`"\"" >> version.ml
 
