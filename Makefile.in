@@ -51,7 +51,7 @@ byte: bibtex2html.byte bib2bib.byte
 
 install:
 	mkdir -p $(BINDIR)
-	cp auxtobib $(BINDIR)
+	cp aux2bib $(BINDIR)
 	if test @OCAMLBEST@ = opt ; then \
 		cp bibtex2html bib2bib $(BINDIR) ; \
 	else \
@@ -63,7 +63,7 @@ install:
 	cp bibtex2html.1 $(MANDIR)/man1/bib2bib.1
 
 local: bibtex2html bib2bib
-	cp bibtex2html bib2bib auxtobib $$HOME/bin/$$OSTYPE
+	cp bibtex2html bib2bib aux2bib $$HOME/bin/$$OSTYPE
 
 bibtex2html: $(OBJS)
 	ocamlopt $(PROFILE) $(FLAGS) -o bibtex2html str.cmxa $(OBJS) $(STRLIB)
@@ -147,7 +147,7 @@ NAME=bibtex2html-$(MAJORVN).$(MINORVN)
 
 FTP = /users/demons/filliatr/ftp/ocaml/bibtex2html
 
-SOURCEFILES = *.ml* auxtobib.in Makefile.in configure.in configure .depend README COPYING GPL CHANGES manual.tex *.1
+SOURCEFILES = *.ml* aux2bib.in Makefile.in configure.in configure .depend README COPYING GPL CHANGES manual.tex *.1
 
 export: source export-doc linux solaris
 

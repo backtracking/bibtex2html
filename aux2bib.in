@@ -6,23 +6,29 @@
 # by the LaTeX \include directive), and uses this list to extract a
 # BibTeX file containing only the cited references, including the
 # needed string abbreviations and crossreferences. The names of the
-# BibTeX files are taken from the main aux file, and are searched in the
-# directories specified by the BIBINPUTS environment variable.
+# BibTeX files are taken from the main aux file, and are searched in 
+# exactly the same way as done by bibtex.
 #
-# Needs bib2bib (see http://www.lri.fr/~filliatr/bibtex2html).
+# Needs bib2bib (see http://www.lri.fr/~filliatr/bibtex2html)
+# and kpsewhich (comes with the kpathsea library).
 #
 # Ralf Treinen <treinen@debian.org>.
 # Published under the Gnu General Public Licence, version 2.
 
 # process arguments
-if ( $#ARGV != 0 ) {die "Usage: <aux-file>";}
+if ( $#ARGV != 0 ) {&errorexit("Usage: aux2bib <aux-file>");}
 $mainauxfile = $ARGV[0];
+
+sub errorexit {
+    print STDERR "aux2bib: @_[0]\n";
+    exit;
+}
 
 # process the aux files
 sub dofile {
 	local($filename, $handle) = @_;
 	$handle++;
-	open($handle,$filename) || die "Cannot open file $filename";
+	open($handle,$filename) || &errorexit("Cannot open file $filename");
 	while (<$handle>){
 		if (/\\\@input\{(.*)\}/) {
 			&dofile($1,$handle);
@@ -42,27 +48,26 @@ sub dofile {
 
 # build the expression for the search condition
 $condfile="/tmp/aux2bib$$";
-open(COND,"> $condfile") || die "Cannot open temp file $condfile";
+open(COND,"> $condfile") || &errorexit("Cannot open temp file $condfile");
 foreach $key (keys %keys){
 	print COND "\$key=\"$key\" or ";
 }
 print COND "1=2\n";
 close COND;
 
-# build a string containing the path names of the bib files, by searching
-# the files in the directories given in yn the BIBINPUTS environment
-# variable.
-$bibfilestring = "";
-@searchdirs = split(/:/,$ENV{'BIBINPUTS'});
+# get the string of path names of the bib files
+$bibfilesbib = "";
 foreach $bibfile (@bibfiles) {
-	foreach $bibdir (@searchdirs) {
-		next if $bibdir =~ /^$/;
-		if (-e "$bibdir/$bibfile.bib") {
-			$bibfilestring .= "$bibdir/$bibfile.bib ";
-			last;
-		}
-	}
+    $bibfilesbib .= "$bibfile.bib "
 }
+
+$bibfilestring = "";
+open(CMD,"kpsewhich $bibfilesbib|");
+while (<CMD>){
+    chop;
+    $bibfilestring .= "$_ ";
+}
+close(CMD);
 
 # call bib2bib
 open(CMD,"bib2bib -c \"`cat $condfile`\" $bibfilestring|");
@@ -71,3 +76,28 @@ close(CMD);
 
 # cleanup
 unlink($condfile);
+.TH AUX2BIB 1
+
+.SH NAME
+AUX2BIB \- Extracts a BibTeX database according to an aux file.
+
+.SH SYNOPSIS
+.B aux2bib <auxfile>
+
+
+.SH DESCRIPTION
+
+Aux2bib reads a \fI.aux\fR file as produced by \fBLaTeX\fR and writes
+to standard output a bibtex file containing exactly the bibtex entries
+refereed in the aux file. 
+
+.SH SEE ALSO
+.BR bibtex (1),
+.BR latex (1),
+.br
+.I http://www.lri.fr/~filliatr/bibtex2html/
+.br
+.I /usr/share/doc/bibtex2html
+
+.SH AUTHOR
+Ralf Treinen <treinen@debian.org>

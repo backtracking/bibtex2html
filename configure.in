@@ -83,6 +83,6 @@ AC_SUBST(OCAMLLIB)
 AC_SUBST(PERL)
 
 # Finally create all the generated files
-AC_OUTPUT(Makefile auxtobib)
-chmod a+x auxtobib
+AC_OUTPUT(Makefile aux2bib)
+chmod a+x aux2bib
 chmod a-w Makefile
