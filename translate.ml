@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.25 1999-03-01 22:17:56 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.26 1999-04-19 14:47:20 filliatr Exp $ *)
 
 (* options *)
 
@@ -61,6 +61,7 @@ open Latexmacros
 
 let in_summary = ref false
 let file_basename = ref ""
+let bibfile_basename = ref ""
 
 let cite k =
   try
@@ -207,7 +208,7 @@ let make_abstract ch ((t,k,_) as e) =
 (* Printing of one entry *)  
 
 let bibtex_entry ch k =
-  Html.open_href ch (Printf.sprintf "%s-bib.html#%s" !file_basename k);
+  Html.open_href ch (Printf.sprintf "%s%s#%s" !bibfile_basename !suffix k);
   output_string ch "BibTeX entry";
   Html.close_href ch
 
@@ -311,7 +312,7 @@ let summary bl =
 (* HTML file with BibTeX entries f-bib.html *)
 
 let bib_file f bl =
-  let fn = f ^ "-bib.html" in
+  let fn = f ^ "-bib" ^ !suffix in
   Printf.printf "Making HTML list of BibTeX entries (%s)..." fn;
   flush stdout;
   let ch = open_out fn in
@@ -361,6 +362,7 @@ let bib_file f bl =
 let format_list basename bl =
   first_pass bl;
   file_basename := basename;
+  bibfile_basename := basename ^ "-bib";
   if !both then begin
     (* short version *)
     print_abstract := false;

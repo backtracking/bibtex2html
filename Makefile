@@ -2,14 +2,14 @@
 # Configuration part : where to install
 #########################################
 
-BINDIR = /users/demons/filliatr/bin/$(OSTYPE)
+BINDIR = $(HOME)/bin/$(OSTYPE)
 
 #########################################
 # End of configuration part
 #########################################
 
 MAJORVN=0
-MINORVN=9
+MINORVN=91
 
 CAMLC    = ocamlc
 CAMLCOPT = ocamlopt 
