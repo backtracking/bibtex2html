@@ -1,7 +1,7 @@
 Summary: Convert BibTeX source files to HTML amongst other things
 Name: bibtex2html
-Version: 1.65
-Release: 2
+Version: 1.66
+Release: 1
 License: GNU/GPL
 Group: Applications/Publishing
 URL: http://www.lri.fr/~filliatr/bibtex2html/
@@ -16,16 +16,16 @@ BibTeX sources and generating BibTeX files from LaTeX aux files.
 %setup -q
 
 %build
-./configure --prefix=$RPM_BUILD_ROOT
+./configure --prefix=/usr
 make
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make install
+make install prefix=$RPM_BUILD_ROOT/%{_prefix} 
 cd $RPM_BUILD_ROOT
 # Following command generates a list of files that were installed
-find -type f | sed 's/^\.//' > %{_tmppath}/%{name}-%{version}-MANIFEST
+find -type f | sed 's/^\.//; s/\(\.[0-9]\)$/\1.gz/;' > %{_tmppath}/%{name}-%{version}-MANIFEST
 
 
 %clean
@@ -38,10 +38,15 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Feb 19 2004 Edward Grace <ej.grace@imperial.ac.uk> 1.66-1
+- Trivial modification.  Update version numbers to build latest version.
+
+* Fri Oct 10 2003 Michael Daum <micha@nats.informatik.uni-hamburg.de> 1.65-3
+- fixed install prefix
+- fixed manifesting compressed manual pages on suse
+
 * Tue Oct  7 2003 Edward Grace <ej.grace@imperial.ac.uk> 1.65-2
 - Second build, this time I have included more info on the package
 
 * Tue Oct  7 2003 Edward Grace <ej.grace@imperial.ac.uk> 
 - Initial build.
-
-
