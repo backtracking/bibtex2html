@@ -15,7 +15,7 @@ type fields = (string * string) list
 type entry = entry_type * key * fields
 		
 type command = 
-    Abbrev of string * string
+    Abbrev of string * atom list
   | Entry  of entry_type * key * (string * atom list) list
 
 
@@ -64,8 +64,9 @@ let rec expand_fields = function
 let rec expand = function
     [] ->
       []
-  | (Abbrev (a,v)) :: rem ->
-      add_abbrev (a,v) ; expand rem
+  | (Abbrev (a,l)) :: rem ->
+      let s = expand_list l in
+      add_abbrev (a,s) ; expand rem
   | (Entry (t,k,f)) :: rem ->
       (t,k,expand_fields f) :: (expand rem)
 

@@ -36,9 +36,7 @@ let get_stored_string () =
 rule token = parse
     [' ' '\010' '\013' '\009' '\012'] +
       { token lexbuf }
-  | "@string" | "@STRING" | "@String"
-      { serious := true ; Tabbrev }
-  | '@' { serious := true ; Tat }
+  | '@' { serious := true ; token lexbuf }
   | '=' { if !serious then Tequal else token lexbuf }
   | '#' { if !serious then Tsharp else token lexbuf }
   | ',' { if !serious then Tcomma else token lexbuf }
@@ -59,9 +57,12 @@ rule token = parse
 	    Trbrace
 	  end else
 	    token lexbuf }
-  | (['A'-'Z' 'a'-'z' '_' '\'' '0'-'9' ':' '-' ]) +
+  | (['A'-'Z' 'a'-'z' '_' '\'' '0'-'9' ':' '-' 
+      '\192'-'\214' '\216'-'\246' '\248'-'\255']) +
       { if !serious then
-	  let s = Lexing.lexeme lexbuf in Tident s 
+	  let s = Lexing.lexeme lexbuf in 
+          let u = String.uppercase s in
+          if u = "STRING" then Tabbrev else Tident s 
       	else
           token lexbuf }
   | "\""

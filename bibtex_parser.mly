@@ -10,7 +10,7 @@
 
 %token <string> Tident
 %token <string> Tstring
-%token Tabbrev Tat Tlbrace Trbrace Tcomma Tequal EOF Tsharp
+%token Tabbrev Tlbrace Trbrace Tcomma Tequal EOF Tsharp
 
 %start entry_list
 %type <(Bibtex.entry list)> entry_list
@@ -32,10 +32,10 @@ command_list:
      { [] }
 ;
 command:
-   Tabbrev Tlbrace Tident Tequal Tstring Trbrace
+   Tabbrev Tlbrace Tident Tequal sharp_string_list Trbrace
      { Abbrev ($3,$5) }
- | Tat Tident Tlbrace Tident Tcomma comma_field_list Trbrace
-     { Entry (String.uppercase $2,$4,$6) }
+ | Tident Tlbrace Tident Tcomma comma_field_list Trbrace
+     { Entry (String.uppercase $1,$3,$5) }
 ;
 comma_field_list:
    field Tcomma comma_field_list
@@ -48,6 +48,8 @@ comma_field_list:
 field:
    Tident Tequal sharp_string_list
      { (String.uppercase $1,$3) }
+ | Tident Tequal
+     { (String.uppercase $1,[String ""]) }
 ;
 sharp_string_list:
    atom Tsharp sharp_string_list
