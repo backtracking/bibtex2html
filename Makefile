@@ -43,14 +43,14 @@ bbl_lexer.ml: bbl_lexer.mll
 FTP = /home/jcfillia/ftp/ocaml/bibtex2html
 FILES = bibtex.mli latexmacros.ml Makefile bibtex_lexer.mll latexmacros.mli \
 	translate.ml bbl_lexer.mll bibtex_parser.mly latexscan.mll \
-	bibtex.ml html.ml main.ml README COPYING GPL
+	bibtex.ml html.ml main.ml .depend README COPYING GPL
 
-export:
-	mkdir -p BibTeX2HTML
-	cp $(FILES) BibTeX2HTML
-	tar cf bibtex2html.tar BibTeX2HTML
-	gzip -f --best bibtex2html.tar
-	cp README bibtex2html.tar.gz $(FTP)
+export: $(FILES)
+	mkdir -p export/bibtex2html
+	cp $(FILES) export/bibtex2html
+	(cd export ; tar cf bibtex2html.tar bibtex2html ; \
+	gzip -f --best bibtex2html.tar)
+	cp README COPYING GPL export/bibtex2html.tar.gz $(FTP)
 
 # generic rules :
 #################
