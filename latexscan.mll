@@ -15,7 +15,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexscan.mll,v 1.14 2000-06-30 02:36:43 filliatr Exp $ *)
+(* $Id: latexscan.mll,v 1.15 2000-07-21 15:16:56 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -168,6 +168,7 @@ and indoublequote = parse
   | "&"         { print_s "&amp;"; indoublequote lexbuf }
   | "\\\""      { print_s "\""; indoublequote lexbuf }
   | "\\\\"      { print_s "\\"; indoublequote lexbuf }
+  | eof         { () }
   | _           { print_c(Lexing.lexeme_char lexbuf 0); indoublequote lexbuf }
 
 and inverb = parse
