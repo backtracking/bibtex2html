@@ -18,7 +18,7 @@ DOCDIR = $(prefix)/doc/bibtex2html
 #########################################
 
 MAJORVN=1
-MINORVN=52
+MINORVN=53
 
 CAMLC    = @OCAMLC@
 CAMLCOPT = @OCAMLOPT@ 
@@ -103,10 +103,9 @@ bib2bib.static: $(BIB2BIBOBJS)
 	ocamlopt $(PROFILE) $(FLAGS) -o bib2bib.static str.cmxa $(BIB2BIBOBJS) $(STRLIB) -cclib "-L. -static"
 	strip bib2bib.static
 
-static:
-	ln -sf /usr/lib/libncurses.a libcurses.a
-	make bibtex2html.static bib2bib.static
-	cp bibtex2html.static bib2bib.static $$HOME/bin/$$OSTYPE
+static: bibtex2html.static bib2bib.static
+	cp bibtex2html.static $$HOME/bin/$$OSTYPE/bibtex2html
+	cp bib2bib.static $$HOME/bin/$$OSTYPE/bib2bib
 
 bibtex_parser.mli bibtex_parser.ml: bibtex_parser.mly
 	ocamlyacc bibtex_parser.mly

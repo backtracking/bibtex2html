@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.54 2002-01-15 10:00:38 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.55 2002-06-18 08:11:29 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -30,6 +30,7 @@ let raw_url = ref false
 let title = ref ""
 let title_spec = ref false
 let print_abstract = ref true
+let print_keywords = ref true
 let print_footer = ref true
 let multiple = ref false
 let both = ref false
@@ -244,17 +245,25 @@ let make_abstract ((t,k,_) as e) =
   with Not_found -> 
     No_abstract
 
-let display_abstract ch a =
+let blockquote ch f =
   Html.paragraph ch; output_string ch "\n";
   Html.open_balise ch "blockquote";
   let font_size = not !multiple && !Html.css = None in
   if font_size then Html.open_balise ch "font size=-1";
   output_string ch "\n";
-  latex2html ch a;
+  f (); output_string ch "\n";
   if font_size then Html.close_balise ch "font";
   Html.close_balise ch "blockquote";
-  output_string ch "\n";
-  Html.paragraph ch; output_string ch "\n"
+  output_string ch "\n"
+
+let display_abstract ch a = blockquote ch (fun () -> latex2html ch a)
+
+let display_keywords ch e =
+  try
+    let k = Expand.get_uppercase_field e "KEYWORDS" in
+    blockquote ch (fun () -> output_string ch "Keywords: "; latex2html ch k)
+  with Not_found -> 
+    ()
 
 (* Printing of one entry *)  
 
@@ -282,6 +291,7 @@ let separate_file (b,((_,k,f) as e)) =
     | No_abstract -> []
   in
   Html.paragraph ch;
+  if !print_keywords then display_keywords ch e;
   display_links ch (labs @ bibtex_entry k :: make_links e);
   Html.paragraph ch;
   Html.open_href ch (!output_file ^ !link_suffix);
@@ -355,6 +365,7 @@ let one_entry_summary ch (_,b,((_,k,f) as e)) =
       | Alink l -> display_links ch (links @ [l])
       | No_abstract -> display_links ch links
   end;
+  if !print_keywords then display_keywords ch e;
   output_string ch "\n"; 
   close_row ch
 
@@ -444,9 +455,11 @@ let format_list entries sorted_bl keys =
   if !both then begin
     (* short version *)
     print_abstract := false;
+    print_keywords := false;
     summary sorted_bl;
-    (* long version with abstracts *)
+    (* long version with abstracts and keywords *)
     print_abstract := true;
+    print_keywords := true;
     let old_output = !output_file in
     output_file := !output_file ^ "-abstracts";
     summary sorted_bl;

@@ -129,6 +129,14 @@ inserted from the page without abstracts to the page with abstracts,
 %HEVEA like \link{examples/publis.html}{this}.
 
 
+\subsubsection{Keywords}
+
+If a BibTeX entry contains a field \texttt{keywords} then its contents
+is displayed after the bibliography entry (and after the abstract if any).
+
+This behavior may be suppressed with the option \texttt{\mm{}no-keywords}.
+
+
 %HEVEA\begin{rawhtml}<a name=options>\end{rawhtml}
 
 \subsection{Command line options}
@@ -160,6 +168,11 @@ Most of the command line options have a short version of one character
 \item[\texttt{-noabstract}, \texttt{\mm{}no-abstract}] ~
   
   do not print the abstracts (if any).
+
+  
+\item[\texttt{-nokeywords}, \texttt{\mm{}no-keywords}] ~
+  
+  do not print the keywords (if any).
 
   
 \item[\texttt{-both}, \texttt{\mm{}both}] ~

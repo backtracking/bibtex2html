@@ -1,4 +1,7 @@
 
+Version 1.53 18/6/2002
+======================
+ o keywords displayed if a field "keywords" is present; option --no-heywords
  o aux2bib now handles multiple citations (\citation{foo,bar,gee})
    (patch by Jose Ramon Alvarez Sanchez)
 
