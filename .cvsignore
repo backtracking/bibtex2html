@@ -3,3 +3,4 @@ bibtex_lexer.ml
 bibtex_parser.ml
 bibtex_parser.mli
 bibtex2html
+bbl_lexer.ml

@@ -74,6 +74,8 @@ rule main = parse
                   let code = String.sub lxm 5 (String.length lxm - 5) in
                   print_c(Char.chr(int_of_string code));
                   main lexbuf }
+  | "--" | "---"
+                { print_s "-"; main lexbuf }
   | "<"         { print_s "&lt;"; main lexbuf }
   | ">"         { print_s "&gt;"; main lexbuf }
   | "~"         { print_s " "; main lexbuf }
@@ -153,6 +155,8 @@ and raw_arg = parse
                 { let s = Lexing.lexeme lexbuf in
                   String.sub s 1 (String.length s - 2) }
   | "["         { skip_optional_arg lexbuf; raw_arg lexbuf }
+  | '\\' ['A'-'Z' 'a'-'z']+
+                { Lexing.lexeme lexbuf }
   | _           { Lexing.lexeme lexbuf }
 
 and skip_optional_arg = parse

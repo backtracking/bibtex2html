@@ -9,9 +9,7 @@ latexmacros.cmo: latexmacros.cmi
 latexmacros.cmx: latexmacros.cmi 
 latexscan.cmo: latexmacros.cmi 
 latexscan.cmx: latexmacros.cmx 
-main.cmo: bibtex_lexer.cmo bibtex_parser.cmi translate.cmo 
-main.cmx: bibtex_lexer.cmx bibtex_parser.cmx translate.cmx 
-test.cmo: bibtex.cmi bibtex_lexer.cmo bibtex_parser.cmi 
-test.cmx: bibtex.cmx bibtex_lexer.cmx bibtex_parser.cmx 
+main.cmo: bbl_lexer.cmo bibtex_lexer.cmo bibtex_parser.cmi translate.cmo 
+main.cmx: bbl_lexer.cmx bibtex_lexer.cmx bibtex_parser.cmx translate.cmx 
 translate.cmo: bibtex.cmi html.cmo latexmacros.cmi latexscan.cmo 
 translate.cmx: bibtex.cmx html.cmx latexmacros.cmx latexscan.cmx 

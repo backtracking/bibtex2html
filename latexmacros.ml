@@ -107,6 +107,8 @@ def "\\`" [Raw_arg(function "e" -> print_c 'è'
                           | "u" -> print_c 'ù'
                           | "U" -> print_c 'Ù'
                           | s   -> print_s s)];
+def "\\~" [Raw_arg(function "n" -> print_c 'ñ'
+                          | s   -> print_s s)];
 def "\\^" [Raw_arg(function "a" -> print_c 'â'
                           | "A" -> print_c 'Â'
                           | "e" -> print_c 'ê'
@@ -120,6 +122,7 @@ def "\\^" [Raw_arg(function "a" -> print_c 'â'
                           | s   -> print_s s)];
 def "\\\"" [Raw_arg(function "e" -> print_c 'ë'
                           | "E" -> print_c 'Ë'
+                          | "\\i" -> print_c 'ï'
                           | "i" -> print_c 'ï'
                           | "I" -> print_c 'Ï'
                           | "o" -> print_c 'ü'

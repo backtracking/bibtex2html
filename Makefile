@@ -4,7 +4,7 @@ CAMLCOPT = ocamlopt
 CAMLDEP  = ocamldep
 ZLIBS    =
 
-OBJS = latexmacros.cmo latexscan.cmo \
+OBJS = latexmacros.cmo latexscan.cmo bbl_lexer.cmo \
        bibtex.cmo bibtex_lexer.cmo bibtex_parser.cmo html.cmo \
        translate.cmo main.cmo
 
@@ -25,6 +25,8 @@ latexscan.ml: latexscan.mll
 bibtex_lexer.ml: bibtex_lexer.mll
 	ocamllex bibtex_lexer.mll
 
+bbl_lexer.ml: bbl_lexer.mll
+	ocamllex bbl_lexer.mll
 
 # generic rules :
 #################

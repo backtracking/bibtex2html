@@ -35,7 +35,7 @@ let get_stored_string () =
 
 }
 rule skip_header = parse
-    "\\begin{thebibliography}{" [^'}']* '}' [' ' '\010' '\013' '\009' '\012']*
+    "\\begin{thebibliography}" [^'\n']* '\n'
       { () }
   | eof
       { raise End_of_file }
@@ -43,23 +43,21 @@ rule skip_header = parse
       { skip_header lexbuf }
 
 and bibitem = parse
-    [' ' '\010' '\013' '\009' '\012']*
+    [' ' '\010' '\013' '\009' '\012']+
       { bibitem lexbuf }
   | "\\end{thebibliography}"
       { raise End_of_file }
   | "\\bibitem"
       { brace_depth := 0;
-	bibitem1 lexbuf }
+	begin try bibitem1 lexbuf 
+	      with Failure "lexing: empty token" -> opt_ref := None end;
+        bibitem2 lexbuf }
 
 and bibitem1 = parse
     '[' [^']']* ']'
       { let l = Lexing.lexeme lexbuf in
 	let s = String.sub l 1 (String.length l - 2) in
-        opt_ref := Some s;
-        bibitem2 lexbuf }
-  | _
-      { opt_ref := None ;
-	bibitem2 lexbuf }
+        opt_ref := Some s }
     
 and bibitem2 = parse
     '{' [^'}']* '}'
@@ -80,5 +78,5 @@ and bibitem_body = parse
         bibitem_body lexbuf }
     
 and skip_end_of_line = parse
-    [' ' '\010' '\013' '\009' '\012'] +
+    [' ' '\n' '\010' '\013' '\009' '\012'] +
       { () }

@@ -14,8 +14,6 @@ let latex2html ch s =
   Latexmacros.out_channel := ch;
   Latexscan.main (Lexing.from_string s)
 
-(* to format BibTeX entries *)
-
 let safe_title e =
   try Bibtex.get_title e with Not_found -> "No title"
 
@@ -110,10 +108,8 @@ let one_entry_summary basen ch ((_,k,f) as e) =
   Html.open_balise ch "li"; output_string ch " ";
   let url = Filename.concat basen (k ^ !suffix) in
   Html.open_href ch url;
-  latex2html ch (safe_title e);
+  latex2html ch (Bibtex.get_field e "BIBITEM");
   Html.close_href ch;
-  output_string ch ". ";
-  format_type ch e;
   Html.paragraph ch;
   output_string ch "\n"
 
@@ -138,10 +134,12 @@ let bib_file f (t,k,fs) =
     output_string ch ("@" ^ t ^ "{" ^ k ^ ",\n");
     List.iter
       (fun (a,v) ->
-	 output_string ch "  ";
-	 output_string ch (String.lowercase a);
-	 output_string ch " = ";
-	 output_string ch ("{" ^ v ^ "},\n");
+	 if a <> "BIBITEM" then begin
+	   output_string ch "  ";
+	   output_string ch (String.lowercase a);
+	   output_string ch " = ";
+	   output_string ch ("{" ^ v ^ "},\n")
+	 end
       ) fs;
     output_string ch "}\n";
     
@@ -168,21 +166,9 @@ let html_file f ((t,k,_) as e) =
     if not !nodoc then 
       Html.open_document ch (fun () -> latex2html ch title);
 
-    (* title *)
-    Html.open_h ch 1;
-    latex2html ch title;
-    Html.close_h ch 1;
-    output_string ch "\n";
     Html.open_balise ch "font size=4";
     output_string ch "\n\n";
-
-    let author = safe_author e in
-    latex2html ch author;
-    Html.paragraph ch;
-    output_string ch "\n";
-
-    format_type ch e; 
-    output_string ch "\n";
+    latex2html ch (Bibtex.get_field e "BIBITEM");
     Html.paragraph ch;
     output_string ch "\n";
 
