@@ -15,7 +15,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexscan.mll,v 1.7 1998-11-10 08:52:02 filliatr Exp $ *)
+(* $Id: latexscan.mll,v 1.8 1998-11-10 09:32:24 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -98,14 +98,20 @@ rule main = parse
   | "<"         { print_s "&lt;"; main lexbuf }
   | ">"         { print_s "&gt;"; main lexbuf }
   | "~"         { print_s " "; main lexbuf }
-  | "^"         { if !math_mode then
-		    print_s ("<sup>" ^ (raw_arg lexbuf) ^ "</sup>")
-		  else
+  | "^"         { if !math_mode then begin
+		    let buf = Lexing.from_string (raw_arg lexbuf) in
+		    print_s "<sup>";
+		    save_state main buf;
+		    print_s"</sup>"
+		  end else
 		    print_s "^"; 
 		  main lexbuf }
-  | "_"         { if !math_mode then
-		    print_s ("<sub>" ^ (raw_arg lexbuf) ^ "</sub>")
-		  else
+  | "_"         { if !math_mode then begin
+		    let buf = Lexing.from_string (raw_arg lexbuf) in
+		    print_s "<sub>";
+		    save_state main buf;
+		    print_s"</sub>"
+		  end else
 		    print_s "_"; 
 		  main lexbuf }
 (* General case for environments and commands *)

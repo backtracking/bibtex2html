@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.13 1998-05-28 07:21:03 filliatr Exp $ *)
+(* $Id: latexmacros.ml,v 1.14 1998-11-10 09:32:23 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -71,6 +71,7 @@ def "\\texttt" [Print "<tt>" ; Print_arg ; Print "</tt>"];
 def "\\textem" [Print "<em>" ; Print_arg ; Print "</em>"];
 def "\\textbf" [Print "<b>" ; Print_arg ; Print "</b>"];
 def "\\emph" [Print "<em>" ; Print_arg ; Print "</em>"];
+def "\\mbox" [Print_arg];
 def "\\begin{itemize}" [Print "<p><ul>"];
 def "\\end{itemize}" [Print "</ul>"];
 def "\\begin{enumerate}" [Print "<p><ol>"];
@@ -105,6 +106,7 @@ def "\\_" [Print "_"];
 def "\\leq" [Print "&lt;="];
 def "\\log" [Print "log"];
 def "\\geq" [Print "&gt;="];
+def "\\circ" [Print "o"];
 def "\\hbox" [Print_arg];
 def "\\copyright" [Print "(c)"];
 def "\\noindent" [];
@@ -121,6 +123,8 @@ def "\\bibitem" [Raw_arg (function r ->
   print_s "<dt><A name=\""; print_s r; print_s "\">[";
   print_s r; print_s "]</A>\n";
   print_s "<dd>")];
+def "\\TH" [Print "\222"];
+def "\\dh" [Print "\240"];
 def "\\'" [Raw_arg(function "e" -> print_c 'é'
                           | "E" -> print_c 'É'
                           | "\\i" -> print_c 'í'
