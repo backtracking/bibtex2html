@@ -14,13 +14,14 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.33 1999-11-05 11:36:35 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.34 1999-12-09 14:17:45 filliatr Exp $ *)
 
 (* options *)
 
 let nodoc = ref false
 let nokeys = ref false
 let suffix = ref ".html"
+let raw_url = ref false
 let title = ref ""
 let title_spec = ref false
 let print_abstract = ref true
@@ -169,10 +170,11 @@ let make_links ch ((t,k,_) as e) startb =
 	       try
 		 let u = Expand.get_uppercase_field e u in
 		 let s = file_type u in
-		   if !first then first := false else output_string ch ", ";
-		   Html.open_href ch (get_url u);
-		   output_string ch s;
-		   Html.close_href ch
+		 if !first then first := false else output_string ch ", ";
+		 let url = get_url u in
+		 Html.open_href ch url;
+		 output_string ch (if !raw_url then url else s);
+		 Html.close_href ch
 	       with Not_found -> ())
     (!fields @ 
      [ "FTP"; "HTTP"; "URL"; "DVI"; "PS"; "PDF";

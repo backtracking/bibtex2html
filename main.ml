@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.31 1999-11-05 11:36:34 filliatr Exp $ *)
+(* $Id: main.ml,v 1.32 1999-12-09 14:17:44 filliatr Exp $ *)
 
 open Translate
 
@@ -259,6 +259,7 @@ let usage () =
   prerr_endline "  -multiple  produce one file per entry";
   prerr_endline "  -nodoc     only produces the body of the HTML documents";
   prerr_endline "  -nokeys    do not print the BibTeX keys";
+  prerr_endline "  -rawurl    print URL instead of file type";
   prerr_endline "  -noabstract";
   prerr_endline "             do not print the abstracts (if any)";
   prerr_endline "  -nofooter  do not print the footer (bibtex2html web link)";
@@ -298,6 +299,8 @@ let parse () =
 	print_abstract := false; parse_rec rem
     | ("-nokeys" | "--no-keys") :: rem -> 
 	nokeys := true ; parse_rec rem
+    | ("-rawurl" | "--raw-url") :: rem -> 
+	raw_url := true ; parse_rec rem
     | ("-nofooter" | "--no-footer") :: rem ->
 	print_footer := false; parse_rec rem
     | ("-f" | "--field") :: s :: rem ->
