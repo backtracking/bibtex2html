@@ -1,0 +1,46 @@
+
+bibtex2html produces HTML documents from a BibTeX file.
+
+The invocation is
+
+	bibtex2html <options> foo.bib
+
+Options are:
+  -s style   BibTeX style (plain, alpha, ...)
+  -d         sort by date
+  -a         sort as BibTeX (usually by author)
+  -u         unsorted i.e. same order as in .bib file (default)
+  -r         reverse the sort
+  -nodoc     only produces the body of the HTML documents
+  -suffix s  give an alternate suffix for HTML files
+  -e key     exclude an entry
+
+It will create a  file foo.html with the  list  of the BibTeX  entries
+(the summary) and a directory foo with files  key.bib and key.html for
+each key "key" in  the BibTex file. The  element of the summary of key
+"key"  is a link  to the file  foo/key.html.   This file describes the
+entry is more details: it gives the abstract  if a field "abstract" is
+present, and links if  fields of the  kind  "url", "url1", "url2"  are
+present. It also  give a link  to the field  foo/key.bib, which is the
+BibTeX entry in ASCII format.
+
+
+COPYRIGHT
+=========
+
+See the enclosed file COPYING.
+
+
+INSTALLATION
+============
+
+  You need Objective Caml.
+ 
+  1. Compile with "make all". It creates a binary file "bibtex2html".
+
+  2. Copy this binary file where you want
+     either by editing the Makefile and doing "make install"
+     or by copying the file "by hand".
+
+  bibtex2html assumes that "bibtex" is correctly installed and present
+  in your path.

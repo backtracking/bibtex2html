@@ -1,3 +1,12 @@
+#########################################
+# Configuration part : where to install
+#########################################
+
+BINDIR = /home/jcfillia/bin/`arch`
+
+#########################################
+# End of configuration part
+#########################################
 
 CAMLC    = ocamlc
 CAMLCOPT = ocamlopt
@@ -11,7 +20,7 @@ OBJS = latexmacros.cmo latexscan.cmo bbl_lexer.cmo \
 all: bibtex2html
 
 install: all
-	cp bibtex2html /home/jcfillia/bin/`arch`
+	cp bibtex2html $(BINDIR)
 
 bibtex2html: $(OBJS)
 	ocamlc -o bibtex2html $(OBJS)
@@ -27,6 +36,21 @@ bibtex_lexer.ml: bibtex_lexer.mll
 
 bbl_lexer.ml: bbl_lexer.mll
 	ocamllex bbl_lexer.mll
+
+# export
+########
+
+FTP = /home/jcfillia/ftp/ocaml/bibtex2html
+FILES = bibtex.mli latexmacros.ml Makefile bibtex_lexer.mll latexmacros.mli \
+	translate.ml bbl_lexer.mll bibtex_parser.mly latexscan.mll \
+	bibtex.ml html.ml main.ml README COPYING GPL
+
+export:
+	mkdir -p BibTeX2HTML
+	cp $(FILES) BibTeX2HTML
+	tar cf bibtex2html.tar BibTeX2HTML
+	gzip -f --best bibtex2html.tar
+	cp README bibtex2html.tar.gz $(FTP)
 
 # generic rules :
 #################
@@ -50,7 +74,7 @@ bbl_lexer.ml: bbl_lexer.mll
 ##################
 
 clean:
-	rm -f *~ *.cm[iox] *.o bibtex_lexer.ml bibtex_parser.ml bibtex_parser.mli latexscan.ml bibtex2html
+	rm -f *~ *.cm[iox] *.o bibtex_lexer.ml bibtex_parser.ml bibtex_parser.mli latexscan.ml bibtex2html bbl_lexer.ml
 
 depend:
 	rm -f .depend
