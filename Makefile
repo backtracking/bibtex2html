@@ -43,8 +43,8 @@ all: bibtex2html bib2bib
 
 install:
 	cp bibtex2html bib2bib $(BINDIR)
-	cp bibtex2html.man $(MANDIR)/man1/bibtex2html.1
-	cp bibtex2html.man $(MANDIR)/man1/bib2bib.1
+	cp bibtex2html.1 $(MANDIR)/man1/bibtex2html.1
+	cp bibtex2html.1 $(MANDIR)/man1/bib2bib.1
 
 local:
 	cp bibtex2html bib2bib $$HOME/bin/$$OSTYPE
@@ -90,7 +90,7 @@ NAME=bibtex2html-$(MAJORVN).$(MINORVN)
 
 FTP = /users/demons/filliatr/ftp/ocaml/bibtex2html
 
-FILES = *.ml* Makefile .depend README COPYING GPL CHANGES manual.tex
+SOURCEFILES = *.ml* Makefile .depend README COPYING GPL CHANGES manual.tex *.1
 
 export: source doc linux solaris
 
@@ -99,7 +99,7 @@ move-olds:
 
 source: clean 
 	mkdir -p export/$(NAME)
-	cp $(FILES) export/$(NAME)
+	cp $(SOURCEFILES) export/$(NAME)
 	(cd export ; tar cf $(NAME).tar $(NAME) ; \
 	gzip -f --best $(NAME).tar)
 	cp README COPYING GPL CHANGES export/$(NAME).tar.gz $(FTP)
@@ -114,11 +114,11 @@ solaris:
 sunos4:
 	rmake ??? $(HOME)/soft/ocaml/bibtex clean binary
 
+BINARYFILES = README COPYING GPL bibtex2html bib2bib bibtex2html.1 bib2bib.1 
+
 binary: bibtex2html bib2bib
 	mkdir -p export/$(BINARY)
-	cp README COPYING GPL bibtex2html bib2bib export/$(BINARY)
-	cp bibtex2html.man export/$(BINARY)/bibtex2html.1
-	cp bibtex2html.man export/$(BINARY)/bib2bib.1
+	cp $(BINARYFILES) export/$(BINARY)
 	(cd export; tar czf $(BINARY).tar.gz $(BINARY))
 	cp export/$(BINARY).tar.gz $(FTP)
 
@@ -126,7 +126,7 @@ AIX=bibtex2html-$(MAJORVN).$(MINORVN)-AIX
 
 aix:
 	mkdir -p export/$(AIX)
-	cp README COPYING GPL bibtex2html bib2bib export/$(AIX)
+	cp $(BINARYFILES) export/$(AIX)
 	(cd export; tar cf $(AIX).tar $(AIX); gzip --best $(AIX).tar)
 
 # documentation

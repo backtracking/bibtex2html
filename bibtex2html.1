@@ -1,0 +1,42 @@
+.TH BIBTEX2HTML BIB2BIB 1
+
+.SH NAME
+BibTeX2HTML \- A translator of bibliography databases into HTML
+
+.SH SYNOPSIS
+.B bibtex2html <options> [filename]
+
+.B bib2bib [options] <input file names>
+
+.SH DESCRIPTION
+
+BibTeX2HTML is a collection of tools for automatically producing HTML
+documents from bibliography databases written in the BibTeX format. It
+consists in two command line tools:
+
+.B bib2bib 
+is a filter tool that reads one or several bibliography
+files, filters the entries with respect to a given criterion, and
+outputs the list of selected keys together with a new bibliography
+file containing only the selected entries; 
+
+.B bibtex2html 
+is a translator that reads a bibliography file and 
+outputs two HTML documents that contains respectively the cited
+bibliography in a nice presentation, and the original BibTeX file
+augmented with several transparent HTML links to allow easy
+navigation.
+
+.SH OPTIONS
+
+A short description of available options is displayed when programs
+are run with option -help. For detailed explanations, please look at
+the HTML documentation at the URL
+.I http://www.lri.fr/~filliatr/bibtex2html/doc/
+
+
+.SH SEE ALSO
+.BR bibtex (1),
+.br
+.I http://www.lri.fr/~filliatr/bibtex2html/
+
