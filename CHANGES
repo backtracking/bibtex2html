@@ -1,4 +1,5 @@
 
+ o macros \bysame, \MR and \MRhref for AMS* stylew
  o modified -bib.html output to circumvent a Konqueror bug
 
 Version 1.68, 16/03/2004

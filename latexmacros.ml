@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.49 2004-02-27 08:06:02 filliatr Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.50 2004-04-05 07:49:58 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -327,6 +327,17 @@ List.iter
    "rho";"varrho";"sigma";"varsigma";"tau";"upsilon";"phi";"varphi";
    "chi";"psi";"omega";"Gamma";"Delta";"Theta";"Lambda";"Xi";"Pi";
    "Sigma";"Upsilon";"Phi";"Psi";"Omega"];
+
+(* macros for the AMS styles *)
+
+def "\\bysame" [Print "<u>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</u>"];
+def "\\MR" 
+  [Raw_arg (fun s -> 
+	      print_s "<a href=\"http://www.ams.org/mathscinet-getitem?mr=";
+	      print_s s; print_s "\">MR "; print_s s; print_s "</a>")];
+def "\\MRhref" 
+  [Print "<a href=\"http://www.ams.org/mathscinet-getitem?mr=";
+   Print_arg; Print "\">"; Print_arg; Print "</a>"];
 
 ()
 
