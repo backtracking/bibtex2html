@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.mli,v 1.3 2002-06-18 08:11:29 filliatr Exp $ i*)
+(*i $Id: translate.mli,v 1.4 2002-06-24 07:35:58 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -31,6 +31,7 @@ val title : string ref
 val title_spec : bool ref
 val print_abstract : bool ref
 val print_keywords : bool ref
+val print_header : bool ref
 val print_footer : bool ref
 val multiple : bool ref
 val both : bool ref

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: main.ml,v 1.47 2002-06-18 08:11:29 filliatr Exp $ i*)
+(*i $Id: main.ml,v 1.48 2002-06-24 07:35:58 filliatr Exp $ i*)
 
 (*s Main module of bibtex2html. *)
 
@@ -316,6 +316,7 @@ let usage () =
   prerr_endline "  -heveaurl  use HeVeA's \\url macro";
   prerr_endline "  -noabstract";
   prerr_endline "             do not print the abstracts (if any)";
+  prerr_endline "  -noheader  do not print the header (bibtex2html command)";
   prerr_endline "  -nofooter  do not print the footer (bibtex2html web link)";
   prerr_endline "  -noexpand  do not expand abbreviations in the BibTeX output";
   prerr_endline "  -nobibsource";
@@ -378,6 +379,8 @@ let parse () =
 i*)
     | ("-heveaurl" | "--hevea-url") :: rem -> 
 	Latexscan.hevea_url := true; parse_rec rem
+    | ("-noheader" | "--no-header") :: rem ->
+	print_header := false; parse_rec rem
     | ("-nofooter" | "--no-footer") :: rem ->
 	print_footer := false; parse_rec rem
     | ("-f" | "--field") :: s :: rem ->

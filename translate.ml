@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.56 2002-06-24 07:27:08 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.57 2002-06-24 07:35:58 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -31,6 +31,7 @@ let title = ref ""
 let title_spec = ref false
 let print_abstract = ref true
 let print_keywords = ref true
+let print_header = ref true
 let print_footer = ref true
 let multiple = ref false
 let both = ref false
@@ -280,7 +281,7 @@ let separate_file (b,((_,k,f) as e)) =
   let title = sprintf "%s : %s" !output_file k in
   if not !nodoc then
     Html.open_document ch (fun () -> output_string ch title);
-  header ch;
+  if !print_header then header ch;
   Html.open_balise ch "h2";
   latex2html ch b;
   Html.close_balise ch "h2";
@@ -384,7 +385,7 @@ let summary bl =
   end;
   if not !nodoc then
     Html.open_document ch (fun () -> output_string ch !title);
-  header ch;
+  if !print_header then header ch;
   if !title_spec then Html.h1_title ch !title;
   output_string ch "\n";
   
