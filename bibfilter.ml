@@ -14,9 +14,11 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibfilter.ml,v 1.5 2000-06-05 21:50:22 filliatr Exp $ *)
+(* $Id: bibfilter.ml,v 1.6 2000-06-19 08:43:23 marche Exp $ *)
 
 open Bibtex;;
+
+let debug = false;;
 
 (* [filter bib f] returns the list of keys of [bib] whose fields
    satisfy the filter criterion [f] *)
@@ -35,7 +37,7 @@ let filter biblio criterion =
 (* [needed_keys biblio field value keys] returns the set of keys
 [keys] augmented with the needed keys for [value] *)
 
-let rec needed_keys_for_field biblio field value keys =
+let rec needed_keys_for_field biblio field value keys abbrevs =
   if field = "CROSSREF"
   then 
     match value with
@@ -45,54 +47,55 @@ let rec needed_keys_for_field biblio field value keys =
 	      try
 		let e = find_entry s biblio
 		in
-(*
-		  Printf.printf "We need additional crossref %s\n" s;
-*)
-		  needed_keys_for_entry biblio (KeySet.add s keys) e
+		if debug then begin
+		  Printf.printf "We need additional crossref %s\n" s
+		end;
+		needed_keys_for_entry biblio (KeySet.add s keys) abbrevs e
 	      with Not_found ->
 		Printf.printf "Warning: cross-reference \"%s\" not found.\n" s;
-		keys
+		(keys,abbrevs)
 	    end
-	  else keys
+	  else (keys,abbrevs)
       | _ -> 
 	  Printf.printf "Warning: cross-references must be constant strings\n";
-	  keys
+	  (keys,abbrevs)
   else
     List.fold_right
-      (fun a keys ->
+      (fun a (keys,abbrevs) ->
 	 match a with
 	     Id(id) -> 
 	       let id = String.uppercase id in		 
-		 if not (KeySet.mem id keys) then
-		   if abbrev_is_implicit id then keys
+		 if not (KeySet.mem id abbrevs) 
+		 then
+		   if abbrev_is_implicit id then (keys,abbrevs)
 		   else 
-		     if abbrev_exists id biblio 
-		     then		       
-		       (*
-			 Printf.printf "We need additional abbrev %s\n" id;
-		       *)
-		       KeySet.add id keys
-		     else
-		       begin
-			 Printf.printf "Warning: string \"%s\" not found.\n" id;
-			 keys
-		       end 
-		 else keys
-	   | _ -> keys)
+		     try
+		       let e = find_abbrev id biblio in
+		       if debug then begin
+			 Printf.printf "We need additional abbrev %s\n" id
+		       end;
+		       needed_keys_for_entry biblio keys (KeySet.add id abbrevs) e
+		     with Not_found ->
+		       Printf.printf "Warning: string \"%s\" not found.\n" id;
+		       (keys,abbrevs)
+		 else (keys,abbrevs)
+	   | _ -> (keys,abbrevs))
       value
-      keys
+      (keys,abbrevs)
 
-and needed_keys_for_entry biblio keys = function
+and needed_keys_for_entry biblio keys abbrevs = function
     Entry(entry_type,key,fields) ->
 	     List.fold_right
-	       (fun (field,value) keys ->
+	       (fun (field,value) (keys,abbrevs) ->
 (*
 		  Printf.printf "Field : %s\n" field;
 *)
-		  needed_keys_for_field biblio field value keys)
+		  needed_keys_for_field biblio field value keys abbrevs)
 	       fields
-	       keys
-  | _ -> keys
+	       (keys,abbrevs)
+  | Abbrev(field,value) -> 
+      needed_keys_for_field biblio field value keys abbrevs
+  | _ -> (keys,abbrevs)
 ;;
 
 
@@ -102,14 +105,18 @@ and needed_keys_for_entry biblio keys = function
 
 
 let saturate biblio s =
-  Bibtex.fold
-    (fun entry keys ->
-       match entry with
-	   Entry(_,key,_) as e when KeySet.mem key s ->
-	     needed_keys_for_entry biblio keys e
-	 | _ -> keys)
-    biblio
-    s
+  let (keys,abbrevs) =
+    Bibtex.fold
+      (fun entry (keys,abbrevs) ->
+	 match entry with
+	     Entry(_,key,_) as e when KeySet.mem key s ->
+	       needed_keys_for_entry biblio keys abbrevs e
+	   | _ -> (keys,abbrevs))
+      biblio
+      (s,KeySet.empty)
+  in
+  KeySet.union keys abbrevs
+;;
 
 
 

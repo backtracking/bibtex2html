@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibtex.ml,v 1.13 2000-06-09 17:33:30 filliatr Exp $ *)
+(* $Id: bibtex.ml,v 1.14 2000-06-19 08:43:23 marche Exp $ *)
 
 type entry_type = string
 		    
@@ -128,11 +128,21 @@ let abbrev_is_implicit key =
       let _ = List.assoc key month_env in true
     with Not_found -> false
 
+(*i
 let rec abbrev_exists key biblio =
   match biblio with
     | [] -> false
     | (Abbrev (s,_)) :: b -> s = key || abbrev_exists key b
     | _ :: b -> abbrev_exists key b
+i*)
+
+let rec find_abbrev key biblio =
+  match biblio with
+    | [] -> raise Not_found
+    | (Abbrev (s,_) as e) :: b -> 
+	if s = key then e
+	else find_abbrev key b
+    | _ :: b -> find_abbrev key b
 
 let concat_atom_lists a1 a2 = 
   match (a1,a2) with
@@ -145,14 +155,14 @@ let add_abbrev a l = Hashtbl.add abbrev_table a l
 
 let _ = List.iter (fun (a,l) -> add_abbrev a l) month_env
 
-let find_abbrev a = Hashtbl.find abbrev_table a
+let find_abbrev_in_table a = Hashtbl.find abbrev_table a
 
 let rec expand_list = function
   | [] -> []
   | ((Id s) as a) :: rem ->
       begin
 	try 
-	  let v = find_abbrev s in
+	  let v = find_abbrev_in_table s in
 	  concat_atom_lists v (expand_list rem)
 	with Not_found -> 
 	  concat_atom_lists [a] (expand_list rem)

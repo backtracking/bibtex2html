@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibtex.mli,v 1.13 2000-06-09 17:33:31 filliatr Exp $ *)
+(* $Id: bibtex.mli,v 1.14 2000-06-19 08:43:23 marche Exp $ *)
 
 type entry_type = string
 		    
@@ -74,10 +74,11 @@ val size : biblio -> int
 val fold : (command -> 'a -> 'a) -> biblio -> 'a -> 'a
 
 (* [abbrev_is_implicit k] is true when [k] is an integer or a month
-   name.  [abbrev_exists k b] is true when [k] appears in biblio [b]. *)
+   name.  [abbrev_search k b] returns the first abbrev of key [k] in
+   biblio [b], Raises [Not_found] if no abbrev of this key exist. *)
 
 val abbrev_is_implicit : key -> bool
-val abbrev_exists : key -> biblio -> bool
+val find_abbrev : key -> biblio -> command
 
 (* expansion of abbreviations. [expand_abbrevs bib] returns a new
    bibliography where all strings have been expanded *)
