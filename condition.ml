@@ -24,13 +24,16 @@ let evaluate_constante key fields = function
       begin
 	try
 	  match List.assoc f fields with
-	    | [Bibtex.String(v)] -> v
+	    | [Bibtex.String(v)] -> 
+		let v' = Latex_accents.normalize v in
+		Printf.printf "normalize(%s) -> %s\n" v v';
+		v'
 	    | [Bibtex.Id(v)] -> v
 	    | _ -> raise Unavailable
 	with
 	    Not_found -> raise Unavailable
       end
-  | Cte(x) -> x
+  | Cte(x) -> Latex_accents.normalize x
 ;;
 
 let eval_comp v1 op v2 = 

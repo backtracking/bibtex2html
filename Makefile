@@ -28,7 +28,7 @@ OBJS =  latexmacros.cmx latexscan.cmx bbl_lexer.cmx \
 	copying.cmx main.cmx
 
 BIB2BIBOBJS = bibtex.cmx bibtex_lexer.cmx bibtex_parser.cmx readbib.cmx \
-	condition.cmx \
+	latex_accents.cmx condition.cmx \
 	condition_parser.cmx condition_lexer.cmx parse_condition.cmx \
 	bibfilter.cmx \
 	html.cmx biboutput.cmx version.cmx copying.cmx bib2bib.cmx
@@ -62,11 +62,7 @@ latexscan.ml: latexscan.mll
 bibtex_lexer.ml: bibtex_lexer.mll
 	ocamllex bibtex_lexer.mll
 
-condition_lexer.ml: condition_lexer.mll
-	ocamllex condition_lexer.mll
 
-bbl_lexer.ml: bbl_lexer.mll
-	ocamllex bbl_lexer.mll
 
 # export
 ########
@@ -137,7 +133,7 @@ manual.html: manual.tex
 # generic rules :
 #################
 
-.SUFFIXES: .mli .ml .cmi .cmo .cmx
+.SUFFIXES: .mli .ml .mll .cmi .cmo .cmx
  
 .mli.cmi:
 	$(CAMLC) -c $(FLAGS) $<
@@ -151,6 +147,8 @@ manual.html: manual.tex
 .ml.cmx:
 	$(CAMLCOPT) -c $(PROFILE) $(FLAGS) $<
 
+.mll.ml:
+	ocamllex $<
 
 # clean and depend
 ##################
@@ -163,8 +161,12 @@ clean:
 	rm -f condition_lexer.ml manual.html
 
 
-depend: bibtex_lexer.ml bbl_lexer.ml latexscan.ml \
-	bibtex_parser.mli bibtex_parser.ml
+depend .depend: \
+	bibtex_lexer.ml bbl_lexer.ml \
+	latexscan.ml latex_accents.ml \
+	bibtex_parser.mli bibtex_parser.ml \
+	condition_parser.mli condition_parser.ml \
+	condition_lexer.ml
 	rm -f .depend
 	ocamldep $(ZLIBS) *.mli *.ml > .depend
 

@@ -21,8 +21,8 @@ bibtex_lexer.cmo: bibtex_parser.cmi
 bibtex_lexer.cmx: bibtex_parser.cmx 
 bibtex_parser.cmo: bibtex.cmi bibtex_parser.cmi 
 bibtex_parser.cmx: bibtex.cmx bibtex_parser.cmi 
-condition.cmo: bibtex.cmi condition.cmi 
-condition.cmx: bibtex.cmx condition.cmi 
+condition.cmo: bibtex.cmi latex_accents.cmi condition.cmi 
+condition.cmx: bibtex.cmx latex_accents.cmx condition.cmi 
 condition_lexer.cmo: condition_parser.cmi condition_lexer.cmi 
 condition_lexer.cmx: condition_parser.cmx condition_lexer.cmi 
 condition_parser.cmo: condition.cmi condition_parser.cmi 
@@ -31,6 +31,8 @@ copying.cmo: version.cmo copying.cmi
 copying.cmx: version.cmx copying.cmi 
 expand.cmo: bibtex.cmi latexscan.cmo expand.cmi 
 expand.cmx: bibtex.cmx latexscan.cmx expand.cmi 
+latex_accents.cmo: latex_accents.cmi 
+latex_accents.cmx: latex_accents.cmi 
 latexmacros.cmo: latexmacros.cmi 
 latexmacros.cmx: latexmacros.cmi 
 latexscan.cmo: latexmacros.cmi 

@@ -1,5 +1,9 @@
 
- o much more macros translated
+ o bib2bib conditions now take LaTeX accents into account. For example
+   \'e, \'{e} and é are all considered identical. Some accents still
+   have to be considered. A new module Latex_accents has been added
+   for that purpose.
+ o much more LaTeX macros translated
  o macro \u (a romanian accent) recognized (but \u{s} simply outputs s) 
  o option --raw-url to print URL instaed of files's types.
  

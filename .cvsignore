@@ -7,6 +7,7 @@ bibtex_parser.mli
 condition_lexer.ml
 condition_parser.ml
 condition_parser.mli
+latex_accents.ml
 bibtex2html
 bbl_lexer.ml
 bibtex2html.tar
