@@ -278,6 +278,9 @@ clean::
 	rm -f bibtex2html.static bib2bib.static
 	rm -f bibtex2html.byte bib2bib.byte
 
+dist-clean:: clean
+	rm -f Makefile aux2bib
+
 depend:: $(GENERATED)
 	rm -f .depend
 	ocamldep $(ZLIBS) *.mli *.ml > .depend
