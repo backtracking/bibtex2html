@@ -57,7 +57,7 @@ FTP = /users/demons/filliatr/ftp/ocaml/bibtex2html
 
 FILES = bibtex.mli latexmacros.ml Makefile bibtex_lexer.mll latexmacros.mli \
 	translate.ml bbl_lexer.mll bibtex_parser.mly latexscan.mll \
-	bibtex.ml html.ml main.ml .depend README COPYING GPL
+	bibtex.ml html.ml main.ml .depend README COPYING GPL CHANGES
 
 export: source linux solaris
 
