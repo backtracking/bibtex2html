@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.23 1999-06-30 12:45:56 marche Exp $ *)
+(* $Id: latexmacros.ml,v 1.24 1999-07-16 12:44:36 marche Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -114,6 +114,7 @@ def "\\th" [Print "&thorn;"];
 def "\\TH" [Print "&THORN;"];
 def "\\dh" [Print "&eth;"];
 def "\\DH" [Print "&ETH;"];
+def "\\ss" [Print "&szlig;"];
 def "\\'" [Raw_arg(function "e" -> print_c 'é'
                           | "E" -> print_c 'É'
 			  | "a" -> print_c 'á'

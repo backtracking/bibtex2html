@@ -1,4 +1,7 @@
 
+ o macro \ss -> &szlig;
+ o autorize + in keys
+
 Version 1.0, 1999/07/15
  o option --footer
  o condition are now arbitrary boolean expressions over comparaisons
