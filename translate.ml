@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.20 1998-11-18 09:59:41 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.21 1999-02-04 16:21:50 filliatr Exp $ *)
 
 (* options *)
 
@@ -164,9 +164,11 @@ let make_links ch ((t,k,_) as e) =
 	  Html.close_href ch;
 	end else begin
 	  Html.paragraph ch; output_string ch "\n";
-	  Html.open_balise ch "blockquote"; output_string ch "\n";
+	  Html.open_balise ch "font size=-1"; Html.open_balise ch "blockquote";
+	  output_string ch "\n";
 	  latex2html ch a;
-	  Html.close_balise ch "blockquote"; output_string ch "\n";
+	  Html.close_balise ch "blockquote"; Html.close_balise ch "font";
+	  output_string ch "\n";
 	  Html.paragraph ch; output_string ch "\n"
 	end
     with Not_found -> ()
