@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: biboutput.ml,v 1.15 2004-07-06 15:22:32 marche Exp $ i*)
+(*i $Id: biboutput.ml,v 1.16 2004-09-08 06:51:06 filliatr Exp $ i*)
 
 (*s Output a BibTeX bibliography. *)
 
@@ -102,9 +102,9 @@ i*)
       output_string ch "\n"
   | Preamble l ->
       if html then output_string ch "<pre>\n";
-      output_string ch "@PREAMBLE{{";
+      output_string ch "@PREAMBLE{";
       print_atom_list html ch l;
-      output_string ch "}}\n";
+      output_string ch "}\n";
       if html then output_string ch "</pre>\n";
       output_string ch "\n"
   | Abbrev(s,l) ->
