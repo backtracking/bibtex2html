@@ -55,6 +55,7 @@ def "\\begin{alltt}" [Print "<pre>"];
 def "\\end{alltt}" [Print "</pre>"];
 def "\\texttt" [Print "<tt>" ; Print_arg ; Print "</tt>"];
 def "\\textem" [Print "<em>" ; Print_arg ; Print "</em>"];
+def "\\textbf" [Print "<b>" ; Print_arg ; Print "</b>"];
 def "\\emph" [Print "<em>" ; Print_arg ; Print "</em>"];
 def "\\begin{itemize}" [Print "<p><ul>"];
 def "\\end{itemize}" [Print "</ul>"];
