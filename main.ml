@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.38 2000-06-30 17:23:58 filliatr Exp $ *)
+(* $Id: main.ml,v 1.39 2000-08-10 20:45:00 filliatr Exp $ *)
 
 open Printf
 open Translate
@@ -204,6 +204,44 @@ let get_biblios fbib =
   with
     e -> clean tmp; raise e
 
+(***
+let insert_title_url bib = 
+  let rec remove_assoc x = function
+    | [] ->
+	raise Not_found
+    | ((y,v) as p) :: l -> 
+	if x = y then 
+	  (v,l) 
+	else 
+	  let (v',l') = remove_assoc x l in (v', p :: l')
+  in
+  let url_value = function
+    | [Bibtex.Id u] -> u
+    | [Bibtex.String u] -> u
+    | _ -> raise Not_found
+  in
+  let modify_entry f =
+    try
+      let t,f' = remove_assoc "TITLE" f in
+      let u,f'' = remove_assoc "URL" f' in
+      let u' = Html.normalize_url (url_value u) in 
+      let nt = 
+	(Bibtex.String 
+	   (sprintf "\\begin{rawhtml}<A HREF=\"%s\">\\end{rawhtml}" u'))
+	:: t @ [Bibtex.String "\\begin{rawhtml}</A>\\end{rawhtml}"]
+      in
+      ("TITLE",nt) :: f''
+    with Not_found -> 
+      f
+  in
+  Bibtex.fold 
+    (fun com bib' -> match com with 
+       | Bibtex.Entry (ty,k,f) -> 
+	   Bibtex.add_new_entry (Bibtex.Entry (ty,k,modify_entry f)) bib'
+       | _ -> 
+	   Bibtex.add_new_entry com bib')
+    bib Bibtex.empty_biblio
+***)
 
 let translate fullname =
   let input_bib = Readbib.read_entries_from_file fullname in
@@ -269,6 +307,7 @@ let usage () =
   prerr_endline "  -multiple  produce one file per entry";
   prerr_endline "  -nodoc     only produces the body of the HTML documents";
   prerr_endline "  -nokeys    do not print the BibTeX keys";
+  (* prerr_endline "  -titleurl  URLs wrapped around titles"; *)
   prerr_endline "  -rawurl    print URL instead of file type";
   prerr_endline "  -heveaurl  use HeVeA's \\url macro";
   prerr_endline "  -noabstract";
@@ -315,6 +354,10 @@ let parse () =
 	nokeys := true; parse_rec rem
     | ("-rawurl" | "--raw-url") :: rem -> 
 	raw_url := true; parse_rec rem
+(***
+    | ("-tu" | "-titleurl" | "--title-url") :: rem -> 
+	title_url := true; parse_rec rem
+***)
     | ("-heveaurl" | "--hevea-url") :: rem -> 
 	Latexscan.hevea_url := true; parse_rec rem
     | ("-nofooter" | "--no-footer") :: rem ->
@@ -364,7 +407,7 @@ let parse () =
 	usage()
     | ("-nobibsource" | "--nobibsource") :: rem ->
 	bib_entries := false; parse_rec rem
-    | ("-nodoc" | "--no-doc") :: rem -> 
+    | ("-nodoc" | "--nodoc" | "--no-doc") :: rem -> 
 	nodoc := true; parse_rec rem
     | ("-noexpand" | "--no-expand") :: rem -> 
 	expand_abbrev_in_bib_output := false; parse_rec rem
@@ -422,7 +465,7 @@ let main () =
   let (fbib,f) = parse () in
   Copying.banner "bibtex2html";
   if fbib = "" then begin
-    title := "bibtex2html output";
+    if not !title_spec then title := "bibtex2html output";
     begin match !output_file with
       | "" -> bib_entries := false
       | "-" -> output_file := ""; bib_entries := false

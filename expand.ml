@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: expand.ml,v 1.7 2000-06-30 02:36:42 filliatr Exp $ *)
+(* $Id: expand.ml,v 1.8 2000-08-10 20:44:59 filliatr Exp $ *)
 
 open Format
 open Bibtex
@@ -47,10 +47,10 @@ let assoc_months =
 let rec expand_list = function
   | [] -> 
       ""
-  | (Id s)::rem ->
+  | (Id s) :: rem ->
       (try find_abbrev s with Not_found -> s) ^ (expand_list rem)
 
-  | (String s)::rem ->
+  | (String s) :: rem ->
       s ^ (expand_list rem)
 
 let rec expand_fields = function

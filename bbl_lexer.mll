@@ -3,6 +3,8 @@
  *)
 {
 
+open Lexing
+
 exception End_of_biblio
 
 let opt_ref = ref None
@@ -10,6 +12,8 @@ let opt_ref = ref None
 let key = ref ""
 
 let brace_depth = ref 0
+
+let buf = Buffer.create 1024
 
 }
 rule biblio_header = parse
@@ -22,7 +26,7 @@ rule biblio_header = parse
 
 and biblio_name = parse
     '[' [^ ']']* ']'
-      { let l = Lexing.lexeme lexbuf in
+      { let l = lexeme lexbuf in
 	let s = String.sub l 1 (String.length l - 2) in
         Some s }
   | _
@@ -40,24 +44,27 @@ and bibitem = parse
 
 and bibitem1 = parse
     '[' [^']']* ']'
-      { let l = Lexing.lexeme lexbuf in
+      { let l = lexeme lexbuf in
 	let s = String.sub l 1 (String.length l - 2) in
         opt_ref := Some s }
     
 and bibitem2 = parse
     '{' [^'}']* '}'
-      { let l = Lexing.lexeme lexbuf in
+      { let l = lexeme lexbuf in
 	let s = String.sub l 1 (String.length l - 2) in
         key := s;
 	skip_end_of_line lexbuf;
+	Buffer.reset buf;
 	bibitem_body lexbuf }
 
 and bibitem_body = parse
-  | ( [^'\n']+ '\n' )+ '\n'
-      { let s = Lexing.lexeme lexbuf in
-        (!opt_ref, !key, String.sub s 0 (String.length s - 2)) }
+  | "\n\n"
+      { let s = Buffer.contents buf in (!opt_ref, !key, s) }
   | eof
       { raise End_of_file }
+  | "\\%" { Buffer.add_string buf "\\%"; bibitem_body lexbuf }
+  | "%\n" { bibitem_body lexbuf }
+  | _     { Buffer.add_char buf (lexeme_char lexbuf 0); bibitem_body lexbuf }
 
 and skip_end_of_line = parse
     [' ' '\n' '\010' '\013' '\009' '\012'] +
