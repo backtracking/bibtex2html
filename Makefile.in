@@ -17,7 +17,7 @@ DOCDIR = $(prefix)/doc/bibtex2html
 # End of configuration part
 #########################################
 
-VERSION=1.67
+VERSION=1.68
 
 OCAMLC   = @OCAMLC@
 OCAMLOPT = @OCAMLOPT@ 
@@ -171,7 +171,7 @@ SOURCEFILES = *.ml* aux2bib.in Makefile.in configure.in configure .depend README
 export: source export-doc linux
 	echo "<#def version>$(VERSION)</#def>" > $(WWWSRC)/version.prehtml
 	make -C $(WWWSRC) install
-	mail -s "nouvelle release de bibtex2html" treinen@debian.org < /dev/null
+	#mail -s "nouvelle release de bibtex2html" treinen@debian.org < /dev/null
 	echo "*** prevenir Gerald Pfeifer <pfeifer@dbai.tuwien.ac.at> ***"
 
 move-olds:
