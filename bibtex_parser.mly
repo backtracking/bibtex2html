@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  */
 
-/* $Id: bibtex_parser.mly,v 1.4 1998-05-28 07:21:01 filliatr Exp $ */
+/* $Id: bibtex_parser.mly,v 1.5 1999-06-29 15:37:21 marche Exp $ */
 
 %{
 
@@ -26,8 +26,6 @@
 %token <string> Tstring
 %token Tabbrev Tcomment Tpreamble Tlbrace Trbrace Tcomma Tequal EOF Tsharp
 
-%start entry_list
-%type <(Bibtex.entry list)> entry_list
 %start command_list
 %type <(Bibtex.command list)> command_list
 %start command
@@ -35,10 +33,6 @@
 
 %%
 
-entry_list:
-   command_list
-     { Bibtex.expand $1 }
-;
 command_list:
    command command_list
      { $1::$2 }
@@ -47,11 +41,11 @@ command_list:
 ;
 command:
    Tcomment Tlbrace anything_until_rbrace
-     { Comment }
+     { Comment $3 }
  | Tpreamble Tlbrace Tstring Trbrace
      { Preamble $3 }
  | Tabbrev Tlbrace Tident Tequal sharp_string_list Trbrace
-     { Abbrev ($3,$5) }
+     { Abbrev (String.uppercase $3,$5) }
  | Tident Tlbrace Tident Tcomma comma_field_list Trbrace
      { Entry (String.uppercase $1,$3,$5) }
 ;
@@ -81,18 +75,18 @@ sharp_string_list:
 ;
 atom:
    Tident
-     { (Id $1) }
+     { Id (String.uppercase $1) }
  | Tstring
-     { (String $1) }
+     { String $1 }
 ;
 anything_until_rbrace:
    Trbrace
-     { () }
+     { "" }
  | any_but_rbrace anything_until_rbrace
-     { () }
+     { $1 ^ $2 }
 ;
 any_but_rbrace:
-   Tident  { () }
- | Tstring { () }
- | Tequal  { () }
+   Tident  { $1 }
+ | Tstring { $1 }
+ | Tequal  { "=" }
 %%
