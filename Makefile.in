@@ -18,7 +18,7 @@ DOCDIR = $(prefix)/doc/bibtex2html
 #########################################
 
 MAJORVN=1
-MINORVN=54
+MINORVN=55
 
 OCAMLC   = @OCAMLC@
 OCAMLOPT = @OCAMLOPT@ 
@@ -169,6 +169,10 @@ source: clean
 	cp $(SOURCEFILES) export/$(NAME)
 	(cd export ; tar cf $(NAME).tar $(NAME) ; \
 	gzip -f --best $(NAME).tar)
+	if test -f $(FTP)/$(NAME).tar.gz && \
+	   ! cmp -s export/$(NAME).tar.gz $(FTP)/$(NAME).tar.gz; then \
+		echo "IL FAUT CHANGER DE NUMÉRO DE VERSION"; exit 1; \
+	fi
 	cp README COPYING GPL CHANGES export/$(NAME).tar.gz $(FTP)
 
 BINARY = bibtex2html-$(MAJORVN).$(MINORVN)-$(OSTYPE)
