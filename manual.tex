@@ -11,6 +11,8 @@
 \newcommand{\ocamlweb}{\textsf{ocamlweb}}
 \newcommand{\monurl}[2]{\url{#1}}
 %HEVEA\renewcommand{\monurl}[2]{\url{#2}{#2}}
+\newcommand{\mm}{\symbol{45}\symbol{45}}
+
 
 \begin{document}
 
@@ -117,10 +119,10 @@ If a BibTeX entry contains a field \texttt{abstract} then its contents
 is quoted right after the bibliography entry.
 %HEVEA like <a href=examples/publis-abstracts.html>this</a>. 
 
-This behavior may be suppressed with the option \texttt{--no-abstract}.
+This behavior may be suppressed with the option \texttt{\mm{}no-abstract}.
 
 If you want both versions with and without abstracts, use the option
-\texttt{--both}. In that case, links named "Abstract" will be
+\texttt{\mm{}both}. In that case, links named "Abstract" will be
 inserted from the page without abstracts to the page with abstracts,
 %HEVEA like <a href=examples/publis.html>this</a>.
 
@@ -130,41 +132,45 @@ inserted from the page without abstracts to the page with abstracts,
 
 Most of the command line options have a short version of one character
 (e.g. \texttt{-r}) and an easy-to-remember/understand long version 
-(e.g. \texttt{--reverse-sort}).
+(e.g. \texttt{\mm{}reverse-sort}).
 
 \subsubsection{General aspect of the HTML document}
 
 \begin{description}
   
-\item[\texttt{-t} \textit{string}, \texttt{--title} \textit{string}]
+\item[\texttt{-t} \textit{string}, \texttt{\mm{}title} \textit{string}]
   specify the title of the HTML file (default is the file name).
 
+
+\item[\texttt{\mm{}footer} \textit{string}]
+  give an additional footer for the HTML document.
+
   
-\item[\texttt{-s} \textit{string}, \texttt{--style} \textit{string}]
+\item[\texttt{-s} \textit{string}, \texttt{\mm{}style} \textit{string}]
   use BibTeX style \textit{string} (plain, alpha, etc.).  Default
   style is plain.
 
   
-\item[\texttt{-noabstract}, \texttt{--no-abstract}] do not print the
+\item[\texttt{-noabstract}, \texttt{\mm{}no-abstract}] do not print the
   abstracts (if any).
 
   
-\item[\texttt{-both}, \texttt{--both}] produce both pages with and
+\item[\texttt{-both}, \texttt{\mm{}both}] produce both pages with and
   without abstracts. If the BibTeX file is foo.bib then the two pages
   will be respectively foo.html and foo-abstracts.html (The suffix may
-  be different, see option \texttt{--suffix}). Links are inserted from
+  be different, see option \texttt{\mm{}suffix}). Links are inserted from
   the page without abstracts to the page with abstracts.
 
   
-\item[\texttt{-nokeys}, \texttt{--no-keys}] do not print the cite
+\item[\texttt{-nokeys}, \texttt{\mm{}no-keys}] do not print the cite
   keys.
 
   
-\item[\texttt{-f} \textit{field}, \texttt{--field} \textit{field}] add
+\item[\texttt{-f} \textit{field}, \texttt{\mm{}field} \textit{field}] add
   a web link for that BibTeX field.
 
   
-\item[\texttt{-multiple}, \texttt{--multiple}] make a separate web
+\item[\texttt{-multiple}, \texttt{\mm{}multiple}] make a separate web
   page for each entry.  \textit{Beware: this option produces as many
     HTML files as BibTeX entries!}
 
@@ -176,7 +182,7 @@ Most of the command line options have a short version of one character
 
 \begin{description}
   
-\item[\texttt{-m} \textit{file}, \texttt{--macros-from} \textit{file}]
+\item[\texttt{-m} \textit{file}, \texttt{\mm{}macros-from} \textit{file}]
   read the LaTeX macros in the given file.
 
 
@@ -187,21 +193,21 @@ Most of the command line options have a short version of one character
 
 \begin{description}
   
-\item[\texttt{-d}, \texttt{--sort-by-date}] sort by date.
+\item[\texttt{-d}, \texttt{\mm{}sort-by-date}] sort by date.
 
   
-\item[\texttt{-a}, \texttt{--sort-as-bibtex}] sort as BibTeX (usually
+\item[\texttt{-a}, \texttt{\mm{}sort-as-bibtex}] sort as BibTeX (usually
   by author).
 
   
-\item[\texttt{-u}, \texttt{--unsorted}] unsorted i.e. same order as in
+\item[\texttt{-u}, \texttt{\mm{}unsorted}] unsorted i.e. same order as in
   .bib file (default).
 
   
-\item[\texttt{-r}, \texttt{--reverse-sort}] reverse the sort.
+\item[\texttt{-r}, \texttt{\mm{}reverse-sort}] reverse the sort.
 
   
-\item[\texttt{-e} \textit{key}, \texttt{--exclude} \textit{key}]
+\item[\texttt{-e} \textit{key}, \texttt{\mm{}exclude} \textit{key}]
   exclude an entry.
 
 
@@ -212,28 +218,28 @@ Most of the command line options have a short version of one character
 
 \begin{description}
   
-\item[\texttt{-nodoc}, \texttt{--nodoc}] do not produce a full HTML
+\item[\texttt{-nodoc}, \texttt{\mm{}nodoc}] do not produce a full HTML
   document but only its body (useful to merge the HTML bibliography in
   a bigger HTML document).
 
   
-\item[\texttt{-suffix} \textit{string}, \texttt{--suffix}
+\item[\texttt{-suffix} \textit{string}, \texttt{\mm{}suffix}
   \textit{string}] give an alternate suffix \textit{string} for the
   HTML documents (default is \texttt{.html}).
 
     
-\item[\texttt{-c} \textit{file}, \texttt{--command} \textit{file}]
+\item[\texttt{-c} \textit{file}, \texttt{\mm{}command} \textit{file}]
   specify the BibTeX command (default is \texttt{bibtex}).  Useful if
   \texttt{bibtex} is not in your path.
 
   
-\item[\texttt{-i}, \texttt{--ignore-errors}] ignore BibTeX errors.
+\item[\texttt{-i}, \texttt{\mm{}ignore-errors}] ignore BibTeX errors.
 
   
-\item[\texttt{-h}, \texttt{--help}] print a short usage and exit.
+\item[\texttt{-h}, \texttt{\mm{}help}] print a short usage and exit.
 
   
-\item[\texttt{-v}, \texttt{--version}] print the version and exit.
+\item[\texttt{-v}, \texttt{\mm{}version}] print the version and exit.
 
 
 \end{description}
