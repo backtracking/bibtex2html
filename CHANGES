@@ -1,4 +1,8 @@
 
+ o added symbols '&', '|', '!' and '?' resp. for synonyms of 'and',
+   'or', 'not' and 'exists'
+ o replaced notations '$' and '#' resp. by '$key' and '$type' in 
+   bib2bib conditions
  o all macros \xxfamily, \xxseries and \xxshape
  o fixed bug in translating unbalanced quotes to HTML
  o bib2bib: predicate "exists" added in conditions to check existence

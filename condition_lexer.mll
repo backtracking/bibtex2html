@@ -14,11 +14,15 @@ rule token = parse
   | "or"                  { OR }
   | "not"                 { NOT }
   | "exists"              { EXISTS }
+  | "&"                   { AND }
+  | "|"                   { OR }
+  | "!"                   { NOT }
+  | "?"                   { EXISTS }
   | ':'                   { COLON }
   | '('                   { LPAR }
   | ')'                   { RPAR }
-  | '$'                   { DOLLAR }
-  | '#'                   { SHARP  }
+  | "$key"                { DOLLAR_KEY }
+  | "$type"               { DOLLAR_TYPE }
   | (">" | "<" | ">=" | "<=" | "=" | "<>") 
                           { COMP(Lexing.lexeme lexbuf) }
   | ['0'-'9']+            { INT(Lexing.lexeme lexbuf) }
@@ -34,14 +38,20 @@ rule token = parse
 and string = parse
     '"'                   { Buffer.contents string_buf }
   | eof                   { raise (Lex_error ("Unterminated string")) }
-  | [^ '"'] +             { Buffer.add_string 
+  | [^ '"' '\\']          { Buffer.add_char
+			      string_buf (Lexing.lexeme_char lexbuf 0);
+			    string lexbuf }
+  | '\\' ['"' '\\']       { Buffer.add_string
 			      string_buf (Lexing.lexeme lexbuf);
 			    string lexbuf }
-
+ 
 and string2 = parse
     '\''                  { Buffer.contents string_buf }
   | eof                   { raise (Lex_error ("Unterminated string")) }
-  | [^ '\''] +            { Buffer.add_string 
+  | [^ '\'' '\\' ]        { Buffer.add_char 
+			      string_buf (Lexing.lexeme_char lexbuf 0);
+			    string2 lexbuf }
+  | '\\' ['\'' '\\']       { Buffer.add_string
 			      string_buf (Lexing.lexeme lexbuf);
 			    string2 lexbuf }
 

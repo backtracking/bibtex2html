@@ -402,12 +402,13 @@ condition is either:
 \item a matching of a field name with respect to a \emph{regular
     expression}, written as $field : regexp$ ; 
 \item a conjunction of two conditions, written as $c_1 \verb| and |
-  c_2$ ;
+  c_2$ (or $c_1 \verb| & | c_2$) ;
 \item a disjunction of two conditions, written as $c_1 \verb| or |
-  c_2$ ;
-\item a negation of a condition, written as $\verb|not | c$ ;
-\item a test of existence of a field, written as $\verb|exists | f$ where $f$
-  is a field name ;
+  c_2$ (or $c_1 \verb+ | + c_2$);
+\item a negation of a condition, written as $\verb|not | c$ (or
+  $\verb|! | c$) ;
+\item a test of existence of a field, written as $\verb|exists | f$
+  (or $\verb|? | f$) where $f$ is a field name ;
 \end{itemize}
 where an expression is either:
 \begin{itemize}
@@ -415,10 +416,10 @@ where an expression is either:
   quotes ; 
 \item a integer constant ;
 \item a field name ;
-\item the special character \verb|$| which corresponds to the key of
-  an entry.
-\item the special character \verb|#| which corresponds to the type of
-  an entry (Article, InProceedings, etc.)
+\item the special ident \verb|$key| which corresponds to the key of
+  an entry. 
+\item the special ident \verb|$type| which corresponds to the type
+  of an entry (Article, InProceedings, etc.)
 \end{itemize} 
 
 Comparison operators are the usual ones: \texttt{=}, \texttt{<},
@@ -475,13 +476,18 @@ Table~\ref{table:syntax} shows a formal grammar for conditions.
 \begin{table}[t]
 \begin{eqnarray*}
 Cond & \rightarrow & Cond \verb| and | Cond \mid Cond \verb| or | Cond
-\mid \verb|not | Cond \mid \verb|( | Cond \verb| )| \\
-&& \mid Expr ~ Comp ~ Expr \mid Expr \verb|:| String \mid \verb|exists | Id\\
+\mid \verb|not | Cond \mid \verb|exists | Id  \\
+Cond & \rightarrow & Cond \verb| & | Cond \mid Cond \verb+ | + Cond
+\mid \verb|! | Cond \mid \verb|? | Id\\
+&& \mid Expr ~ Comp ~ Expr \mid Expr \verb|:| String 
+\mid \verb|( | Cond \verb| )|\\
 Comp & \rightarrow & \verb|=| \mid \verb|>| \mid \verb|<| \mid
 \verb|>=| \mid \verb|<=| \mid \verb|<>| \\
-Expr & \rightarrow & Id \mid String \mid Int \mid \verb|$| \mid \verb|#| \\
+Expr & \rightarrow & Id \mid String \mid Int \mid \verb|$key| 
+\mid \verb|$type| \\
 Id & \rightarrow & [\verb|a|-\verb|z|\verb|A|-\verb|Z|]^+ \\
-String & \rightarrow & \verb|"| [\verb|^"|]^* \verb|"| \mid \verb|'| [\verb|^'|]^* \verb|'| \\
+String & \rightarrow & \verb|"| ([\verb|^"\|] \mid \verb|\"| \mid \verb|\\| )^*
+\verb|"| \mid \verb|'| ([\verb|^'\|] \mid \verb|\'| \mid \verb|\\| )^* \verb|'| \\ 
 Integer & \rightarrow & [\verb|0|-\verb|9|]^+
 \end{eqnarray*}
 \caption{Syntax of conditions}
@@ -496,8 +502,8 @@ Integer & \rightarrow & [\verb|0|-\verb|9|]^+
   expressions.
 \item On the other hand, case matters when comparing strings. If you want for
   example to check equality of the entry type and a string value, put the
-  value in uppercase, as for example \verb|# = "INPROCEEDINGS"|, otherwise the
-  condition would be always false. 
+  value in uppercase, as for example \verb|$type = "INPROCEEDINGS"|,
+  otherwise the condition would be always false. 
 \item When performing a comparison with an non-existent field, the result is
   always false ; beware that this means that for example 
   \verb|not (f = "value")| and \verb|f <> "value"| are not equivalent: for an
