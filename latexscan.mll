@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexscan.mll,v 1.17 2001-02-21 09:51:53 filliatr Exp $ i*)
+(*i $Id: latexscan.mll,v 1.18 2001-07-13 13:15:03 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -159,9 +159,9 @@ rule main = parse
 (* Default rule for other characters *)
   | eof         { () }
   | ['A'-'Z' 'a'-'z']+
-                { if !math_mode then print_s "<I>";
+                { if !math_mode then print_s "<EM>";
                   print_s(Lexing.lexeme lexbuf);
-                  if !math_mode then print_s "</I>";
+                  if !math_mode then print_s "</EM>";
                   main lexbuf }
   | _           { print_c(Lexing.lexeme_char lexbuf 0); main lexbuf }
 
