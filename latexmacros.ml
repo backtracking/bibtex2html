@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.35 2000-06-30 02:36:42 filliatr Exp $ *)
+(* $Id: latexmacros.ml,v 1.36 2000-07-03 18:31:10 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -69,27 +69,33 @@ def "\\paragraph"
 (* text formatting *)
 def "\\begin{alltt}" [Print "<pre>"];
 def "\\end{alltt}" [Print "</pre>"];
+def "\\textbf" [Print "<b>" ; Print_arg ; Print "</b>"];
 def "\\texttt" [Print "<tt>" ; Print_arg ; Print "</tt>"];
 def "\\textit" [Print "<i>" ; Print_arg ; Print "</i>"];
-def "\\mathit" [Print "<i>" ; Print_arg ; Print "</i>"];
 def "\\textsl" [Print "<i>" ; Print_arg ; Print "</i>"];
 def "\\textem" [Print "<em>" ; Print_arg ; Print "</em>"];
 def "\\textrm" [Print_arg];
+
 def "\\mathrm" [Print_arg];
+def "\\mathit" [Print "<i>" ; Print_arg ; Print "</i>"];
+def "\\mathnormal" [Print "<i>" ; Print_arg ; Print "</i>"];
+def "\\mathtt" [Print "<tt>" ; Print_arg ; Print "</tt>"];
 def "\\mathcal" [Print_arg];
 def "\\mathbb" [Print_arg];
+def "\\mathbf" [Print "<b>" ; Print_arg ; Print "</b>"];
+
+(* fonts without HTML equivalent *)
+def "\\textsf" [Print "<b>" ; Print_arg ; Print "</b>"];
+def "\\textsc" [Print_arg];
+def "\\mathsf" [Print "<b>" ; Print_arg ; Print "</b>"];
+
 def "\\rm" [];
 def "\\cal" [];
-def "\\textbf" [Print "<b>" ; Print_arg ; Print "</b>"];
-def "\\mathbf" [Print "<b>" ; Print_arg ; Print "</b>"];
 def "\\emph" [Print "<em>" ; Print_arg ; Print "</em>"];
 def "\\mbox" [Print_arg];
 def "\\footnotesize" [];
 def "\\etalchar" [ Print "<sup>" ; Raw_arg print_s ; Print "</sup>" ];
 def "\\newblock" [Print " "];
-(* fonts without HTML equivalent *)
-def "\\textsf" [Print "<b>" ; Print_arg ; Print "</b>"];
-def "\\textsc" [Print_arg];
 
 (* environments *)
 def "\\begin{itemize}" [Print "<p><ul>"];
@@ -231,7 +237,10 @@ def "\\cup" [Print "U"];
 def "\\inf" [Print "inf"];
 
 (* misc. macros *)
+def "\\TeX" [Print "T<sub>E</sub>X"];
 def "\\LaTeX" [Print "L<sup>A</sup>T<sub>E</sub>X"];
+def "\\LaTeXe" 
+  [Print "L<sup>A</sup>T<sub>E</sub>X&nbsp;2<FONT FACE=symbol>e</FONT>"];
 def "\\tm" [Print "<sup><font size=-1>TM</font></sup>"];
 def "\\par" [Print "<br>"];
 def "\\@" [];
