@@ -79,6 +79,11 @@ rule main = parse
   | "<"         { print_s "&lt;"; main lexbuf }
   | ">"         { print_s "&gt;"; main lexbuf }
   | "~"         { print_s " "; main lexbuf }
+  | "^"         { if !math_mode then
+		    print_s ("<sup>" ^ (raw_arg lexbuf) ^ "</sup>")
+		  else
+		    print_s "^"; 
+		  main lexbuf }
 (* General case for environments and commands *)
   | ("\\begin{" | "\\end{") ['A'-'Z' 'a'-'z']+ "}" |
     "\\" (['A'-'Z' 'a'-'z']+ '*'? | [^ 'A'-'Z' 'a'-'z'])
