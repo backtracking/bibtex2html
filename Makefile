@@ -41,7 +41,7 @@ bbl_lexer.ml: bbl_lexer.mll
 ########
 
 MAJORVN=0
-MINORVN=2
+MINORVN=3
 NAME=bibtex2html-$(MAJORVN).$(MINORVN)
 
 FTP = /users/demons/filliatr/ftp/ocaml/bibtex2html
@@ -54,6 +54,7 @@ export: $(FILES)
 	cp $(FILES) export/bibtex2html
 	(cd export ; tar cf $(NAME).tar bibtex2html ; \
 	gzip -f --best $(NAME).tar)
+	mv $(FTP)/bibtex2html* $(FTP)/olds
 	cp README COPYING GPL export/$(NAME).tar.gz $(FTP)
 
 # generic rules :
