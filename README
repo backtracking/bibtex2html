@@ -27,8 +27,8 @@ INSTALLATION
 
   You need Objective Caml to compile the sources.
  
-  1. Compile   with  "make   all".  It   creates  two   binary  files,
-     "bibtex2html" and "bib2bib" .
+  1. Configure with "./configure" then compile with "make all".  It
+     creates two binary files, "bibtex2html" and "bib2bib" .
 
      If you want  to build the documentation, do  "make doc" (You need
      both LaTeX and Hevea).
