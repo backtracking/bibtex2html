@@ -43,5 +43,3 @@ INSTALLATION
      either by editing the Makefile and doing "make install"
      or by copying the file "by hand".
 
-  bibtex2html assumes that "bibtex" is correctly installed and present
-  in your path.
