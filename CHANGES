@@ -1,4 +1,6 @@
- 
+
+Version 1.54 10/7/2002
+======================
  o option --no-header to suppress bibtex2html command in the HTML output
  o HTML output: tags in lowercase, quoted attributes, <br> -> <br />
  o fixed bug in Makefile.in (man pages installation)

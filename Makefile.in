@@ -18,7 +18,7 @@ DOCDIR = $(prefix)/doc/bibtex2html
 #########################################
 
 MAJORVN=1
-MINORVN=53
+MINORVN=54
 
 CAMLC    = @OCAMLC@
 CAMLCOPT = @OCAMLOPT@ 
