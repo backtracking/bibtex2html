@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.26 1999-08-16 08:45:12 marche Exp $ *)
+(* $Id: latexmacros.ml,v 1.27 1999-11-02 17:09:44 marche Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -177,6 +177,7 @@ def "\\\"" [Raw_arg(function "e" -> print_c 'ë'
 def "\\leq" [Print "&lt;="];
 def "\\log" [Print "log"];
 def "\\geq" [Print "&gt;="];
+def "\\neq" [Print "&lt;&gt;"];
 def "\\circ" [Print "o"];
 def "\\sim" [Print "~"];
 def "\\(" [Print "<I>"];

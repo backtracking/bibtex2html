@@ -4,7 +4,7 @@
 
 let read_entries_from_file f =
 
-  Printf.printf "Reading %s..." f; flush stdout;
+  Printf.eprintf "Reading %s..." f; flush stderr;
   Bibtex_lexer.reset();
   let chan = open_in f in
   try
@@ -12,14 +12,14 @@ let read_entries_from_file f =
       Bibtex_parser.command_list Bibtex_lexer.token (Lexing.from_channel chan)
     in
       close_in chan;
-      Printf.printf "ok (%d entries).\n" (List.length el); flush stdout;
+      Printf.eprintf "ok (%d entries).\n" (List.length el); flush stderr;
       el
 
   with
       Parsing.Parse_error | Failure "unterminated string" ->
 	close_in chan;
-	Printf.printf "Parse error line %d.\n" !Bibtex_lexer.line;
-	flush stdout;
+	Printf.eprintf "Parse error line %d.\n" !Bibtex_lexer.line;
+	flush stderr;
 	exit 1 
 ;;
 

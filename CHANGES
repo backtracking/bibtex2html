@@ -1,5 +1,7 @@
 
- o in bib2bib conditions, @ means the key of an entry
+ o macro \neq -> <>
+ o Readbib now outputs messages on standard error, not standard output
+ o in bib2bib conditions, $ means the key of an entry
  o changed behaviour of bib2bib, in order to be used as a filter :
    . if no input files, input is taken from standard input
    . if no -ob option, output is done on standard output
