@@ -1,0 +1,19 @@
+
+Version 0.6, 1998/02/17
+  o spaces in URL are removed
+  o compilation in native code  
+
+Version 0.4, 1998/01/28
+  o multiple bibliographies
+  o read macros in a file
+
+Version 0.3, 1997/11/06
+  o option -c to specify a command
+  o quick sort of entries
+  o macro \url is translated in a HTML link
+
+Version 0.2, 1997/10/24
+  o new presentation with only 2 files (F.html and F-bib.html)
+
+Version 0.1, 1997/07/17
+  o first public release
