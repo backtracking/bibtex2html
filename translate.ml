@@ -38,9 +38,16 @@ let in_summary = ref false
 let directory = ref ""
 
 let cite k =
-  let url = (if !in_summary then !directory ^ "/" else "") ^ k ^ !suffix in
-  let c = Hashtbl.find cite_tab k in
-  print_s ("<A HREF=\"" ^ url ^ "\">[" ^ c ^ "]</A>")
+  try
+    let url =
+      if !in_summary then 
+	!directory ^ "/" ^ k ^ !suffix 
+      else
+	k ^ !suffix in
+    let c = Hashtbl.find cite_tab k in
+      print_s ("<A HREF=\"" ^ url ^ "\">[" ^ c ^ "]</A>")
+  with
+      Not_found -> print_s "[?]"
 ;;
 
 def "\\cite" [ Raw_arg cite ];;
@@ -58,6 +65,7 @@ let safe_title e =
 
 let one_entry_summary basen ch (_,b,((_,k,f) as e)) =
   let url = Filename.concat basen (k ^ !suffix) in
+  Html.anchor ch k;
   Html.open_balise ch "tr valign=top";
 
   Html.open_balise ch "td";

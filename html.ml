@@ -21,7 +21,8 @@ let close_balise ch s =
 
 
 let anchor ch s =
-  open_balise ch ("A NAME=" ^ s)
+  open_balise ch ("A NAME=\"" ^ s ^ "\"");
+  output_string ch "\n"
 
 let open_href ch s =
   open_balise ch ("A HREF=" ^ s)
