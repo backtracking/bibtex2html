@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: biboutput.ml,v 1.2 1999-07-15 15:05:14 marche Exp $ *)
+(* $Id: biboutput.ml,v 1.3 2000-02-11 19:21:10 filliatr Exp $ *)
 
 open Bibtex;;
 
@@ -90,7 +90,7 @@ let print_command html ch keys = function
   | Abbrev(s,l) ->
       if needs_output s keys then 
 	begin
-	  if html then Html.anchor ch s;
+	  if html then Html.open_anchor ch s;
 	  output_string ch ("@STRING{" ^ s ^ " = ");
 	  print_atom_list html ch keys l;
 	  output_string ch "}\n\n"
@@ -98,7 +98,7 @@ let print_command html ch keys = function
   | Entry (entry_type,key,fields) ->
       if needs_output key keys then 
 	begin
-	  if html then Html.anchor ch key;
+	  if html then Html.open_anchor ch key;
 	  output_string ch ("@" ^ entry_type ^ "{" ^ key);
 	  List.iter
 	    (fun (field,l) ->

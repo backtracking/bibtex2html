@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: html.ml,v 1.8 1999-12-09 14:17:44 filliatr Exp $ *)
+(* $Id: html.ml,v 1.9 2000-02-11 19:21:10 filliatr Exp $ *)
 
 let open_document ch ftitle =
   output_string ch "<html>\n\n<head>\n";
@@ -37,12 +37,15 @@ let close_balise ch s =
   flush ch
 
 
-let anchor ch s =
-  open_balise ch ("A NAME=\"" ^ s ^ "\"");
+let open_anchor ch s =
+  open_balise ch ("A NAME=\"" ^ s ^ "\"")
+    
+let close_anchor ch = 
+  close_balise ch "A";
   output_string ch "\n"
 
 let open_href ch s =
-  open_balise ch ("A HREF=" ^ s)
+  open_balise ch ("A HREF=\"" ^ s ^ "\"")
 
 let close_href ch =
   close_balise ch "A"
