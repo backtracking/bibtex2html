@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.26 1999-04-19 14:47:20 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.27 1999-04-22 09:23:06 filliatr Exp $ *)
 
 (* options *)
 
@@ -158,9 +158,9 @@ let get_url s =
   else
     s
 
-let make_links ch ((t,k,_) as e) =
+let make_links ch ((t,k,_) as e) startb =
   (* URL's *)
-  let first = ref true in
+  let first = ref startb in
   List.iter (fun u -> 
 	       try
 		 let u = Bibtex.get_uppercase_field e u in
@@ -227,7 +227,7 @@ let separate_file (b,((_,k,f) as e)) =
   Html.paragraph ch;
   bibtex_entry ch k;
   Html.paragraph ch;
-  make_links ch e;
+  make_links ch e true;
   Html.paragraph ch;
   Html.open_href ch (!file_basename ^ !suffix);
   output_string ch "Back";
@@ -265,8 +265,7 @@ let one_entry_summary ch (_,b,((_,k,f) as e)) =
     separate_file (b,e)
   else begin
     bibtex_entry ch k;
-    output_string ch ", ";
-    make_links ch e;
+    make_links ch e false;
     make_abstract ch e
   end;
 
