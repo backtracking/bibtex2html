@@ -1,4 +1,7 @@
 
+Version 0.95, 1999/06/02
+ o german macros when using a german BibTeX style
+ o comma suppressed after last field in BibTeX entries file
  o macro \textit
  o comma after "BibTeX entry" suppressed when not needed
 
