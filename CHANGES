@@ -1,4 +1,9 @@
   
+Version 0.7, 1998/11/18
+
+  o on-line documentation
+  o option -f, --field
+  o long names for all options
   o more math macros, better handling of {sub,sup}scripts
   o option -noabstract
   o option -nofooter

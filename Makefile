@@ -9,7 +9,7 @@ BINDIR = /users/demons/filliatr/bin/$(OSTYPE)
 #########################################
 
 MAJORVN=0
-MINORVN=61
+MINORVN=7
 
 CAMLC    = ocamlc
 CAMLCOPT = ocamlopt
