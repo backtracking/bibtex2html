@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexscan.mll,v 1.18 2001-07-13 13:15:03 filliatr Exp $ i*)
+(*i $Id: latexscan.mll,v 1.19 2001-10-10 13:06:19 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -142,12 +142,14 @@ rule main = parse
 (* General case for environments and commands *)
   | ("\\begin{" | "\\end{") ['A'-'Z' 'a'-'z']+ "}" |
     "\\" (['A'-'Z' 'a'-'z']+ '*'? | [^ 'A'-'Z' 'a'-'z'])
-                { let exec_action = function
+                { let rec exec_action = function
                       Print str -> print_s str
                     | Print_arg -> print_arg lexbuf
                     | Raw_arg f -> f (raw_arg lexbuf)
                     | Skip_arg -> save_nesting skip_arg lexbuf
 		    | Recursive s -> main (Lexing.from_string s)
+		    | Parameterized f ->
+			List.iter exec_action (f (raw_arg lexbuf))
 		  in
                   List.iter exec_action (find_macro(Lexing.lexeme lexbuf));
                   main lexbuf }

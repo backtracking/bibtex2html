@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibtex_lexer.mll,v 1.9 2001-02-21 09:51:52 filliatr Exp $ i*)
+(*i $Id: bibtex_lexer.mll,v 1.10 2001-10-10 13:06:19 filliatr Exp $ i*)
 
 (*s Lexer for BibTeX files. *)
 
@@ -74,7 +74,7 @@ rule token = parse
 	    Trbrace
 	  end else
 	    token lexbuf }
-  | (['A'-'Z' 'a'-'z' '_' '\'' '0'-'9' ':' '-' '+' '?' '.' '*' '&' '/'
+  | (['A'-'Z' 'a'-'z' '_' '\'' '0'-'9' ':' '-' '+' '?' '.' '*' '&' '/' '>'
       '\192'-'\214' '\216'-'\246' '\248'-'\255']) +
       { if !serious then
 	  let s = Lexing.lexeme lexbuf in 

@@ -14,14 +14,22 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: html.ml,v 1.13 2001-02-21 09:51:53 filliatr Exp $ i*)
+(*i $Id: html.ml,v 1.14 2001-10-10 13:06:19 filliatr Exp $ i*)
 
 (*s Production of HTML syntax. *)
 
+let bgcolor =
+  ref None
+
 let open_document ch ftitle =
   output_string ch "<html>\n\n<head>\n";
-  output_string ch "<title>"; ftitle(); output_string ch "</title>\n";
-  output_string ch "</head>\n\n<body>\n";
+  output_string ch "<title>"; ftitle(); output_string ch "</title>\n</head>\n\n";
+  let body = match !bgcolor with
+  | None ->
+      "<body>\n"
+  | Some color ->
+      Printf.sprintf "<body bgcolor=%s>\n" color in
+  output_string ch body;
   flush ch
   
 

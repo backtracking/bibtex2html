@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.41 2001-07-13 13:14:52 filliatr Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.42 2001-10-10 13:06:19 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -31,6 +31,7 @@ type action =
   | Print_arg
   | Skip_arg
   | Raw_arg of (string -> unit)
+  | Parameterized of (string -> action list)
   | Recursive of string  (*r piece of LaTeX to analyze recursively *)
 
 let cmdtable = (Hashtbl.create 19 : (string, action list) Hashtbl.t)
@@ -87,6 +88,22 @@ def "\\textnormal" [Print_arg];
 def "\\mathnormal" [Print "<i>" ; Print_arg ; Print "</i>"];
 def "\\mathcal" [Print_arg];
 def "\\mathbb" [Print_arg];
+
+(* Basic color support. *)
+
+def "\\textcolor" [ Parameterized (function name ->
+  match String.lowercase name with
+  (* At the moment, we support only the 16 named colors defined in HTML 4.01. *)
+  | "black" | "silver" | "gray" | "white" | "maroon" | "red" | "purple" | "fuchsia"
+  | "green" | "lime" | "olive" | "yellow" | "navy" | "blue" | "teal" | "aqua" ->
+    [ Print (Printf.sprintf "<font color=%s>" name);
+      Print_arg ;
+      Print "</font>"
+    ]
+  (* Other, unknown colors have no effect. *)
+  | _ ->
+    [ Print_arg ]
+)];
 
 (* Fonts without HTML equivalent *)
 def "\\textsf" [Print "<b>" ; Print_arg ; Print "</b>"];

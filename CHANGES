@@ -1,4 +1,6 @@
 
+ o macro \textcolor now translated (patch by François Pottier)
+ o option -bg to set background color (patch by François Pottier)
  o fixed HTML errors (unclosed tags)
 
 Version 1.46 21/2/2001

@@ -146,7 +146,7 @@ FTP = /users/demons/filliatr/ftp/ocaml/bibtex2html
 
 SOURCEFILES = *.ml* Makefile.in configure .depend README COPYING GPL CHANGES manual.tex *.1
 
-export: source doc linux solaris
+export: source export-doc linux solaris
 
 move-olds:
 	cp $(FTP)/bibtex2html* $(FTP)/olds
@@ -195,7 +195,7 @@ install-doc: manual.ps manual.html
 	gzip -c manual.ps > $(DOCDIR)/manual.ps.gz
 	cp -f manual.html $(DOCDIR)
 
-local-doc: manual.ps manual.html
+export-doc: manual.ps manual.html
 	gzip -c manual.ps > $(WWW)/doc/manual.ps.gz
 	cp -f manual.html $(WWW)/doc
 
