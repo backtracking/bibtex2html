@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibtex.ml,v 1.20 2004-09-17 12:58:33 marche Exp $ i*)
+(*i $Id: bibtex.ml,v 1.21 2004-10-06 08:44:20 marche Exp $ i*)
 
 (*s Datatype for BibTeX bibliographies. *)
 
@@ -48,12 +48,14 @@ let size b = List.length b
 
 let fold = List.fold_right
 
-let rec find_entry key biblio =
-  match biblio with
-    | [] -> raise Not_found
-    | (Entry (_,s,_) as e) :: b ->
-	if s = key then e else find_entry key b
-    | _ :: b -> find_entry key b
+let find_entry key biblio =
+  let rec find key b =
+    match b with
+      | [] -> raise Not_found
+      | (Entry (_,s,_) as e) :: b ->
+	  if String.uppercase s = key then e else find key b
+      | _ :: b -> find key b
+  in find (String.uppercase key) biblio
 
 let add_new_entry command biblio = command :: biblio
 
@@ -205,7 +207,11 @@ let rec expand_abbrevs biblio =
 
 let rec expand_crossrefs biblio = 
   let crossref_table = Hashtbl.create 97 in
-  let add_crossref a l = Hashtbl.add crossref_table a l in
+  let add_crossref a l = Hashtbl.add crossref_table (String.uppercase a) l in
+  let find_crossref a = Hashtbl.find crossref_table (String.uppercase a) in
+  let replace_crossref a l = 
+    Hashtbl.replace crossref_table (String.uppercase a) l 
+  in
   List.iter 
     (fun command ->
        match command with
@@ -231,10 +237,10 @@ let rec expand_crossrefs biblio =
 	 | Entry (t,k,f) ->
 	     begin
 	       try 
-		 let _ = Hashtbl.find crossref_table k in
+		 let _ = find_crossref k in
 		 if !Options.debug then
 		   Format.eprintf "recording cross-reference '%s'.@." k;
-		 Hashtbl.replace crossref_table k f
+		 replace_crossref k f
 	       with Not_found -> ()
 	     end
 	 | _ -> ())
@@ -249,7 +255,7 @@ let rec expand_crossrefs biblio =
 		   | [String(s)] -> 
 		       begin
 			 try 
-			   let f' = Hashtbl.find crossref_table s in
+			   let f' = find_crossref s in
 			   if f' = [] then
 			     begin
 			       Format.eprintf 
