@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.53 2001-11-02 07:18:13 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.54 2002-01-15 10:00:38 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -186,64 +186,83 @@ let link_name (u, name) url s =
       else
 	s
 
-let make_links ch ((t,k,_) as e) startb =
+type link = { l_url : string; l_name : string }
+
+let display_links ch links = 
+  let rec display = function
+    | [] -> 
+	output_string ch " ]\n"
+    | l :: r -> 
+	Html.open_href ch l.l_url;
+	output_string ch l.l_name;
+	Html.close_href ch;
+	if r <> [] then output_string ch " | \n";
+	display r
+  in
+  if links <> [] then begin output_string ch "[ "; display links end
+
+exception Caught
+
+let rec map_succeed f = function
+  | [] -> 
+      []
+  | x :: l -> 
+      try let y = f x in y :: map_succeed f l with Caught -> map_succeed f l
+
+let make_links ((t,k,_) as e) =
   (* URL's *)
-  let first = ref startb in
-  List.iter 
+  map_succeed
     (fun ((f, _) as info) -> 
        try
 	 let u = Expand.get_uppercase_field e f in
 	 let s = file_type u in
-	 if !first then first := false else output_string ch " | \n";
 	 let url = get_url u in
-	 Html.open_href ch url;
-	 output_string ch (link_name info url s);
-	 Html.close_href ch
-       with Not_found -> ())
+	 { l_url = url; l_name = link_name info url s }
+       with Not_found -> raise Caught)
     !fields
 
-let make_abstract ch ((t,k,_) as e) =
+type abstract = 
+  | Alink of link
+  | Atext of string
+  | No_abstract
+
+let make_abstract ((t,k,_) as e) =
   try
     let a = Expand.get_uppercase_field e "ABSTRACT" in
-      if is_url a then begin
-	(* 1. it is an URL *)
-	output_string ch " | ";
-	Html.open_href ch (get_url a);
-	output_string ch "Abstract";
-	Html.close_href ch;
-	output_string ch " ]\n"
-      end else if !print_abstract then begin
-	output_string ch " ]\n";
-	(* 2. we have to print it right here *)
-	Html.paragraph ch; output_string ch "\n";
-	Html.open_balise ch "blockquote";
-	let font_size = not !multiple && !Html.css = None in
-	if font_size then Html.open_balise ch "font size=-1";
-	output_string ch "\n";
-	latex2html ch a;
-	if font_size then Html.close_balise ch "font";
-	Html.close_balise ch "blockquote";
-	output_string ch "\n";
-	Html.paragraph ch; output_string ch "\n"
-      end else if !both then begin
-	(* 3. we have to insert a link to the file f-abstracts *)
-	output_string ch " | ";
-	let url = sprintf "%s-abstracts%s#%s" !output_file !link_suffix k in
-	Html.open_href ch url;
-	output_string ch "Abstract";
-	Html.close_href ch;
-	output_string ch " ]\n"
-      end
+    if is_url a then begin
+      (* 1. it is an URL *)
+      Alink { l_url = get_url a; l_name = "Abstract" }
+    end else if !print_abstract then begin
+      (* 2. we have to print it right here *)
+      Atext a
+    end else if !both then begin
+      (* 3. we have to insert a link to the file f-abstracts *)
+      let url = sprintf "%s-abstracts%s#%s" !output_file !link_suffix k in
+      Alink { l_url = url; l_name = "Abstract" }
+    end else
+      No_abstract
   with Not_found -> 
-    output_string ch " ]\n"
+    No_abstract
+
+let display_abstract ch a =
+  Html.paragraph ch; output_string ch "\n";
+  Html.open_balise ch "blockquote";
+  let font_size = not !multiple && !Html.css = None in
+  if font_size then Html.open_balise ch "font size=-1";
+  output_string ch "\n";
+  latex2html ch a;
+  if font_size then Html.close_balise ch "font";
+  Html.close_balise ch "blockquote";
+  output_string ch "\n";
+  Html.paragraph ch; output_string ch "\n"
 
 (* Printing of one entry *)  
 
-let bibtex_entry ch k =
-  Html.open_href ch 
-    (sprintf "%s%s#%s" (Filename.basename !bibentries_file) !link_suffix k);
-  output_string ch "bib";
-  Html.close_href ch
+let bibtex_entry k =
+  { l_url = 
+      sprintf "%s%s#%s" (Filename.basename !bibentries_file) !link_suffix k;
+    l_name = 
+      "bib" }
 
 let separate_file (b,((_,k,f) as e)) =
   in_summary := false;
@@ -257,11 +276,13 @@ let separate_file (b,((_,k,f) as e)) =
   latex2html ch b;
   Html.close_balise ch "h2";
   Html.paragraph ch;
-  make_abstract ch e;
+  let labs = match make_abstract e with 
+    | Atext a -> display_abstract ch a; []
+    | Alink l -> [l]
+    | No_abstract -> []
+  in
   Html.paragraph ch;
-  bibtex_entry ch k;
-  Html.paragraph ch;
-  make_links ch e true;
+  display_links ch (labs @ bibtex_entry k :: make_links e);
   Html.paragraph ch;
   Html.open_href ch (!output_file ^ !link_suffix);
   output_string ch "Back";
@@ -327,10 +348,12 @@ let one_entry_summary ch (_,b,((_,k,f) as e)) =
   if !multiple then
     separate_file (b,e)
   else begin
-    output_string ch "[ ";
-    if !bib_entries then bibtex_entry ch k;
-    make_links ch e (not !bib_entries);
-    make_abstract ch e
+    let links = make_links e in
+    let links = if !bib_entries then bibtex_entry k :: links else links in
+    match make_abstract e with
+      | Atext a -> display_links ch links; display_abstract ch a
+      | Alink l -> display_links ch (links @ [l])
+      | No_abstract -> display_links ch links
   end;
   output_string ch "\n"; 
   close_row ch
