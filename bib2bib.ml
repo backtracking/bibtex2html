@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bib2bib.ml,v 1.17 2003-06-19 13:02:02 marche Exp $ i*)
+(*i $Id: bib2bib.ml,v 1.18 2003-06-24 15:38:54 marche Exp $ i*)
 
 open Printf
 open Bibtex
@@ -211,8 +211,8 @@ let main () =
   in
   if KeySet.cardinal matching_keys = 0 then
     begin
-      eprintf "No matching reference found. Giving up.\n";
-      exit 2;
+      eprintf "Warning: no matching reference found.\n";
+      (* exit 2; *)
     end;
   
   let user_expanded = if !expand_abbrevs then expanded else all_entries in

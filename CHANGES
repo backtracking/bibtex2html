@@ -1,3 +1,5 @@
+ o bib2bib does not stop anymore when no matching citation is
+   found, and in such a case an empty file is generated.
 
 Version 1.60, 19/6/2003
 =======================
