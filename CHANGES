@@ -1,4 +1,6 @@
 
+ o implementation: use of the ocaml module Buffer
+ o fixed bug: authorize & in keys
  o bib2bib conditions now take LaTeX accents into account. For example
    \'e, \'{e} and é are all considered identical. Some accents still
    have to be considered. A new module Latex_accents has been added
@@ -25,7 +27,7 @@ Version 1.1, 1999/11/05
  o bib2bib now supports options --version and --warranty
  o macro \% -> %
  o macro \ss -> &szlig;
- o autorize + in keys
+ o authorize + in keys
 
 Version 1.0, 1999/07/15
 =======================
