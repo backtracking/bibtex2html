@@ -1,4 +1,5 @@
 
+ o option -citefile to read keys to cite from a file
  o macros \sim, \symbol; macros for accents without argument (\~{}, \'{}, etc.)
 
 Version 0.95, 1999/06/02

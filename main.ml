@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.23 1999-06-02 14:15:28 filliatr Exp $ *)
+(* $Id: main.ml,v 1.24 1999-06-28 13:27:35 marche Exp $ *)
 
 (* options *)
 
@@ -29,6 +29,30 @@ let reverse_sort = ref false
 
 let ignore_bibtex_errors = ref false
 
+(* optional citation file *)
+
+let use_cite_file = ref false
+let citations = ref ([] : string list)
+let add_citations file =
+  try
+    let chan = open_in file
+    and buf = Buffer.create 1024 in
+      try
+	while true do
+	  Buffer.add_char buf (input_char chan)
+	done
+      with
+	  End_of_file ->
+	    close_in chan;
+	    citations :=
+	      (Str.split (Str.regexp "[ \t\n]+") (Buffer.contents buf)) @
+	      !citations
+  with
+      Sys_error msg ->
+	prerr_endline ("Cannot open citation file ("^msg^")");
+	exit 1
+
+  
 (* sort of entries *)
 
 module KeyMap = Map.Make(struct type t = string let compare = compare end)
@@ -82,7 +106,14 @@ let create_aux_file fbib tmp =
   let ch = open_out (tmp ^ ".aux") in
   output_string ch "\\relax\n\\bibstyle{";
   output_string ch !style;
-  output_string ch "}\n\\citation{*}\n\\bibdata{";
+  output_string ch "}\n";
+  if !use_cite_file then
+    List.iter 
+      (fun k -> output_string ch ("\\citation{" ^ k ^ "}\n"))
+      !citations
+  else
+    output_string ch "\\citation{*}\n";
+  output_string ch "\\bibdata{";
   output_string ch (Filename.chop_suffix fbib ".bib");
   output_string ch "}\n";
   close_out ch
@@ -219,6 +250,8 @@ let usage () =
   prerr_endline "             do not print the abstracts (if any)";
   prerr_endline "  -nofooter  do not print the footer (bibtex2html web link)";
   prerr_endline "  -suffix s  give an alternate suffix for HTML files";
+  prerr_endline "  -citefile f";
+  prerr_endline "             read keys to include from file f";
   prerr_endline "  -e key     exclude an entry";
   prerr_endline "  -m file    read (La)TeX macros in file";
   prerr_endline "  -f field   add a web link for that BibTeX field";
@@ -289,6 +322,14 @@ let parse () =
 	sort := Unsorted ; parse_rec rem
     | ("-r" | "--reverse-sort") :: rem ->
 	reverse_sort := true ; parse_rec rem
+
+    (* Options for selecting keys *)
+    | ("-citefile") :: f :: rem ->
+	use_cite_file := true;
+	add_citations f;
+	parse_rec rem
+    | ("--citefile") :: [] ->
+	usage()
     | ("-e" | "--exclude") :: k :: rem ->
 	add_exclude k ; parse_rec rem
     | ("-e" | "--exclude") :: [] ->
