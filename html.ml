@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: html.ml,v 1.16 2001-10-15 07:28:17 filliatr Exp $ i*)
+(*i $Id: html.ml,v 1.17 2002-06-24 07:27:08 filliatr Exp $ i*)
 
 (*s Production of HTML syntax. *)
 
@@ -56,10 +56,10 @@ let close_balise ch s =
 
 
 let open_anchor ch s =
-  open_balise ch ("A NAME=\"" ^ s ^ "\"")
+  open_balise ch ("a name=\"" ^ s ^ "\"")
     
 let close_anchor ch = 
-  close_balise ch "A";
+  close_balise ch "a";
   output_string ch "\n"
 
 
@@ -77,22 +77,22 @@ let normalize_url u =
     u
 
 let open_href ch s =
-  open_balise ch ("A HREF=\"" ^ (normalize_url s) ^ "\"")
+  open_balise ch ("a href=\"" ^ (normalize_url s) ^ "\"")
 
 let close_href ch =
-  close_balise ch "A"
+  close_balise ch "a"
 
 let open_h ch i =
-  open_balise ch (sprintf "H%d" i)
+  open_balise ch (sprintf "h%d" i)
 
 let close_h ch i =
-  close_balise ch (sprintf "H%d" i)
+  close_balise ch (sprintf "h%d" i)
 
 let open_em ch =
-  open_balise ch "EM"
+  open_balise ch "em"
 
 let close_em ch =
-  close_balise ch "EM"
+  close_balise ch "em"
 
 let open_b ch =
   open_balise ch "b"
@@ -104,7 +104,7 @@ let paragraph ch =
   open_balise ch "p"
 
 let h_title ch n title =
-  let s = sprintf "H%d" n in
+  let s = sprintf "h%d" n in
   open_balise ch s;
   output_string ch title;
   close_balise ch s
