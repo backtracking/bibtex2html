@@ -36,7 +36,7 @@ See the enclosed file COPYING.
 INSTALLATION
 ============
 
-  You need Objective Caml.
+  You need Objective Caml to compile the sources.
  
   1. Compile with "make all". It creates a binary file "bibtex2html".
 

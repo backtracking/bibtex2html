@@ -1,8 +1,22 @@
 (*
- * latexmacros.ml
- *
- * Code initially written by Xavier Leroy.
+ * bibtex2html - A BibTeX to HTML translator
+ * Copyright (C) 1997 Jean-Christophe FILLIATRE
+ * 
+ * This software is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License version 2, as published by the Free Software Foundation.
+ * 
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 
+ * See the GNU General Public License version 2 for more details
+ * (enclosed in the file GPL).
  *)
+
+(* $Id: latexmacros.ml,v 1.13 1998-05-28 07:21:03 filliatr Exp $ *)
+
+(* This code is Copyright (C) 1997  Xavier Leroy. *)
 
 (* output *)
 
