@@ -27,7 +27,9 @@ OBJS = latexmacros.cmx latexscan.cmx bbl_lexer.cmx \
 	html.cmx biboutput.cmx translate.cmx version.cmx main.cmx
 
 BIB2BIBOBJS = bibtex.cmx bibtex_lexer.cmx bibtex_parser.cmx readbib.cmx \
-	condition.cmx parse_condition.cmx bibfilter.cmx \
+	condition.cmx \
+	condition_parser.cmx condition_lexer.cmx parse_condition.cmx \
+	bibfilter.cmx \
 	html.cmx biboutput.cmx bib2bib.cmx
 
 all: bibtex2html bib2bib
@@ -44,6 +46,9 @@ bib2bib: $(BIB2BIBOBJS)
 bibtex_parser.mli bibtex_parser.ml: bibtex_parser.mly
 	ocamlyacc bibtex_parser.mly
 
+condition_parser.mli condition_parser.ml: condition_parser.mly
+	ocamlyacc condition_parser.mly
+
 version.ml: Makefile
 	echo "let version = \""$(MAJORVN).$(MINORVN)"\"" > version.ml
 	echo "let date = \""`date`"\"" >> version.ml
@@ -53,6 +58,9 @@ latexscan.ml: latexscan.mll
 
 bibtex_lexer.ml: bibtex_lexer.mll
 	ocamllex bibtex_lexer.mll
+
+condition_lexer.ml: condition_lexer.mll
+	ocamllex condition_lexer.mll
 
 bbl_lexer.ml: bbl_lexer.mll
 	ocamllex bbl_lexer.mll

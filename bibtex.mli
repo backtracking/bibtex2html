@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibtex.mli,v 1.7 1999-06-29 15:48:55 marche Exp $ *)
+(* $Id: bibtex.mli,v 1.8 1999-06-30 16:44:40 marche Exp $ *)
 
 type entry_type = string
 		    
@@ -34,7 +34,7 @@ type command =
 
 type biblio = command list
 
-(* acces functions *)
+(* access functions *)
 
 (* [find_entry k b] returns the first entry of key [k] in biblio
    [b]. Raises [Not_found] if no entry of this key exist. *)

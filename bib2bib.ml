@@ -48,7 +48,23 @@ let cite_output_file_name = ref "";;
 let get_input_file_name f =
   input_file_names := f :: !input_file_names;;
 
-let condition = ref Condition.False;;
+let condition = ref Condition.True;;
+
+let add_condition c = 
+  try
+    let c = Parse_condition.condition c in
+    condition := if !condition = Condition.True then c 
+    else Condition.And(!condition,c)
+  with
+      Condition_lexer.Lex_error msg ->
+	prerr_endline ("Lexical error in condition: "^msg);
+	exit 1
+    | Parsing.Parse_error ->
+	prerr_endline "Syntax error in condition";
+	exit 1
+;;
+
+
 
 let args_spec =
   [
@@ -56,13 +72,10 @@ let args_spec =
      Arg.String(fun f -> bib_output_file_name := f),"bib output file name");
     ("-oc",
      Arg.String(fun f -> cite_output_file_name := f),"citations output file name");
-    ("-c",
-     Arg.String(fun f -> condition := Parse_condition.condition f),"filter condition")
+    ("-c", Arg.String(add_condition),"filter condition")
   ]
 
 
-let test_criteria fields =
-  Condition.evaluate_cond fields !condition;;
 
 
 let output_cite_file keys = 
@@ -102,6 +115,9 @@ else
 
 let main () =
   Arg.parse args_spec get_input_file_name "Usage: bib2bib [options] <input file names>\nOptions are:";
+  (*
+  Condition.print !condition; Printf.printf "\n";
+  *)
   let all_entries =
     List.fold_left
       (fun l file -> l@(Readbib.read_entries_from_file file))
@@ -111,7 +127,8 @@ let main () =
   let expanded = Bibtex.expand_abbrevs all_entries
   in
   let matching_keys =
-    Bibfilter.filter expanded test_criteria 
+    Bibfilter.filter expanded 
+      (fun k f -> Condition.evaluate_cond k f !condition) 
   in
   let needed_keys =
     Bibfilter.saturate all_entries matching_keys

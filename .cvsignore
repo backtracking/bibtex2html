@@ -2,6 +2,9 @@ latexscan.ml
 bibtex_lexer.ml
 bibtex_parser.ml
 bibtex_parser.mli
+condition_lexer.ml
+condition_parser.ml
+condition_parser.mli
 bibtex2html
 bbl_lexer.ml
 bibtex2html.tar

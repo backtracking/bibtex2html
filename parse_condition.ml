@@ -1,8 +1,7 @@
 
 open Condition;;
 
-exception Syntax_error;;
-
+(*
 let condition s =
   try
     let n = String.index s ':' in 
@@ -16,4 +15,9 @@ let condition s =
       Not_found ->
 	raise Syntax_error
 ;;
+*)
 
+let condition s =
+    let b = Lexing.from_string s in
+      Condition_parser.condition_start Condition_lexer.token b
+;;
