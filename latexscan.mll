@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexscan.mll,v 1.26 2004-02-27 08:06:02 filliatr Exp $ i*)
+(*i $Id: latexscan.mll,v 1.27 2004-03-02 08:06:27 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -123,7 +123,7 @@ rule main = parse
 (* \hkip *)
   | "\\hskip" space* dimension 
     (space* "plus" space* dimension)? (space* "minus" space* dimension)?
-                { print_s " " }
+                { print_s " "; main lexbuf }
 (* Special characters *)
   | "\\char" ['0'-'9']+
                 { let lxm = Lexing.lexeme lexbuf in
