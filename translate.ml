@@ -157,7 +157,8 @@ let html_file f (_,b,((t,k,_) as e)) =
 		       Html.close_href ch;
 		       output_string ch "&nbsp;&nbsp;"
 		   with Not_found -> ())
-      [ "URL" ; "URL1" ; "URL2" ; "URL3"; "URL4" ; "URL5" ];
+      [ "URL" ; "URL0" ; "URL1" ; "URL2" ; "URL3"; "URL4" ; "URL5" ;
+        "DVI" ; "PS" ; "DOCUMENTURL" ; "URLPS" ; "URLDVI" ];
 
     (* link to the BibTeX file *)
     let bibfile = k ^ ".bib" in

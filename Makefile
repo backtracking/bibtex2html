@@ -2,7 +2,7 @@
 # Configuration part : where to install
 #########################################
 
-BINDIR = /home/jcfillia/bin/`arch`
+BINDIR = /home/coq/bin/`arch`
 
 #########################################
 # End of configuration part

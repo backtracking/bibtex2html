@@ -21,7 +21,7 @@ each key "key" in the BibTeX file. The file foo/key.html describes the
 entry is more details: it gives the abstract  if a field "abstract" is
 present, and  links if fields  of the kind  "url",  "url1", "url2" are
 present.  It also give  a link to the  field foo/key.bib, which is the
-BibTeX entry in ASCII format.
+BibTeX entry in ASCII format. Crossrefs are correctly handled.
 
 
 COPYRIGHT
@@ -38,7 +38,7 @@ INSTALLATION
  
   1. Compile with "make all". It creates a binary file "bibtex2html".
 
-  2. Copy this binary file where you want
+  2. Copy this binary file where you want,
      either by editing the Makefile and doing "make install"
      or by copying the file "by hand".
 
