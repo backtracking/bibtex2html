@@ -15,7 +15,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexscan.mll,v 1.13 2000-06-02 21:24:53 filliatr Exp $ *)
+(* $Id: latexscan.mll,v 1.14 2000-06-30 02:36:43 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -248,14 +248,20 @@ and read_def = parse
     '\\' ['a'-'z' 'A'-'Z']+
       { let s = Lexing.lexeme lexbuf in
 	let b = raw_arg lexbuf in
-	  Printf.printf "macro: %s = %s\n" s b; flush stdout;
-	  def s [Recursive b] }
+	if not !Options.quiet then begin
+	  Printf.eprintf "macro: %s = %s\n" s b; 
+	  flush stderr
+	end;
+	def s [Recursive b] }
   | "{\\" ['a'-'z' 'A'-'Z']+ "}"
       { let l = Lexing.lexeme lexbuf in
 	let s = String.sub l 1 (String.length l - 2) in
 	let b = raw_arg lexbuf in
-	  Printf.printf "macro: %s = %s\n" s b; flush stdout;
-	  def s [Recursive b] }
+	if not !Options.quiet then begin
+	  Printf.eprintf "macro: %s = %s\n" s b; 
+	  flush stderr
+	end;
+	def s [Recursive b] }
   | [' ' '\t' '\n']* 
       { read_def lexbuf }
   | _ { () }

@@ -14,8 +14,9 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibfilter.ml,v 1.6 2000-06-19 08:43:23 marche Exp $ *)
+(* $Id: bibfilter.ml,v 1.7 2000-06-30 02:36:40 filliatr Exp $ *)
 
+open Printf;;
 open Bibtex;;
 
 let debug = false;;
@@ -48,16 +49,18 @@ let rec needed_keys_for_field biblio field value keys abbrevs =
 		let e = find_entry s biblio
 		in
 		if debug then begin
-		  Printf.printf "We need additional crossref %s\n" s
+		  eprintf "We need additional crossref %s\n" s
 		end;
 		needed_keys_for_entry biblio (KeySet.add s keys) abbrevs e
 	      with Not_found ->
-		Printf.printf "Warning: cross-reference \"%s\" not found.\n" s;
+		if not !Options.quiet then
+		  eprintf "Warning: cross-reference \"%s\" not found.\n" s;
 		(keys,abbrevs)
 	    end
 	  else (keys,abbrevs)
       | _ -> 
-	  Printf.printf "Warning: cross-references must be constant strings\n";
+	  if not !Options.quiet then
+	    printf "Warning: cross-references must be constant strings\n";
 	  (keys,abbrevs)
   else
     List.fold_right
@@ -72,11 +75,12 @@ let rec needed_keys_for_field biblio field value keys abbrevs =
 		     try
 		       let e = find_abbrev id biblio in
 		       if debug then begin
-			 Printf.printf "We need additional abbrev %s\n" id
+			 eprintf "We need additional abbrev %s\n" id
 		       end;
 		       needed_keys_for_entry biblio keys (KeySet.add id abbrevs) e
 		     with Not_found ->
-		       Printf.printf "Warning: string \"%s\" not found.\n" id;
+		       if not !Options.quiet then
+			 eprintf "Warning: string \"%s\" not found.\n" id;
 		       (keys,abbrevs)
 		 else (keys,abbrevs)
 	   | _ -> (keys,abbrevs))
@@ -88,7 +92,7 @@ and needed_keys_for_entry biblio keys abbrevs = function
 	     List.fold_right
 	       (fun (field,value) (keys,abbrevs) ->
 (*
-		  Printf.printf "Field : %s\n" field;
+		  eprintf "Field : %s\n" field;
 *)
 		  needed_keys_for_field biblio field value keys abbrevs)
 	       fields

@@ -13,7 +13,7 @@ MANDIR = /usr/local/man
 #########################################
 
 MAJORVN=1
-MINORVN=4
+MINORVN=41
 
 CAMLC    = ocamlc
 CAMLCOPT = ocamlopt 
@@ -25,13 +25,14 @@ PROFILE  =
 
 STRLIB = -cclib -lstr
 
-OBJS =  latexmacros.cmx latexscan.cmx bbl_lexer.cmx \
+OBJS =  options.cmx latexmacros.cmx latexscan.cmx bbl_lexer.cmx \
 	bibtex.cmx bibtex_lexer.cmx bibtex_parser.cmx \
 	readbib.cmx expand.cmx bibfilter.cmx \
 	html.cmx biboutput.cmx version.cmx translate.cmx \
 	copying.cmx main.cmx
 
-BIB2BIBOBJS = bibtex.cmx bibtex_lexer.cmx bibtex_parser.cmx readbib.cmx \
+BIB2BIBOBJS = options.cmx bibtex.cmx bibtex_lexer.cmx \
+        bibtex_parser.cmx readbib.cmx \
 	latex_accents.cmx condition.cmx \
 	condition_parser.cmx condition_lexer.cmx parse_condition.cmx \
 	bibfilter.cmx \

@@ -14,8 +14,9 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.36 2000-06-05 21:50:23 filliatr Exp $ *)
+(* $Id: main.ml,v 1.37 2000-06-30 02:36:43 filliatr Exp $ *)
 
+open Printf
 open Translate
 
 (* options *)
@@ -79,7 +80,7 @@ let combine_f (c,_,b) e = c,b,e
 let rev_combine_f x y = combine_f y x
 
 let sort_entries entries bibitems =
-  Printf.eprintf "Sorting..."; flush stderr;
+  if not !Options.quiet then begin eprintf "Sorting..."; flush stderr end;
   let el =
     if !sort = By_author then 
       keep_combine combine_f bibitems entries
@@ -92,7 +93,7 @@ let sort_entries entries bibitems =
     else
       el 
   in
-  Printf.eprintf "ok.\n"; flush stderr;
+  if not !Options.quiet then begin Printf.eprintf "ok.\n"; flush stderr end;
   if !reverse_sort then List.rev sl else sl
 
 
@@ -122,7 +123,7 @@ let create_aux_file fbib tmp =
 let rm f = try Sys.remove f with _ -> ()
 
 let clean tmp =
-  if not !debug then begin
+  if not !Options.debug then begin
     rm (tmp ^ ".aux");
     rm (tmp ^ ".blg");
     rm (tmp ^ ".bbl");
@@ -130,18 +131,25 @@ let clean tmp =
   end
 
 let call_bibtex tmp =
-  Printf.eprintf "calling BibTeX..."; flush stderr;
+  if not !Options.quiet then begin 
+    eprintf "calling BibTeX..."; flush stderr 
+  end;
   match 
-    let redir = if !output_file = "" then ">& /dev/null" else "" in
+    let redir = 
+      if !output_file = "" || !Options.quiet then ">& /dev/null" else "" 
+    in
     Sys.command (Printf.sprintf "%s %s %s" !command tmp redir)
   with
-    | 0 -> Printf.printf "\n"; flush stdout
+    | 0 -> 
+	if not !Options.quiet then begin eprintf "\n"; flush stderr end
     | n ->
 	if !ignore_bibtex_errors then begin
-	  Printf.eprintf "error %d (ignored)\n" n;
-	  flush stderr
+	  if not !Options.quiet then begin
+	    eprintf "error %d (ignored)\n" n;
+	    flush stderr
+	  end
       	end else begin
-	  Printf.eprintf "error %d while running bibtex\n" n;
+	  eprintf "error %d while running bibtex\n" n;
 	  exit n
 	end
 
@@ -149,16 +157,14 @@ let read_one_biblio lb =
   let rec read_items acc lb =
     try
       let (_,k,_) as item = Bbl_lexer.bibitem lb in
-	if !debug then begin
-	  Printf.eprintf "[%s]" k; flush stderr
-  	end;
+      if !Options.debug then begin eprintf "[%s]" k; flush stderr end;
       read_items (item::acc) lb
-    with
-	Bbl_lexer.End_of_biblio -> List.rev acc 
+    with Bbl_lexer.End_of_biblio -> 
+      List.rev acc 
   in
   let name = Bbl_lexer.biblio_header lb in
   let items = read_items [] lb in
-    (name,items)
+  (name,items)
 
 let read_biblios lb =
   let rec read acc lb =
@@ -172,17 +178,21 @@ let read_biblios lb =
 
 let read_bbl tmp =
   let fbbl = tmp ^ ".bbl" in
-  Printf.eprintf "Reading %s..." fbbl; flush stderr;
+  if not !Options.quiet then begin 
+    eprintf "Reading %s..." fbbl; flush stderr 
+  end;
   let ch = open_in fbbl in
   let lexbuf = Lexing.from_channel ch in
   let biblios = read_biblios lexbuf in
   close_in ch;
   clean tmp;
-  Printf.eprintf "ok ";
-  List.iter (fun (_,items) ->
-	       Printf.eprintf "(%d entries)" (List.length items))
-    biblios;
-  Printf.eprintf "\n"; flush stderr;
+  if not !Options.quiet then begin
+    eprintf "ok ";
+    List.iter 
+      (fun (_,items) -> eprintf "(%d entries)" (List.length items))
+      biblios;
+    eprintf "\n"; flush stderr
+  end;
   biblios
 
 let get_biblios fbib =
@@ -276,6 +286,7 @@ let usage () =
   prerr_endline "  -m file    read (La)TeX macros in file";
   prerr_endline "  -f field   add a web link for that BibTeX field";
   prerr_endline "  -debug     verbose mode (to find incorrect BibTeX entries)";
+  prerr_endline "  -q         quiet mode";
   prerr_endline "  -v         print version and exit";
   prerr_endline "";
   prerr_endline 
@@ -377,16 +388,18 @@ let parse () =
     | ("-h" | "-help" | "-?" | "--help") :: rem ->
 	usage ()
     | ("-v" | "-version" | "--version") :: _ ->
-	exit 0
+	Copying.banner "bibtex2html"; exit 0
     | ("-warranty" | "--warranty") :: _ ->
-	Copying.copying(); exit 0
+	Copying.banner "bibtex2html"; Copying.copying(); exit 0
 
+    | ("-q" | "--quiet") :: rem ->
+	Options.quiet := true; parse_rec rem
     | ("-debug" | "--debug") :: rem ->
-	debug := true; parse_rec rem
+	Options.debug := true; parse_rec rem
 
     | [fbib] -> 
 	if not (Sys.file_exists fbib) then begin
-	  Printf.eprintf "%s: no such file\n" fbib;
+	  eprintf "%s: no such file\n" fbib;
 	  exit 1
 	end;
 	let basename = Filename.basename fbib in
@@ -406,8 +419,8 @@ let parse () =
 (* main *)
 
 let main () =
-  Copying.banner "bibtex2html";
   let (fbib,f) = parse () in
+  Copying.banner "bibtex2html";
   if fbib = "" then begin
     title := "bibtex2html output";
     begin match !output_file with

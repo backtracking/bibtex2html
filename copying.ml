@@ -14,7 +14,9 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: copying.ml,v 1.3 2000-06-02 19:37:33 filliatr Exp $ *)
+(* $Id: copying.ml,v 1.4 2000-06-30 02:36:42 filliatr Exp $ *)
+
+open Printf
 
 let copying () =
   prerr_endline "
@@ -31,9 +33,12 @@ See the GNU General Public License version 2 for more details
   flush stderr
 
 let banner softname =
-  Printf.eprintf "This is %s version %s, compiled on %s\n"
-    softname Version.version Version.date;
-  Printf.eprintf "Copyright (c) 1997,1998,1999 Jean-Christophe Filliâtre and Claude Marché\n";
-  Printf.eprintf "This is free software with ABSOLUTELY NO WARRANTY (use option --warranty)\n\n";
-  flush stderr
+  if not !Options.quiet then begin
+    eprintf "This is %s version %s, compiled on %s\n"
+      softname Version.version Version.date;
+    eprintf "Copyright (c) 1997,1998,1999 Jean-Christophe Filliâtre and Claude Marché\n";
+    eprintf "This is free software with ABSOLUTELY NO WARRANTY (use option --warranty)\n\n";
+    flush stderr
+  end
+
 

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bib2bib.ml,v 1.10 2000-06-02 19:37:29 filliatr Exp $ *)
+(* $Id: bib2bib.ml,v 1.11 2000-06-30 02:36:40 filliatr Exp $ *)
 
 open Printf
 open Bibtex
@@ -47,24 +47,25 @@ let add_condition c =
 	exit 1
 ;;
 
-let debug = ref false;;
-
 let expand_abbrevs = ref false;;
 
 let args_spec =
   [
-    ("-ob", 
-     Arg.String(fun f -> bib_output_file_name := f),"bib output file name");
-    ("-oc",
-     Arg.String(fun f -> cite_output_file_name := f),"citations output file name");
-    ("-c", Arg.String(add_condition),"filter condition");
-    ("-d", Arg.Unit(fun () -> debug := true), "debug flag");
-    ("--expand", Arg.Unit(fun () -> expand_abbrevs := true), "expand the abbreviations");
-    ("--version", Arg.Unit(fun () -> exit 0), "print version and exit");
-    ("--warranty", Arg.Unit(fun () -> Copying.copying(); exit 0), "display software warranty")
+    ("-ob", Arg.String (fun f -> bib_output_file_name := f),
+     "bib output file name");
+    ("-oc", Arg.String (fun f -> cite_output_file_name := f),
+     "citations output file name");
+    ("-c", Arg.String (add_condition),"filter condition");
+    ("-d", Arg.Set Options.debug, "debug flag");
+    ("-q", Arg.Set Options.quiet, "quiet flag");
+    ("--expand", Arg.Unit (fun () -> expand_abbrevs := true), 
+     "expand the abbreviations");
+    ("--version", Arg.Unit (fun () -> Copying.banner "bib2bib"; exit 0), 
+     "print version and exit");
+    ("--warranty", 
+     Arg.Unit (fun () -> Copying.banner "bib2bib"; Copying.copying(); exit 0),
+     "display software warranty")
   ]
-
-
 
 let output_cite_file keys = 
   if !cite_output_file_name = "" then
@@ -109,17 +110,19 @@ let output_bib_file biblio keys =
 let usage = "Usage: bib2bib [options] <input file names>\nOptions are:";;
 
 let main () =
-  Copying.banner "bib2bib";
   Arg.parse args_spec get_input_file_name usage;
-  if !debug then
+  Copying.banner "bib2bib";
+  if !Options.debug then
     begin
-      Printf.printf "command line:\n";
-      for i=0 to pred (Array.length Sys.argv) do
-	Printf.printf "%s\n" Sys.argv.(i)
+      Printf.eprintf "command line:\n";
+      for i = 0 to pred (Array.length Sys.argv) do
+	Printf.eprintf "%s\n" Sys.argv.(i)
       done;
     end;
   if !input_file_names = [] then input_file_names := [""];
-  if !debug then Condition.print !condition; Printf.printf "\n"; 
+  if !Options.debug then begin 
+    Condition.print !condition; Printf.printf "\n"
+  end;
   let all_entries =
     List.fold_right
       (fun file accu -> 
@@ -135,7 +138,7 @@ let main () =
   in
   if KeySet.cardinal matching_keys = 0 then
     begin
-      Printf.printf "No matching reference found. Giving up.\n";
+      Printf.eprintf "No matching reference found. Giving up.\n";
       exit 2;
     end;
   

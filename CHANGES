@@ -1,4 +1,6 @@
 
+ o option -q, --quiet: do not write anything to stderr except errors
+
 Version 1.4, 19/6/2000
 ======================
  o fixed 2 bugs in bib2bib: it is now allowed to have the same key for

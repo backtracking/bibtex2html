@@ -14,7 +14,9 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.42 2000-06-09 17:33:32 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.43 2000-06-30 02:36:45 filliatr Exp $ *)
+
+open Printf
 
 (* options *)
 
@@ -37,8 +39,6 @@ let bibentries_file = ref ""
 
 let (fields : string list ref) = ref []
 let add_field s = fields := (String.uppercase s) :: !fields
-
-let debug = ref false
 
 (* first pass to get the crossrefs *)
 
@@ -238,7 +238,7 @@ let separate_file (b,((_,k,f) as e)) =
   in_summary := true
 
 let one_entry_summary ch (_,b,((_,k,f) as e)) =
-  if !debug then begin
+  if !Options.debug then begin
     Printf.eprintf "[%s]" k; flush stderr
   end;
   output_string ch "\n\n";
@@ -283,7 +283,9 @@ let summary bl =
       let filename = !output_file ^ !file_suffix in
       (open_out filename, filename)
   in
-  Printf.eprintf "Making HTML document (%s)..." filename; flush stderr;
+  if not !Options.quiet then begin
+    eprintf "Making HTML document (%s)..." filename; flush stderr
+  end;
   if not !nodoc then
     Html.open_document ch (fun () -> output_string ch !title);
   header ch;
@@ -309,7 +311,7 @@ let summary bl =
   if !print_footer then footer ch;
   if not !nodoc then Html.close_document ch;
   close_out ch;
-  Printf.eprintf "ok\n"; flush stderr
+  if not !Options.quiet then begin eprintf "ok\n"; flush stderr end
 
 
 (* HTML file with BibTeX entries f-bib.html *)
@@ -325,8 +327,10 @@ let print_list print sep l =
 
 let bib_file bl keys =
   let fn = !bibentries_file ^ !file_suffix in
-  Printf.eprintf "Making HTML list of BibTeX entries (%s)..." fn;
-  flush stderr;
+  if not !Options.quiet then begin
+    eprintf "Making HTML list of BibTeX entries (%s)..." fn;
+    flush stderr
+  end;
   let ch = open_out fn in
 
   if not !nodoc then
@@ -344,7 +348,7 @@ let bib_file bl keys =
   if not !nodoc then Html.close_document ch;
   flush ch;
   close_out ch;
-  Printf.eprintf "ok\n"; flush stderr
+  if not !Options.quiet then begin eprintf "ok\n"; flush stderr end
 
 
 (* main function *)

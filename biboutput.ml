@@ -14,8 +14,9 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: biboutput.ml,v 1.7 2000-06-09 17:33:30 filliatr Exp $ *)
+(* $Id: biboutput.ml,v 1.8 2000-06-30 02:36:41 filliatr Exp $ *)
 
+open Printf
 open Bibtex
 
 (* [output_bib html ch bib keys] outputs to the channel [ch] the
@@ -62,7 +63,8 @@ let print_crossref html ch keys = function
       if html then Html.close_href ch;
       output_string ch "}"
   | l -> 
-      Printf.printf "Warning: cross-references must be constant strings\n";
+      if not !Options.quiet then
+	eprintf "Warning: cross-references must be constant strings\n";
       print_atom_list html ch keys l
 
 let print_command html ch keys = function 

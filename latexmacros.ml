@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.34 2000-06-02 21:24:53 filliatr Exp $ *)
+(* $Id: latexmacros.ml,v 1.35 2000-06-30 02:36:42 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -290,7 +290,6 @@ let is_german_style = function
 
 let init_style_macros st =
   if is_german_style st then begin
-    Printf.printf "OK============\n";
     List.iter (fun (m,s) -> def m [ Print s; Print_arg ])
       [ "\\btxetalshort", "et al" ;
 	"\\btxeditorshort", "Hrsg";

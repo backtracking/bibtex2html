@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: expand.ml,v 1.6 2000-06-09 17:33:31 filliatr Exp $ *)
+(* $Id: expand.ml,v 1.7 2000-06-30 02:36:42 filliatr Exp $ *)
 
 open Format
 open Bibtex
@@ -111,7 +111,8 @@ let extract_year k f =
   try
     int_of_string (List.assoc "YEAR" f)
   with Failure "int_of_string" ->
-    eprintf "Warning: incorrect year in entry %s\n" k;
+    if not !Options.quiet then
+      eprintf "Warning: incorrect year in entry %s\n" k;
     0
 
 let extract_month k f =
@@ -119,7 +120,9 @@ let extract_month k f =
     int_of_month (List.assoc "MONTH" f)
   with 
     | Failure "int_of_string" ->
-	eprintf "Warning: incorrect month in entry %s\n" k; 0
+	if not !Options.quiet then
+	  eprintf "Warning: incorrect month in entry %s\n" k; 
+	0
     | Not_found -> 0
 
 let rec find_entry k = function

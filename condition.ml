@@ -14,7 +14,9 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: condition.ml,v 1.5 2000-06-02 19:37:32 filliatr Exp $ *)
+(* $Id: condition.ml,v 1.6 2000-06-30 02:36:41 filliatr Exp $ *)
+
+open Printf;;
 
 type constante =
   | Key
@@ -43,7 +45,7 @@ let evaluate_constante key fields = function
 	    | [Bibtex.String(v)] -> 
 		let v' = Latex_accents.normalize v in
 		(*
-		  Printf.printf "normalize(%s) -> %s\n" v v';
+		  Printf.eprintf "normalize(%s) -> %s\n" v v';
 		*)
 		v'
 	    | [Bibtex.Id(v)] -> v
@@ -89,8 +91,10 @@ let rec evaluate_rec key fields = function
 	    eval_comp v1 op v2
 	  with
 	      Failure "int_of_string" -> 
-		Printf.printf 
-		  "Warning: cannot compare non-numeric values %s and %s in entry %s\n" v1 v2 key;
+		if not !Options.quiet then begin
+		  eprintf "Warning: cannot compare non-numeric values ";
+		  eprintf "%s and %s in entry %s\n" v1 v2 key
+		end;
 		raise Unavailable
 	end
 
@@ -110,8 +114,6 @@ let evaluate_cond key fields c =
     | Not_found -> assert false
 ;;
     
-open Printf;;
-
 let string_of_constante = function
     Key -> "(key)"
   | Field(f) -> f
