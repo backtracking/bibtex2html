@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.40 2001-02-21 09:51:53 filliatr Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.41 2001-07-13 13:14:52 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -291,7 +291,8 @@ def "\\bibitem" [Raw_arg (function r ->
   print_s "<dd>")];
 
 (* Greek letters *)
-List.iter (fun symbol -> def ("\\" ^ symbol) [Print ("<I>" ^ symbol ^ "</I>")])
+List.iter 
+  (fun symbol -> def ("\\" ^ symbol) [Print ("<EM>" ^ symbol ^ "</EM>")])
   ["alpha";"beta";"gamma";"delta";"epsilon";"varepsilon";"zeta";"eta";
    "theta";"vartheta";"iota";"kappa";"lambda";"mu";"nu";"xi";"pi";"varpi";
    "rho";"varrho";"sigma";"varsigma";"tau";"upsilon";"phi";"varphi";
