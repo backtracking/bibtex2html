@@ -1,4 +1,5 @@
 
+ o \par translated to <p> not <br>
  o added symbols '&', '|', '!' and '?' resp. for synonyms of 'and',
    'or', 'not' and 'exists'
  o replaced notations '$' and '#' resp. by '$key' and '$type' in 

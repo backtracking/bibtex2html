@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.37 2000-07-24 21:22:36 filliatr Exp $ *)
+(* $Id: latexmacros.ml,v 1.38 2000-08-08 17:59:29 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -244,7 +244,7 @@ def "\\LaTeX" [Print "L<sup>A</sup>T<sub>E</sub>X"];
 def "\\LaTeXe" 
   [Print "L<sup>A</sup>T<sub>E</sub>X&nbsp;2<FONT FACE=symbol>e</FONT>"];
 def "\\tm" [Print "<sup><font size=-1>TM</font></sup>"];
-def "\\par" [Print "<br>"];
+def "\\par" [Print "<p>"];
 def "\\@" [];
 def "\\#" [Print "#"];
 def "\\/" [];
