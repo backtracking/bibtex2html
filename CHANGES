@@ -1,5 +1,7 @@
 
- o new option -s to bib2bib, to sort the bibliography
+Version 1.60, 19/6/2003
+=======================
+ o new bib2bib option -s to sort the bibliography (and -r to reverse the sort)
  o macros \cal, \small
 
 Version 1.59, 16/6/2003
