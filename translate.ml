@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.30 1999-07-15 15:05:15 marche Exp $ *)
+(* $Id: translate.ml,v 1.31 1999-10-20 12:39:52 filliatr Exp $ *)
 
 (* options *)
 
@@ -28,6 +28,7 @@ let print_footer = ref true
 let multiple = ref false
 let both = ref false
 let user_footer = ref ""
+let filter = ref false
 
 let (fields : string list ref) = ref []
 let add_field s = fields := s :: !fields
@@ -335,37 +336,7 @@ let bib_file f bl keys =
   Html.close_balise ch "H1";
 
   Html.open_balise ch "PRE";
-
-(*
-  List.iter
-    (fun (_,l) ->
-       List.iter (fun (_,_,(t,k,fs)) ->
-		    Html.anchor ch k;
-		    output_string ch ("@" ^ t ^ "{" ^ k ^ ",\n");
-		    print_list
-		      (fun (a,v) ->
-			 output_string ch "  ";
-			 output_string ch (String.lowercase a);
-			 output_string ch " = ";
-			 if a = "CROSSREF" then begin
-			   output_string ch "{";
-			   Html.open_href ch ("#" ^ v);
-			   output_string ch v;
-			   Html.close_href ch;
-			   output_string ch "}"
-			 end else
-			   output_string ch ("{" ^ v ^ "}")
-		      )
-		      (fun () -> output_string ch ",\n")
-		      fs;
-		    output_string ch "\n}\n") l)
-    bl;
-*)
-
-(**)
   Biboutput.output_bib true ch bl keys;
-(**)
-
   Html.close_balise ch "PRE";
   
   footer ch;
