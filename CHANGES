@@ -1,4 +1,7 @@
 
+ o fixed 2 bugs in bib2bib: it is now allowed to have the same key for
+   an abbrev and for a regular entry. An abbrev that refer itself to
+   other abbrevs is now correctly handled.
  o fixed bug: abbreviations were not correctly expansed in the -bib file
  o relative URL now prefixed by ./ (otherwise Internet Explorer can't resolve
    them correctly)
