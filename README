@@ -15,6 +15,7 @@ Options are:
   -t         title of the HTML file (default is the filename)
   -i         ignore BibTeX errors
   -nodoc     only produces the body of the HTML documents
+  -nokeys    do not print the BibTeX keys
   -suffix s  give an alternate suffix for HTML files
   -e key     exclude an entry
   -m file    read (La)TeX macros in file
