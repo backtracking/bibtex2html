@@ -9,6 +9,7 @@ type action =
   | Print_arg
   | Skip_arg
   | Raw_arg of (string -> unit)
+  | Recursive of string
 
 val def : string -> action list -> unit
 

@@ -37,6 +37,7 @@ rule main = parse
   | "{\\sf" " "*  { print_s "<b>";
                     save_state main lexbuf;
                     print_s "</b>"; main lexbuf }
+  | "{\\sc" " "*  { save_state main lexbuf; main lexbuf }
   | "{\\tt" " "*  { print_s "<tt>";
                     save_state main lexbuf;
                     print_s "</tt>"; main lexbuf }
@@ -91,7 +92,9 @@ rule main = parse
                       Print str -> print_s str
                     | Print_arg -> print_arg lexbuf
                     | Raw_arg f -> f(raw_arg lexbuf)
-                    | Skip_arg -> save_nesting skip_arg lexbuf in
+                    | Skip_arg -> save_nesting skip_arg lexbuf
+		    | Recursive s -> main (Lexing.from_string s)
+		  in
                   List.iter exec_action (find_macro(Lexing.lexeme lexbuf));
                   main lexbuf }
 (* Nesting of braces *)
@@ -167,4 +170,29 @@ and raw_arg = parse
 and skip_optional_arg = parse
     "]"         { () }
   | _           { skip_optional_arg lexbuf }
+
+
+(* ajout personnel: read_macros pour lire les macros (La)TeX *)
+
+and read_macros = parse
+    "\\def" | "\\newcommand"
+        { read_def lexbuf; read_macros lexbuf }
+  | eof { () }
+  | _   { read_macros lexbuf }
+
+and read_def = parse
+    '\\' ['a'-'z' 'A'-'Z']+
+      { let s = Lexing.lexeme lexbuf in
+	let b = raw_arg lexbuf in
+	  Printf.printf "macro: %s\n" s; flush stdout;
+	  def s [Recursive b] }
+  | "{\\" ['a'-'z' 'A'-'Z']+ "}"
+      { let l = Lexing.lexeme lexbuf in
+	let s = String.sub l 1 (String.length l - 2) in
+	let b = raw_arg lexbuf in
+	  Printf.printf "macro: %s\n" s; flush stdout;
+	  def s [Recursive b] }
+  | [' ' '\t' '\n']* 
+      { read_def lexbuf }
+  | _ { () }
 

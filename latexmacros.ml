@@ -16,6 +16,7 @@ type action =
   | Print_arg
   | Skip_arg
   | Raw_arg of (string -> unit)
+  | Recursive of string  (* phrase LaTeX à analyser récursivement *)
 
 let cmdtable = (Hashtbl.create 19 : (string, action list) Hashtbl.t);;
 
@@ -64,6 +65,7 @@ def "\\end{center}" [Print "</blockquote>"];
 def "\\smallskip" [];
 def "\\medskip" [];
 def "\\bigskip" [];
+def "\\hskip" [];
 def "\\markboth" [Skip_arg; Skip_arg];
 def "\\dots" [Print "..."];
 def "\\ldots" [Print "..."];

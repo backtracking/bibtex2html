@@ -175,6 +175,15 @@ let translate fbib f =
   Translate.format_list f sb
 
 
+(* reading macros in a file *)
+
+let read_macros f =
+  let chan = open_in f in
+  let lb = Lexing.from_channel chan in
+    Latexscan.read_macros lb;
+    close_in chan
+
+
 (* command line parsing *)
 
 let usage () =
@@ -190,6 +199,7 @@ let usage () =
   prerr_endline "  -nodoc     only produces the body of the HTML documents";
   prerr_endline "  -suffix s  give an alternate suffix for HTML files";
   prerr_endline "  -e key     exclude an entry";
+  prerr_endline "  -m file    read (La)TeX macros in file";
   prerr_endline "  -debug     verbose mode (to find incorrect BibTeX entries)";
   exit 1
 
@@ -230,6 +240,10 @@ let parse () =
     | "-e" :: k :: rem ->
 	add_exclude k ; parse_rec rem
     | "-e" :: [] ->
+	usage()
+    | "-m" :: f :: rem ->
+	read_macros f; parse_rec rem
+    | "-m" :: [] ->
 	usage()
     | [f] -> f
     | _ -> usage ()

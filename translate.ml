@@ -63,6 +63,7 @@ def "\\url" [Raw_arg latex_url];;
 
 let latex2html ch s =
   Latexmacros.out_channel := ch;
+  Latexscan.brace_nesting := 0;
   Latexscan.main (Lexing.from_string s)
 
 let safe_title e =
@@ -155,7 +156,6 @@ let one_entry_summary basen ch (_,b,((_,k,f) as e)) =
 
   output_string ch "\n";
   Html.open_balise ch "td";
-  print_string b; flush stdout;
   latex2html ch b;
   Html.open_balise ch "BR";
   output_string ch "\n";
