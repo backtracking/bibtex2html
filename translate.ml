@@ -14,11 +14,13 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.47 2001-02-09 08:09:43 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.48 2001-02-21 09:51:54 filliatr Exp $ i*)
+
+(*s Production of the HTML documents from the BibTeX bibliographies. *)
 
 open Printf
 
-(* options *)
+(*s Options. *)
 
 let nodoc = ref false
 let nokeys = ref false
@@ -43,8 +45,9 @@ let use_label_name = ref false
 type field_info = string * (string option)
 
 let default_fields =
-  (List.map (fun x -> x, Some x) ["FTP"; "HTTP"; "URL"; "DVI"; "PS"; "PDF"]) @
-  (List.map (fun x -> x, None) ["DOCUMENTURL"; "URLPS"; "URLDVI"; "URLPDF"]) 
+  List.map (fun x -> x, None) 
+    ["FTP"; "HTTP"; "URL"; "DVI"; "PS"; "PDF";
+     "DOCUMENTURL"; "URLPS"; "URLDVI"; "URLPDF"]
 
 let (fields : field_info list ref) = ref default_fields
 
@@ -64,18 +67,18 @@ let cpt = ref 0
 
 let first_pass bl =
   let rec pass = function
-      [] -> ()
-    | (None,_,(_,k,_))::rem ->
+    | [] -> ()
+    | (None,_,(_,k,_)) :: rem ->
 	incr cpt;
 	Hashtbl.add cite_tab k (string_of_int !cpt);
 	pass rem
-    | (Some c,_,(_,k,_))::rem ->
+    | (Some c,_,(_,k,_)) :: rem ->
 	Hashtbl.add cite_tab k c;
 	pass rem
   in
-    cpt := 0;
-    Hashtbl.clear cite_tab;
-    List.iter (fun (_,items) -> pass items) bl
+  cpt := 0;
+  Hashtbl.clear cite_tab;
+  List.iter (fun (_,items) -> pass items) bl
 
 
 (* latex2html : to print LaTeX strings in HTML format *)
@@ -283,7 +286,7 @@ let one_entry_summary ch (_,b,((_,k,f) as e)) =
     if !multiple then Html.close_href ch;
     output_string ch "]"
   end;
-  (* Html.close_anchor ch; *)
+  (*i Html.close_anchor ch; i*)
   output_string ch "\n"; 
   Html.close_balise ch "td"; output_string ch "\n";
 

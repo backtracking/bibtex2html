@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bib2bib.ml,v 1.14 2000-07-25 14:56:58 marche Exp $ *)
+(*i $Id: bib2bib.ml,v 1.15 2001-02-21 09:51:51 filliatr Exp $ i*)
 
 open Printf
 open Bibtex
@@ -22,16 +22,16 @@ open Bibtex
 
 (* command-line arguments *)
 
-let input_file_names = ref ([] : string list);;
+let input_file_names = ref ([] : string list)
 
-let bib_output_file_name = ref "";;
+let bib_output_file_name = ref ""
 
-let cite_output_file_name = ref "";;
+let cite_output_file_name = ref ""
 
 let get_input_file_name f =
-  input_file_names := f :: !input_file_names;;
+  input_file_names := f :: !input_file_names
 
-let condition = ref Condition.True;;
+let condition = ref Condition.True
 
 let add_condition c = 
   try
@@ -45,9 +45,9 @@ let add_condition c =
     | Parsing.Parse_error ->
 	prerr_endline "Syntax error in condition";
 	exit 1
-;;
 
-let expand_abbrevs = ref false;;
+
+let expand_abbrevs = ref false
 
 let args_spec =
   [
@@ -79,7 +79,7 @@ let output_cite_file keys =
 	Sys_error msg ->
 	  prerr_endline ("Cannot write output citations file (" ^ msg ^ ")");
 	  exit 1
-;;
+
 
 
 let output_bib_file biblio keys = 
@@ -117,9 +117,9 @@ let output_bib_file biblio keys =
   with Sys_error msg ->  
     prerr_endline ("Cannot write output bib file (" ^ msg ^ ")"); 
     exit 1 
-;;
 
-let usage = "Usage: bib2bib [options] <input file names>\nOptions are:";;
+
+let usage = "Usage: bib2bib [options] <input file names>\nOptions are:"
 
 let main () =
   Arg.parse args_spec get_input_file_name usage;
@@ -158,12 +158,10 @@ let main () =
   let needed_keys = Bibfilter.saturate user_expanded matching_keys in
   output_cite_file matching_keys;
   output_bib_file user_expanded (Some needed_keys)
-;;
 
 
-
-
-Printexc.catch main ();;
+let _ = 
+  Printexc.catch main ()
 
 
 

@@ -14,22 +14,24 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.39 2001-01-09 07:40:47 filliatr Exp $ *)
+(*i $Id: latexmacros.ml,v 1.40 2001-02-21 09:51:53 filliatr Exp $ i*)
 
-(* This code is Copyright (C) 1997  Xavier Leroy. *)
+(*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
-(* output *)
+(*s Output functions. *)
 
 let out_channel = ref stdout
 let print_s s = output_string !out_channel s
 let print_c c = output_char !out_channel c
+
+(*s Actions and translations table. *)
 
 type action =
   | Print of string
   | Print_arg
   | Skip_arg
   | Raw_arg of (string -> unit)
-  | Recursive of string  (* phrase LaTeX à analyser récursivement *)
+  | Recursive of string  (*r piece of LaTeX to analyze recursively *)
 
 let cmdtable = (Hashtbl.create 19 : (string, action list) Hashtbl.t)
 
@@ -42,9 +44,9 @@ let find_macro name =
   with Not_found ->
     prerr_string "Unknown macro: "; prerr_endline name; [];;
 
-(* General LaTeX macros *)
+(*s Translations of general LaTeX macros. *)
 
-(* sectioning *)
+(* Sectioning *)
 def "\\part"
     [Print "<H0>"; Print_arg; Print "</H0>\n"];
 def "\\chapter"
@@ -66,7 +68,7 @@ def "\\subsubsection*"
 def "\\paragraph"
     [Print "<H5>"; Print_arg; Print "</H5>\n"];
 
-(* text formatting *)
+(* Text formatting *)
 def "\\begin{alltt}" [Print "<pre>"];
 def "\\end{alltt}" [Print "</pre>"];
 def "\\textbf" [Print "<b>" ; Print_arg ; Print "</b>"];
@@ -86,7 +88,7 @@ def "\\mathnormal" [Print "<i>" ; Print_arg ; Print "</i>"];
 def "\\mathcal" [Print_arg];
 def "\\mathbb" [Print_arg];
 
-(* fonts without HTML equivalent *)
+(* Fonts without HTML equivalent *)
 def "\\textsf" [Print "<b>" ; Print_arg ; Print "</b>"];
 def "\\mathsf" [Print "<b>" ; Print_arg ; Print "</b>"];
 def "\\textsc" [Print_arg];
@@ -99,7 +101,7 @@ def "\\footnotesize" [];
 def "\\etalchar" [ Print "<sup>" ; Raw_arg print_s ; Print "</sup>" ];
 def "\\newblock" [Print " "];
 
-(* environments *)
+(* Environments *)
 def "\\begin{itemize}" [Print "<p><ul>"];
 def "\\end{itemize}" [Print "</ul>"];
 def "\\begin{enumerate}" [Print "<p><ol>"];
@@ -113,13 +115,13 @@ def "\\end{htmlonly}" [];
 def "\\begin{flushleft}" [Print "<blockquote>"];
 def "\\end{flushleft}" [Print "</blockquote>"];
 
-(* special characters *)
+(* Special characters *)
 def "\\ " [Print " "];
 def "\\\n" [Print " "];
 def "\\{" [Print "{"];
 def "\\}" [Print "}"];
 def "\\l" [Print "l"];
-def "\\oe" [Print "oe"];       (* Il n'y a pas de oe liés en HTML *)
+def "\\oe" [Print "oe"];       (*r There is no \oe{} in HTML. *)
 def "\\o" [Print "&oslash;"];
 def "\\O" [Print "&Oslash;"];
 def "\\ae" [Print "&aelig;"];
@@ -194,7 +196,7 @@ def "\\\"" [Raw_arg(function "e" -> print_c 'ë'
 def "\\u" [Raw_arg print_s ];
 def "\\v" [Raw_arg print_s ];
 
-(* math macros *)
+(* Math macros *)
 def "\\[" [Print "<blockquote>"];
 def "\\]" [Print "\n</blockquote>"];
 def "\\le" [Print "&lt;="];
@@ -211,7 +213,8 @@ def "\\)" [Print "</I>"];
 def "\\mapsto" [Print "<tt>|-&gt;</tt>"];
 def "\\times" [Print "&#215;"];
 def "\\neg" [Print "&#172;"];
-(* math symbols printed as texts (could we do better?) *)
+
+(* Math symbols printed as texts (could we do better?) *)
 def "\\ne" [Print "=/="];
 def "\\in" [Print "in"];
 def "\\forall" [Print "for all"];
@@ -240,7 +243,7 @@ def "\\mid" [Print "|"];
 def "\\cup" [Print "U"];
 def "\\inf" [Print "inf"];
 
-(* misc. macros *)
+(* Misc. macros. *)
 def "\\TeX" [Print "T<sub>E</sub>X"];
 def "\\LaTeX" [Print "L<sup>A</sup>T<sub>E</sub>X"];
 def "\\LaTeXe" 
@@ -287,7 +290,7 @@ def "\\bibitem" [Raw_arg (function r ->
   print_s r; print_s "]</A>\n";
   print_s "<dd>")];
 
-(* greek letters *)
+(* Greek letters *)
 List.iter (fun symbol -> def ("\\" ^ symbol) [Print ("<I>" ^ symbol ^ "</I>")])
   ["alpha";"beta";"gamma";"delta";"epsilon";"varepsilon";"zeta";"eta";
    "theta";"vartheta";"iota";"kappa";"lambda";"mu";"nu";"xi";"pi";"varpi";
@@ -296,6 +299,8 @@ List.iter (fun symbol -> def ("\\" ^ symbol) [Print ("<I>" ^ symbol ^ "</I>")])
    "Sigma";"Upsilon";"Phi";"Psi";"Omega"];
 
 ()
+
+(*s Macros for German BibTeX style. *) 
 
 let is_german_style = function
   | "gerabbrv" | "geralpha" | "gerapali" | "gerplain" | "gerunsrt" -> true

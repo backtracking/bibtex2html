@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latex_accents.mli,v 1.2 2000-06-02 19:37:35 filliatr Exp $ *)
+(*i $Id: latex_accents.mli,v 1.3 2001-02-21 09:51:53 filliatr Exp $ i*)
 
 (* replace LaTeX control sequences for special characters. *)
 

@@ -14,7 +14,9 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: options.ml,v 1.1 2000-06-30 02:36:44 filliatr Exp $ *)
+(*i $Id: options.ml,v 1.2 2001-02-21 09:51:54 filliatr Exp $ i*)
+
+(*s Default is no debugging and verbose mode. *)
 
 let debug = ref false
 

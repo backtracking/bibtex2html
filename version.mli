@@ -14,9 +14,10 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: copying.mli,v 1.3 2001-02-21 09:51:53 filliatr Exp $ i*)
+(*i $Id: version.mli,v 1.1 2001-02-21 09:51:54 filliatr Exp $ i*)
 
-(*s Copyright and licence information. *)
+(*s Version and compilation date of bibtex2html and bib2bib. 
+    The implementation is automatically generated at compilation. *)
 
-val copying : unit -> unit
-val banner : string -> unit
+val version : string
+val date : string

@@ -14,20 +14,21 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: expand.mli,v 1.3 2000-06-02 19:59:43 filliatr Exp $ *)
+(*i $Id: expand.mli,v 1.4 2001-02-21 09:51:53 filliatr Exp $ i*)
 
-
-(* expansion *)
+(*s Expansion of abbreviations in BibTeX databases. *)
 
 type fields = (string * string) list
 
 type entry = Bibtex.entry_type * Bibtex.key * fields
 		
-val expand : Bibtex.biblio -> entry list (* expand the abbreviations *)
+val expand : Bibtex.biblio -> entry list
+
+(*s Compare the dates of two entries. *)
 
 val date_order : entry list -> entry -> entry -> bool
 
-(* access to the fields *)
+(*s Access to the fields of a given entry. *)
 
 val get_field : entry -> string -> string
 val get_uppercase_field : entry -> string -> string

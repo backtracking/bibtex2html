@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: condition.mli,v 1.4 2000-07-10 19:39:37 marche Exp $ *)
+(*i $Id: condition.mli,v 1.5 2001-02-21 09:51:52 filliatr Exp $ i*)
 
 type constante =
   | Key

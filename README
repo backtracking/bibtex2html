@@ -37,7 +37,7 @@ INSTALLATION
      (at  the very  beginning) and  do  "make install".  You may  need
      superuser permissions.
 
-     (Note:  you  can  also  just  move the  two  executables  in  any
+     (Note:  you  can  also  just  copy the  two  executables  in  any
      directory of your choice)
 
      To install the doc, do "make install-doc".

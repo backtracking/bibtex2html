@@ -14,20 +14,22 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibfilter.mli,v 1.5 2000-07-10 19:39:36 marche Exp $ *)
+(*i $Id: bibfilter.mli,v 1.6 2001-02-21 09:51:51 filliatr Exp $ i*)
+
+(*s Filtering and saturating BibTeX files. *)
 
 open Bibtex
 
-(* [filter bib f] returns the set of keys of [bib] whose fields
-   satisfy the filter criterion [f] *)
+(*s [filter bib f] returns the set of keys of [bib] whose fields
+    satisfy the filter criterion [f]. *)
 
 val filter : 
   biblio -> 
     (entry_type -> key -> ((string * atom list) list) -> bool) -> 
       KeySet.t
 
-(* [saturate bib s] returns the smallest part of the bibliography
-   [bib] containing all the keys in s together with all the necessary
-   abbreviation strings and cross-references *)
+(*s [saturate bib s] returns the smallest part of the bibliography
+    [bib] containing all the keys in s together with all the necessary
+    abbreviation strings and cross-references. *)
 
 val saturate : biblio -> KeySet.t -> KeySet.t

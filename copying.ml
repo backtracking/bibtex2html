@@ -14,7 +14,9 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: copying.ml,v 1.5 2001-02-09 08:09:42 filliatr Exp $ *)
+(*i $Id: copying.ml,v 1.6 2001-02-21 09:51:53 filliatr Exp $ i*)
+
+(*s Copyright and licence information. *)
 
 open Printf
 

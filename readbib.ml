@@ -14,12 +14,12 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: readbib.ml,v 1.8 2000-06-30 02:36:45 filliatr Exp $ *)
+(*i $Id: readbib.ml,v 1.9 2001-02-21 09:51:54 filliatr Exp $ i*)
+
+(*s [(read_entries_from_file f)] returns the BibTeX entries of the
+    BibTeX file [f]. *)
 
 open Printf
-
-(* [(read_entries_from_file f)] returns the BibTeX entries of the
-   BibTeX file [f] (from standard input if [f=""]).  *)
 
 let read_entries_from_file f =
   if not !Options.quiet then begin
@@ -42,7 +42,7 @@ let read_entries_from_file f =
     el
   with
       Parsing.Parse_error | Failure "unterminated string" ->
-	if f <> "" then close_in chan;
+			      if f <> "" then close_in chan;
 	eprintf "Parse error line %d.\n" !Bibtex_lexer.line;
 	flush stderr;
 	exit 1 

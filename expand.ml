@@ -14,7 +14,9 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: expand.ml,v 1.8 2000-08-10 20:44:59 filliatr Exp $ *)
+(*i $Id: expand.ml,v 1.9 2001-02-21 09:51:53 filliatr Exp $ i*)
+
+(*s Expansion of abbreviations in BibTeX databases. *)
 
 open Format
 open Bibtex
@@ -86,7 +88,7 @@ let rec expand biblio =
     biblio
     []
 
-(* sort BibTeX entries by decreasing dates *)
+(*s Sort BibTeX entries by decreasing dates. *)
 
 let int_of_month = function
   | "January" -> 0
@@ -143,7 +145,7 @@ let date_order el e1 e2 =
   let d2 = extract_date el e2 in
   (d1.year < d2.year) or (d1.year == d2.year & d1.month < d2.month)
 
-(* access to the fields *)
+(*s Access to the fields. *)
 
 let get_field (_,_,f) s = List.assoc (String.uppercase s) f
 let get_uppercase_field (_,_,f) s = List.assoc s f

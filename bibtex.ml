@@ -14,7 +14,9 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibtex.ml,v 1.14 2000-06-19 08:43:23 marche Exp $ *)
+(*i $Id: bibtex.ml,v 1.15 2001-02-21 09:51:52 filliatr Exp $ i*)
+
+(*s Datatype for BibTeX bibliographies. *)
 
 type entry_type = string
 		    
@@ -32,8 +34,8 @@ type command =
   | Abbrev of string * atom list
   | Entry  of entry_type * key * (string * atom list) list
 
-(* biblio is stored as a list. BEWARE! this in reverse order : the
-   first entry is at the end of the list. this is intentional ! *)
+(*s biblio is stored as a list. Beware, this in reverse order: the
+   first entry is at the end of the list. This is intentional! *)
 
 type biblio = command list
 
@@ -41,8 +43,8 @@ let empty_biblio = []
 
 let size b = List.length b
 
-(* the natural iterator on biblio must start at the first entry, so it
-   is the fold_right function on lists, NOT the fold_left ! *)
+(*s the natural iterator on biblio must start at the first entry, so it
+   is the [fold_right] function on lists, NOT the [fold_left]! *)
 
 let fold = List.fold_right
 
@@ -62,7 +64,7 @@ let rec remove_entry key biblio =
 	if s = key then b else e :: (remove_entry key b)
     | e :: b -> e :: (remove_entry key b)
 
-(* [add_entry k c b] adds an entry of key [k] and command [c] in
+(*s [add_entry k c b] adds an entry of key [k] and command [c] in
    biblio [b] and returns the new biblio. If an entry of key [k]
    already exists in [b], it is replaced by the new one. *)
 

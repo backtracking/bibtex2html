@@ -14,21 +14,12 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: biboutput.ml,v 1.8 2000-06-30 02:36:41 filliatr Exp $ *)
+(*i $Id: biboutput.ml,v 1.9 2001-02-21 09:51:52 filliatr Exp $ i*)
+
+(*s Output a BibTeX bibliography. *)
 
 open Printf
 open Bibtex
-
-(* [output_bib html ch bib keys] outputs to the channel [ch] the
-   fields of the bibliography [bib] whose key belong to [keys]. [html]
-   is a flag that tells whether html anchors must be added: if [html]
-   is false, the output is a regular bibtex file, if [html] is true,
-   anchors are added on crossrefs, abbreviations, and URLs in
-   fields. Notice that to guarantee that the generated part of the
-   bibliography is coherent, that is all needed abbreviations and
-   cross-references are included, one has to call [Bibfilter.saturate]
-   before. Notice finally that the channel [ch] is NOT closed by this
-   function *)
 
 let needs_output k = function
   | None -> true
@@ -69,7 +60,7 @@ let print_crossref html ch keys = function
 
 let print_command html ch keys = function 
   | Comment s -> 
-(*
+(*i
       if html then 
 	begin
 	  Html.open_balise ch "i";
@@ -77,7 +68,7 @@ let print_command html ch keys = function
 	  Html.close_balise ch "i"
 	end
       else
-*)
+i*)
 	output_string ch ("@COMMENT{{" ^ s ^ "}}\n\n")
   | Preamble s ->
       output_string ch ("@PREAMBLE{{" ^ s ^ "}}\n\n")

@@ -14,7 +14,9 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: html.ml,v 1.12 2000-08-10 20:44:59 filliatr Exp $ *)
+(*i $Id: html.ml,v 1.13 2001-02-21 09:51:53 filliatr Exp $ i*)
+
+(*s Production of HTML syntax. *)
 
 let open_document ch ftitle =
   output_string ch "<html>\n\n<head>\n";

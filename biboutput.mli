@@ -14,11 +14,9 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: biboutput.mli,v 1.2 2000-06-02 19:37:30 filliatr Exp $ *)
+(*i $Id: biboutput.mli,v 1.3 2001-02-21 09:51:52 filliatr Exp $ i*)
 
-open Bibtex
-
-(* [output_bib html ch bib keys] outputs to the channel [ch] the
+(*s [output_bib html ch bib keys] outputs to the channel [ch] the
    fields of the bibliography [bib] whose key belong to [keys]. [html]
    is a flag that tells whether html anchors must be added: if [html]
    is false, the output is a regular bibtex file, if [html] is true,
@@ -28,5 +26,7 @@ open Bibtex
    cross-references are included, one as to call Bibfilter.saturate
    before. Notice finally that the channel [ch] is NOT closed by this
    function *)
+
+open Bibtex
 
 val output_bib : bool -> out_channel -> biblio -> KeySet.t option -> unit

@@ -14,7 +14,9 @@
  * (enclosed in the file GPL).
  */
 
-/* $Id: bibtex_parser.mly,v 1.6 2000-04-03 14:14:46 marche Exp $ */
+/*i $Id: bibtex_parser.mly,v 1.7 2001-02-21 09:51:52 filliatr Exp $ i*/
+
+/*s Parser for BibTeX files. */
 
 %{
 

@@ -7,9 +7,10 @@ condition_parser.cmi: condition.cmi
 expand.cmi: bibtex.cmi 
 parse_condition.cmi: condition.cmi 
 readbib.cmi: bibtex.cmi 
+translate.cmi: bibtex.cmi expand.cmi 
 bib2bib.cmo: bibfilter.cmi biboutput.cmi bibtex.cmi condition.cmi \
     condition_lexer.cmi copying.cmi options.cmi parse_condition.cmi \
-    readbib.cmi version.cmo 
+    readbib.cmi version.cmi 
 bib2bib.cmx: bibfilter.cmx biboutput.cmx bibtex.cmx condition.cmx \
     condition_lexer.cmx copying.cmx options.cmx parse_condition.cmx \
     readbib.cmx version.cmx 
@@ -29,7 +30,7 @@ condition_lexer.cmo: condition_parser.cmi condition_lexer.cmi
 condition_lexer.cmx: condition_parser.cmx condition_lexer.cmi 
 condition_parser.cmo: condition.cmi condition_parser.cmi 
 condition_parser.cmx: condition.cmx condition_parser.cmi 
-copying.cmo: options.cmi version.cmo copying.cmi 
+copying.cmo: options.cmi version.cmi copying.cmi 
 copying.cmx: options.cmx version.cmx copying.cmi 
 expand.cmo: bibtex.cmi latexscan.cmo options.cmi expand.cmi 
 expand.cmx: bibtex.cmx latexscan.cmx options.cmx expand.cmi 
@@ -41,7 +42,7 @@ latexscan.cmo: latexmacros.cmi options.cmi
 latexscan.cmx: latexmacros.cmx options.cmx 
 main.cmo: bbl_lexer.cmo bibfilter.cmi biboutput.cmi bibtex.cmi copying.cmi \
     expand.cmi latexmacros.cmi latexscan.cmo options.cmi readbib.cmi \
-    translate.cmo 
+    translate.cmi 
 main.cmx: bbl_lexer.cmx bibfilter.cmx biboutput.cmx bibtex.cmx copying.cmx \
     expand.cmx latexmacros.cmx latexscan.cmx options.cmx readbib.cmx \
     translate.cmx 
@@ -56,6 +57,8 @@ readbib.cmo: bibtex.cmi bibtex_lexer.cmo bibtex_parser.cmi options.cmi \
 readbib.cmx: bibtex.cmx bibtex_lexer.cmx bibtex_parser.cmx options.cmx \
     readbib.cmi 
 translate.cmo: biboutput.cmi expand.cmi html.cmo latexmacros.cmi \
-    latexscan.cmo options.cmi version.cmo 
+    latexscan.cmo options.cmi version.cmi translate.cmi 
 translate.cmx: biboutput.cmx expand.cmx html.cmx latexmacros.cmx \
-    latexscan.cmx options.cmx version.cmx 
+    latexscan.cmx options.cmx version.cmx translate.cmi 
+version.cmo: version.cmi 
+version.cmx: version.cmi 

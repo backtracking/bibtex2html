@@ -82,3 +82,4 @@ AC_SUBST(OCAMLLIB)
 
 # Finally create all the generated files
 AC_OUTPUT(Makefile)
+chmod a-w Makefile

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: condition_lexer.mli,v 1.2 2000-06-02 19:37:32 filliatr Exp $ *)
+(*i $Id: condition_lexer.mli,v 1.3 2001-02-21 09:51:52 filliatr Exp $ i*)
 
 exception Lex_error of string
 

@@ -14,15 +14,17 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibfilter.ml,v 1.8 2000-07-10 19:39:36 marche Exp $ *)
+(*i $Id: bibfilter.ml,v 1.9 2001-02-21 09:51:51 filliatr Exp $ i*)
 
-open Printf;;
-open Bibtex;;
+(*s Filtering and saturating BibTeX files. *)
 
-let debug = false;;
+open Printf
+open Bibtex
 
-(* [filter bib f] returns the list of keys of [bib] whose fields
-   satisfy the filter criterion [f] *)
+let debug = false
+
+(*s [filter bib f] returns the list of keys of [bib] whose fields
+    satisfy the filter criterion [f] *)
 
 let filter biblio criterion =
   Bibtex.fold
@@ -36,8 +38,8 @@ let filter biblio criterion =
     KeySet.empty
 
 
-(* [needed_keys biblio field value keys] returns the set of keys
-[keys] augmented with the needed keys for [value] *)
+(*s [needed_keys biblio field value keys] returns the set of keys
+    [keys] augmented with the needed keys for [value] *)
 
 let rec needed_keys_for_field biblio field value keys abbrevs =
   if field = "CROSSREF"
@@ -69,62 +71,51 @@ let rec needed_keys_for_field biblio field value keys abbrevs =
 	 match a with
 	     Id(id) -> 
 	       let id = String.uppercase id in		 
-		 if not (KeySet.mem id abbrevs) 
-		 then
-		   if abbrev_is_implicit id then (keys,abbrevs)
-		   else 
-		     try
-		       let e = find_abbrev id biblio in
-		       if debug then begin
-			 eprintf "We need additional abbrev %s\n" id
-		       end;
-		       needed_keys_for_entry biblio keys (KeySet.add id abbrevs) e
-		     with Not_found ->
-		       if not !Options.quiet then
-			 eprintf "Warning: string \"%s\" not found.\n" id;
-		       (keys,abbrevs)
-		 else (keys,abbrevs)
+	       if not (KeySet.mem id abbrevs) 
+	       then
+		 if abbrev_is_implicit id then (keys,abbrevs)
+		 else 
+		   try
+		     let e = find_abbrev id biblio in
+		     if debug then begin
+		       eprintf "We need additional abbrev %s\n" id
+		     end;
+		     needed_keys_for_entry biblio keys (KeySet.add id abbrevs) e
+		   with Not_found ->
+		     if not !Options.quiet then
+		       eprintf "Warning: string \"%s\" not found.\n" id;
+		     (keys,abbrevs)
+	       else (keys,abbrevs)
 	   | _ -> (keys,abbrevs))
       value
       (keys,abbrevs)
 
 and needed_keys_for_entry biblio keys abbrevs = function
     Entry(entry_type,key,fields) ->
-	     List.fold_right
-	       (fun (field,value) (keys,abbrevs) ->
-(*
-		  eprintf "Field : %s\n" field;
-*)
-		  needed_keys_for_field biblio field value keys abbrevs)
-	       fields
-	       (keys,abbrevs)
+      List.fold_right
+	(fun (field,value) (keys,abbrevs) ->
+           (*i eprintf "Field : %s\n" field; i*)
+	   needed_keys_for_field biblio field value keys abbrevs)
+	fields
+	(keys,abbrevs)
   | Abbrev(field,value) -> 
       needed_keys_for_field biblio field value keys abbrevs
   | _ -> (keys,abbrevs)
-;;
 
 
-(* [saturate bib l] returns the smallest part of the bibliography
-   [bib] containing all the keys in l together with all the necessary
-   abbreviation strings and cross-references *)
-
+(*s [saturate bib l] returns the smallest part of the bibliography
+    [bib] containing all the keys in l together with all the necessary
+    abbreviation strings and cross-references *)
 
 let saturate biblio s =
   let (keys,abbrevs) =
     Bibtex.fold
       (fun entry (keys,abbrevs) ->
 	 match entry with
-	     Entry(_,key,_) as e when KeySet.mem key s ->
+	   | Entry(_,key,_) as e when KeySet.mem key s ->
 	       needed_keys_for_entry biblio keys abbrevs e
 	   | _ -> (keys,abbrevs))
       biblio
       (s,KeySet.empty)
   in
   KeySet.union keys abbrevs
-;;
-
-
-
-
-  
-

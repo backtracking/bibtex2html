@@ -14,10 +14,11 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: readbib.mli,v 1.2 2000-06-02 19:37:38 filliatr Exp $ *)
+(*i $Id: readbib.mli,v 1.3 2001-02-21 09:51:54 filliatr Exp $ i*)
 
-(* [(read_entries_from_file f)] returns the BibTeX entries of the
-   BibTeX file [f]. *)
+(*s [(read_entries_from_file f)] returns the BibTeX entries of the
+    BibTeX file [f] (from standard input if [f=""]). *)
 
-val read_entries_from_file : string -> Bibtex.biblio;;
+val read_entries_from_file : string -> Bibtex.biblio
+
 	

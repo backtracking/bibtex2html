@@ -14,7 +14,9 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibtex.mli,v 1.14 2000-06-19 08:43:23 marche Exp $ *)
+(*i $Id: bibtex.mli,v 1.15 2001-02-21 09:51:52 filliatr Exp $ i*)
+
+(*s A datatype for BibTeX bibliographies. *)
 
 type entry_type = string
 		    
@@ -34,17 +36,17 @@ type command =
 
 type biblio
 
-(* [empty_biblio] is an empty bibliography *)
+(*s [empty_biblio] is an empty bibliography *)
 
 val empty_biblio : biblio
 
-(* [add_new_entry k c b] adds an entry of key [k] and command [c] in
+(*s [add_new_entry k c b] adds an entry of key [k] and command [c] in
    biblio [b] and returns the new biblio. The entry [k]
    is supposed not to exists yet in [b]. *)
 
 val add_new_entry : command -> biblio -> biblio
 
-(* [merge_biblios b1 b2] merges biblios [b1] and [b2]. Commands in the
+(*s [merge_biblios b1 b2] merges biblios [b1] and [b2]. Commands in the
    resulting biblio are the commands of b1, then the commands of b2,
    except for duplicates: any abbrev in [b2] that already exists in
    [b1] is ignored, and conversely every regular entries of [b1] which
@@ -55,32 +57,30 @@ val add_new_entry : command -> biblio -> biblio
 
 val merge_biblios : biblio -> biblio -> biblio
 
-(* access functions *)
-
-(* [find_entry k b] returns the first entry of key [k] in biblio
+(*s [find_entry k b] returns the first entry of key [k] in biblio
    [b]. Raises [Not_found] if no entry of this key exist. *)
 
 val find_entry : key -> biblio -> command
 
-(* [size b] is the number of commands in [b] *)
+(*s [size b] is the number of commands in [b] *)
 
 val size : biblio -> int
 
-(* [fold f b accu] iterates [f] on the commands of [b], starting from
+(*s [fold f b accu] iterates [f] on the commands of [b], starting from
    [a]. If the commands of [b] are $c_1,\ldots,c_n$ in this order,
-   then it computes [f $c_n$ (f $c_{n-1}$ $\cdots$ (f $c_1$
-   a)$\cdots$)] *)
+   then it computes $f ~ c_n ~ (f ~ c_{n-1} ~ \cdots ~ (f ~ c_1 ~
+   a)\cdots)$. *)
 
 val fold : (command -> 'a -> 'a) -> biblio -> 'a -> 'a
 
-(* [abbrev_is_implicit k] is true when [k] is an integer or a month
+(*s [abbrev_is_implicit k] is true when [k] is an integer or a month
    name.  [abbrev_search k b] returns the first abbrev of key [k] in
    biblio [b], Raises [Not_found] if no abbrev of this key exist. *)
 
 val abbrev_is_implicit : key -> bool
 val find_abbrev : key -> biblio -> command
 
-(* expansion of abbreviations. [expand_abbrevs bib] returns a new
+(*s expansion of abbreviations. [expand_abbrevs bib] returns a new
    bibliography where all strings have been expanded *)
 
 val expand_abbrevs : biblio -> biblio

@@ -1,4 +1,3 @@
-{
 (*
  * bibtex2html - A BibTeX to HTML translator
  * Copyright (C) 1997 Jean-Christophe FILLIATRE
@@ -15,10 +14,11 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexscan.mll,v 1.16 2000-07-24 21:22:36 filliatr Exp $ *)
+(*i $Id: latexscan.mll,v 1.17 2001-02-21 09:51:53 filliatr Exp $ i*)
 
-(* This code is Copyright (C) 1997 Xavier Leroy. *)
+(*s This code is Copyright (C) 1997 Xavier Leroy. *)
 
+{
   open Latexmacros
 
   let brace_nesting = ref 0
@@ -241,7 +241,7 @@ and skip_optional_arg = parse
   | _           { skip_optional_arg lexbuf }
 
 
-(* ajout personnel: read_macros pour lire les macros (La)TeX *)
+(* ajout personnel: [read_macros] pour lire les macros (La)TeX *)
 
 and read_macros = parse
     "\\def" | "\\newcommand"

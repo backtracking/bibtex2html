@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latex_accents.mll,v 1.5 2000-10-16 11:46:52 marche Exp $ *)
+(*i $Id: latex_accents.mll,v 1.6 2001-02-21 09:51:53 filliatr Exp $ i*)
 
 {
 

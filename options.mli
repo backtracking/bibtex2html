@@ -14,7 +14,9 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: options.mli,v 1.1 2000-06-30 02:36:44 filliatr Exp $ *)
+(*i $Id: options.mli,v 1.2 2001-02-21 09:51:54 filliatr Exp $ i*)
+
+(*s Common options to bib2bib and bibtex2html. *)
 
 val debug : bool ref
 

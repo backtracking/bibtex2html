@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: parse_condition.mli,v 1.3 2000-06-02 19:37:37 filliatr Exp $ *)
+(*i $Id: parse_condition.mli,v 1.4 2001-02-21 09:51:54 filliatr Exp $ i*)
 
 val condition : string -> Condition.condition
 

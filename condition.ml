@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: condition.ml,v 1.8 2000-10-16 11:46:52 marche Exp $ *)
+(*i $Id: condition.ml,v 1.9 2001-02-21 09:51:52 filliatr Exp $ i*)
 
 open Printf;;
 

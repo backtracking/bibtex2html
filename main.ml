@@ -14,12 +14,14 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.42 2001-02-09 08:09:42 filliatr Exp $ *)
+(*i $Id: main.ml,v 1.43 2001-02-21 09:51:53 filliatr Exp $ i*)
+
+(*s Main module of bibtex2html. *)
 
 open Printf
 open Translate
 
-(* options *)
+(* Options. *)
 
 let excluded = ref ([] : string list)
 let add_exclude k = excluded := k :: !excluded
@@ -34,7 +36,7 @@ let ignore_bibtex_errors = ref false
 
 let expand_abbrev_in_bib_output = ref true
 
-(* optional citation file *)
+(* Optional citation file. *)
 
 let use_cite_file = ref false
 let citations = ref ([] : string list)
@@ -54,7 +56,7 @@ let add_citations file =
     prerr_endline ("Cannot open citation file (" ^ msg ^ ")");
     exit 1
   
-(* sort of entries *)
+(*s Sorting the entries. *)
 
 module KeyMap = Map.Make(struct type t = string let compare = compare end)
 
@@ -98,11 +100,11 @@ let sort_entries entries bibitems =
 
 
 (* We use BibTeX itself to format the entries. Operations:
- *
- * 1. create an auxiliary file tmp.aux
- * 2. call bibtex on it
- * 3. read the resulting tmp.bbl file to get the formatted entries
- *)
+   \begin{enumerate}
+   \item create an auxiliary file tmp.aux
+   \item call bibtex on it
+   \item read the resulting tmp.bbl file to get the formatted entries
+   \end{enumerate} *)
 
 let create_aux_file fbib tmp =
   let ch = open_out (tmp ^ ".aux") in
@@ -204,7 +206,7 @@ let get_biblios fbib =
   with
     e -> clean tmp; raise e
 
-(***
+(*i
 let insert_title_url bib = 
   let rec remove_assoc x = function
     | [] ->
@@ -241,7 +243,7 @@ let insert_title_url bib =
        | _ -> 
 	   Bibtex.add_new_entry com bib')
     bib Bibtex.empty_biblio
-***)
+i*)
 
 let translate fullname =
   let input_bib = Readbib.read_entries_from_file fullname in
@@ -279,7 +281,7 @@ let translate fullname =
      else None)
 
 
-(* reading macros in a file *)
+(*s Reading macros in a file. *)
 
 let read_macros f =
   let chan = open_in f in
@@ -288,7 +290,7 @@ let read_macros f =
     close_in chan
 
 
-(* command line parsing *)
+(*s Command line parsing. *)
 
 let usage () =
   prerr_endline "";
@@ -307,7 +309,7 @@ let usage () =
   prerr_endline "  -multiple  produce one file per entry";
   prerr_endline "  -nodoc     only produces the body of the HTML documents";
   prerr_endline "  -nokeys    do not print the BibTeX keys";
-  (* prerr_endline "  -titleurl  URLs wrapped around titles"; *)
+  (*i prerr_endline "  -titleurl  URLs wrapped around titles"; i*)
   prerr_endline "  -rawurl    print URL instead of file type";
   prerr_endline "  -heveaurl  use HeVeA's \\url macro";
   prerr_endline "  -noabstract";
@@ -357,10 +359,10 @@ let parse () =
 	nokeys := true; parse_rec rem
     | ("-rawurl" | "--raw-url") :: rem -> 
 	raw_url := true; parse_rec rem
-(***
+(*i
     | ("-tu" | "-titleurl" | "--title-url") :: rem -> 
 	title_url := true; parse_rec rem
-***)
+i*)
     | ("-heveaurl" | "--hevea-url") :: rem -> 
 	Latexscan.hevea_url := true; parse_rec rem
     | ("-nofooter" | "--no-footer") :: rem ->
@@ -468,7 +470,7 @@ let parse () =
     parse_rec (List.tl (Array.to_list Sys.argv))
 
 
-(* main *)
+(*s Main function. *)
 
 let main () =
   let (fbib,f) = parse () in

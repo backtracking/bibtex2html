@@ -16,7 +16,7 @@ DOCDIR = /usr/doc/bibtex2html
 #########################################
 
 MAJORVN=1
-MINORVN=45
+MINORVN=46
 
 CAMLC    = @OCAMLC@
 CAMLCOPT = @OCAMLOPT@ 
@@ -113,7 +113,29 @@ latexscan.ml: latexscan.mll
 bibtex_lexer.ml: bibtex_lexer.mll
 	ocamllex bibtex_lexer.mll
 
+# literate programming
+######################
 
+lp: bibtex2html.dvi
+
+WEBFILES=options.mli options.ml latexmacros.mli latexmacros.ml \
+         latexscan.mll bbl_lexer.mll \
+         bibtex.mli bibtex.ml bibtex_lexer.mll bibtex_parser.mly \
+	 readbib.mli readbib.ml expand.mli expand.ml \
+         bibfilter.mli bibfilter.ml \
+         html.ml biboutput.mli biboutput.ml version.mli \
+         translate.mli translate.ml copying.mli copying.ml main.ml
+
+bibtex2html.tex: $(WEBFILES)
+	ocamlweb -o $@ $(WEBFILES)
+
+.SUFFIXES: .tex .dvi .ps
+
+.tex.dvi:
+	latex $< && latex $<
+
+.dvi.ps:
+	dvips $< -o $@
 
 # export
 ########

@@ -1,6 +1,23 @@
 (*
- * bbl_lexer.mll
+ * bibtex2html - A BibTeX to HTML translator
+ * Copyright (C) 1997-2000 Jean-Christophe Filliâtre and Claude Marché
+ * 
+ * This software is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public
+ * License version 2, as published by the Free Software Foundation.
+ * 
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * 
+ * See the GNU General Public License version 2 for more details
+ * (enclosed in the file GPL).
  *)
+
+(*i $Id: bbl_lexer.mll,v 1.6 2001-02-21 09:51:51 filliatr Exp $ i*)
+
+(*s Lexer to analyze \verb!.bbl! files. *)
+
 {
 
 open Lexing
@@ -16,8 +33,9 @@ let brace_depth = ref 0
 let buf = Buffer.create 1024
 
 }
+
 rule biblio_header = parse
-    "\\begin{thebibliography}" '{' [^ '}']* '}'
+  | "\\begin{thebibliography}" '{' [^ '}']* '}'
       { biblio_name lexbuf }
   | eof
       { raise End_of_file }
@@ -25,7 +43,7 @@ rule biblio_header = parse
       { biblio_header lexbuf }
 
 and biblio_name = parse
-    '[' [^ ']']* ']'
+  | '[' [^ ']']* ']'
       { let l = lexeme lexbuf in
 	let s = String.sub l 1 (String.length l - 2) in
         Some s }
@@ -33,7 +51,7 @@ and biblio_name = parse
       { None } 
 
 and bibitem = parse
-    "\\end{thebibliography}"
+  | "\\end{thebibliography}"
       { raise End_of_biblio }
   | '\\' ['a'-'z']* "bibitem"
       { brace_depth := 0;
@@ -43,13 +61,13 @@ and bibitem = parse
   | _ { bibitem lexbuf }
 
 and bibitem1 = parse
-    '[' [^']']* ']'
+  | '[' [^']']* ']'
       { let l = lexeme lexbuf in
 	let s = String.sub l 1 (String.length l - 2) in
         opt_ref := Some s }
     
 and bibitem2 = parse
-    '{' [^'}']* '}'
+  | '{' [^'}']* '}'
       { let l = lexeme lexbuf in
 	let s = String.sub l 1 (String.length l - 2) in
         key := s;
@@ -67,6 +85,6 @@ and bibitem_body = parse
   | _     { Buffer.add_char buf (lexeme_char lexbuf 0); bibitem_body lexbuf }
 
 and skip_end_of_line = parse
-    [' ' '\n' '\010' '\013' '\009' '\012'] +
+  | [' ' '\n' '\010' '\013' '\009' '\012'] +
       { () }
   | _ { skip_end_of_line lexbuf }
