@@ -15,7 +15,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexscan.mll,v 1.12 2000-05-04 17:03:19 filliatr Exp $ *)
+(* $Id: latexscan.mll,v 1.13 2000-06-02 21:24:53 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -141,7 +141,7 @@ rule main = parse
                 { let exec_action = function
                       Print str -> print_s str
                     | Print_arg -> print_arg lexbuf
-                    | Raw_arg f -> f(raw_arg lexbuf)
+                    | Raw_arg f -> f (raw_arg lexbuf)
                     | Skip_arg -> save_nesting skip_arg lexbuf
 		    | Recursive s -> main (Lexing.from_string s)
 		  in

@@ -1,4 +1,7 @@
 
+ o added macro \html (raw HTML)
+ o fixed bug with both -nodoc and -multiple
+
 Version 1.3, 2/6/2000
 =====================
  o sorting according to dates: bibtex2html no more fails on incorrect

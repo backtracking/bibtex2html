@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.38 2000-06-02 19:37:38 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.39 2000-06-02 21:24:54 filliatr Exp $ *)
 
 (* options *)
 
@@ -214,7 +214,8 @@ let separate_file (b,((_,k,f) as e)) =
   let file = k ^ !suffix in
   let ch = open_out file in
   let title = Printf.sprintf "%s : %s" !output_file k in
-  Html.open_document ch (fun () -> output_string ch title);
+  if not !nodoc then
+    Html.open_document ch (fun () -> output_string ch title);
   header ch;
   Html.open_balise ch "h2";
   latex2html ch b;
@@ -230,7 +231,7 @@ let separate_file (b,((_,k,f) as e)) =
   output_string ch "Back";
   Html.close_href ch;
   if !print_footer then footer ch;
-  Html.close_document ch;
+  if not !nodoc then Html.close_document ch;
   close_out ch;
   in_summary := true
 
@@ -301,10 +302,8 @@ let summary bl =
        Html.close_balise ch "table")
     bl;
   in_summary := false;
-  if not !nodoc then begin
-    if !print_footer then footer ch;
-    Html.close_document ch
-  end;
+  if !print_footer then footer ch;
+  if not !nodoc then Html.close_document ch;
   close_out ch;
   Printf.eprintf "ok\n"; flush stderr
 
@@ -337,7 +336,7 @@ let bib_file bl keys =
   Biboutput.output_bib true ch bl keys;
   Html.close_balise ch "PRE";
   
-  footer ch;
+  if !print_footer then footer ch;
   if not !nodoc then Html.close_document ch;
   flush ch;
   close_out ch;

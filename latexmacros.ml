@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.33 2000-06-02 19:37:35 filliatr Exp $ *)
+(* $Id: latexmacros.ml,v 1.34 2000-06-02 21:24:53 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -25,7 +25,7 @@ let print_s s = output_string !out_channel s
 let print_c c = output_char !out_channel c
 
 type action =
-    Print of string
+  | Print of string
   | Print_arg
   | Skip_arg
   | Raw_arg of (string -> unit)
@@ -264,7 +264,7 @@ def "\\symbol"
   [Raw_arg (function s -> 
 	      try let n = int_of_string s in print_c (Char.chr n) 
 	      with _ -> ())];
-			   
+def "\\html" [Raw_arg print_s];			   
 
 (* Bibliography *)
 def "\\begin{thebibliography}" [Print "<H2>References</H2>\n<dl>\n"; Skip_arg];
