@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.44 2000-08-09 22:06:09 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.45 2000-08-10 20:55:53 filliatr Exp $ *)
 
 open Printf
 
@@ -37,6 +37,7 @@ let input_file = ref ""
 let output_file = ref ""
 let bibentries_file = ref ""
 let title_url = ref false
+let use_label_name = ref false
 
 let (fields : string list ref) = ref []
 let add_field s = fields := (String.uppercase s) :: !fields
@@ -157,18 +158,26 @@ let get_url s =
   else
     s
 
+let link_name u url s =
+  if !raw_url then 
+    url 
+  else if !use_label_name then 
+    String.capitalize (String.lowercase u)
+  else
+    s
+
 let make_links ch ((t,k,_) as e) startb =
   (* URL's *)
   let first = ref startb in
   List.iter 
-    (fun u -> 
+    (fun f -> 
        try
-	 let u = Expand.get_uppercase_field e u in
+	 let u = Expand.get_uppercase_field e f in
 	 let s = file_type u in
 	 if !first then first := false else output_string ch ",\n";
 	 let url = get_url u in
 	 Html.open_href ch url;
-	 output_string ch (if !raw_url then url else s);
+	 output_string ch (link_name f url s);
 	 Html.close_href ch
        with Not_found -> ())
     (!fields @ 

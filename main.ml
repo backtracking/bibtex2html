@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.39 2000-08-10 20:45:00 filliatr Exp $ *)
+(* $Id: main.ml,v 1.40 2000-08-10 20:55:53 filliatr Exp $ *)
 
 open Printf
 open Translate
@@ -324,6 +324,7 @@ let usage () =
   prerr_endline "  -e key     exclude an entry";
   prerr_endline "  -m file    read (La)TeX macros in file";
   prerr_endline "  -f field   add a web link for that BibTeX field";
+  prerr_endline "  -labelname use the label name when inserting a link";
   prerr_endline "  -debug     verbose mode (to find incorrect BibTeX entries)";
   prerr_endline "  -q         quiet mode";
   prerr_endline "  -v         print version and exit";
@@ -366,6 +367,8 @@ let parse () =
 	add_field s; parse_rec rem
     | ("-f" | "--field") :: [] ->
 	usage()
+    | ("-ln" | "-labelname" | "--labelname" | "--label-name") :: rem ->
+	use_label_name := true; parse_rec rem
     | ("-multiple" | "--multiple") :: rem ->
 	multiple := true; parse_rec rem
     | ("-both" | "--both") :: rem ->

@@ -1,4 +1,5 @@
 
+ o option -labelname to use the label name when inserting a link
  o fixed bug in option -t when bibtex file read on standard input
  o relative URL not prefixed with ./ when email addresses
  o macro \par translated to <p> not <br>
