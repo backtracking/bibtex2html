@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.44 2001-10-17 13:26:23 filliatr Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.45 2001-10-24 13:17:15 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -235,7 +235,7 @@ def "\\)" [Print "</I>"];
 def "\\mapsto" [Print "<tt>|-&gt;</tt>"];
 def "\\times" [Print "&#215;"];
 def "\\neg" [Print "&#172;"];
-def "\\frac" [Print_arg; Print "/"; Print_arg];
+def "\\frac" [Print "("; Print_arg; Print ")/("; Print_arg; Print ")"];
 
 (* Math symbols printed as texts (could we do better?) *)
 def "\\ne" [Print "=/="];

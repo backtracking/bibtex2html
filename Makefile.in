@@ -3,13 +3,15 @@
 #########################################
 
 # where to put executable files
-BINDIR = /usr/local/bin
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+BINDIR=@bindir@
 
 # where to install the man pages
-MANDIR = /usr/local/man
+MANDIR = @mandir@
 
 # where to install the doc
-DOCDIR = /usr/doc/bibtex2html
+DOCDIR = $(prefix)/doc/bibtex2html
 
 #########################################
 # End of configuration part

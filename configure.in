@@ -3,8 +3,6 @@
 # check for one particular file of the sources
 AC_INIT(bibtex.mli)
 
-AC_PREFIX_DEFAULT(/usr)
-
 # Check for Ocaml compilers
 
 # we first look for ocamlc in the path; if not present, we abort
