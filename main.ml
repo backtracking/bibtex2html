@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.19 1998-11-18 09:59:38 filliatr Exp $ *)
+(* $Id: main.ml,v 1.20 1999-01-21 09:38:45 filliatr Exp $ *)
 
 (* options *)
 
@@ -224,11 +224,25 @@ let usage () =
   prerr_endline "  -v         print version and exit";
   exit 1
 
+let copying () =
+  print_endline "
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License version 2, as
+published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+See the GNU General Public License version 2 for more details
+(enclosed in the file GPL).";
+  flush stdout
+
 let banner () =
   Printf.printf "This is bibtex2html version %s, compiled on %s\n"
     Version.version Version.date;
-  Printf.printf "Copyright (c) 1997-1998 Jean-Christophe Filliâtre\n";
-  Printf.printf "This program is distributed under the terms of the GPL\n";
+  Printf.printf "Copyright (c) 1997,1998,1999 Jean-Christophe Filliâtre\n";
+  Printf.printf "This is free software with ABSOLUTELY NO WARRANTY (use option -warranty)\n";
   flush stdout
 
 let parse () =
@@ -293,6 +307,8 @@ let parse () =
 	usage ()
     | ("-v" | "-version" | "--version") :: _ ->
 	exit 0
+    | ("-warranty" | "--warranty") :: _ ->
+	copying(); exit 0
 
     | ("-debug" | "--debug") :: rem ->
 	Translate.debug := true ; parse_rec rem
@@ -304,22 +320,6 @@ let parse () =
 
 
 (* main *)
-
-let copying () =
-  print_endline "bibtex2html - BibTeX bibliography to HTML converter
-Copyright (C) 1997-1998 Jean-Christophe FILLIATRE
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License version 2, as
-published by the Free Software Foundation.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License version 2 for more details
-(enclosed in the file GPL).";
-  flush stdout
 
 let main () =
   banner();
