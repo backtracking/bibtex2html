@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: condition.ml,v 1.11 2003-10-03 15:37:30 marche Exp $ i*)
+(*i $Id: condition.ml,v 1.12 2004-07-06 15:22:33 marche Exp $ i*)
 
 open Printf;;
 
@@ -94,6 +94,7 @@ let rec evaluate_rec entrytype key fields = function
 		    eprintf "Warning: cannot compare non-numeric values ";
 		    eprintf "%s and %s in entry %s\n" v1 v2 key
 		  end;
+		  if !Options.warn_error then exit 2;
 		  false
 	with
 	    Unavailable -> false

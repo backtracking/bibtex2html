@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibtex.mli,v 1.17 2003-06-19 13:02:02 marche Exp $ i*)
+(*i $Id: bibtex.mli,v 1.18 2004-07-06 15:22:33 marche Exp $ i*)
 
 (*s A datatype for BibTeX bibliographies. *)
 
@@ -97,7 +97,7 @@ val expand_abbrevs : biblio -> biblio
   (Entry _, Entry _)
 
   Warning! it is up to you to provide a comparison function that will
-  not place crossrefs after regular entries!
+  not place crossrefs before regular entries!
 
 *)
 

@@ -14,10 +14,12 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: options.ml,v 1.2 2001-02-21 09:51:54 filliatr Exp $ i*)
+(*i $Id: options.ml,v 1.3 2004-07-06 15:22:33 marche Exp $ i*)
 
 (*s Default is no debugging and verbose mode. *)
 
 let debug = ref false
 
 let quiet = ref false
+
+let warn_error = ref false

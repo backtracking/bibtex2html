@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: main.ml,v 1.55 2004-03-16 08:55:49 filliatr Exp $ i*)
+(*i $Id: main.ml,v 1.56 2004-07-06 15:22:33 marche Exp $ i*)
 
 (*s Main module of bibtex2html. *)
 
@@ -341,6 +341,7 @@ let usage () =
   prerr_endline "  -labelname use the label name when inserting a link";
   prerr_endline "  -debug     verbose mode (to find incorrect BibTeX entries)";
   prerr_endline "  -q         quiet mode";
+  prerr_endline "  -w         stop on warning";
   prerr_endline "  -v         print version and exit";
   prerr_endline "";
   prerr_endline 
@@ -479,6 +480,8 @@ i*)
     | ("-warranty" | "--warranty") :: _ ->
 	Copying.banner "bibtex2html"; Copying.copying(); exit 0
 
+    | ("-w" | "-warn-error" | "--warn-error") :: rem ->
+	Options.warn_error := true; parse_rec rem
     | ("-q" | "-quiet" | "--quiet") :: rem ->
 	Options.quiet := true; parse_rec rem
     | ("-debug" | "--debug") :: rem ->

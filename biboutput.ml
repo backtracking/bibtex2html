@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: biboutput.ml,v 1.14 2004-03-24 08:10:10 filliatr Exp $ i*)
+(*i $Id: biboutput.ml,v 1.15 2004-07-06 15:22:32 marche Exp $ i*)
 
 (*s Output a BibTeX bibliography. *)
 
@@ -69,6 +69,7 @@ let print_crossref html ch = function
   | l -> 
       if not !Options.quiet then
 	eprintf "Warning: cross-references must be constant strings\n";
+      if !Options.warn_error then exit 2;
       print_atom_list html ch l
 
 let print_link_field ch = function
@@ -81,6 +82,7 @@ let print_link_field ch = function
   | l ->
       if not !Options.quiet then
 	eprintf "Warning: web links must be constant strings\n";
+      if !Options.warn_error then exit 2;
       print_atom_list true ch l
 
 let print_command html ch keys = function 

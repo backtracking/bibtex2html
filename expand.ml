@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: expand.ml,v 1.10 2002-10-11 16:07:53 filliatr Exp $ i*)
+(*i $Id: expand.ml,v 1.11 2004-07-06 15:22:33 marche Exp $ i*)
 
 (*s Expansion of abbreviations in BibTeX databases. *)
 
@@ -116,6 +116,7 @@ let extract_year k f =
   with Failure "int_of_string" ->
     if not !Options.quiet then
       eprintf "Warning: incorrect year in entry %s\n" k;
+    if !Options.warn_error then exit 2;
     0
 
 let extract_month k f =
@@ -125,6 +126,7 @@ let extract_month k f =
     | Failure "int_of_string" ->
 	if not !Options.quiet then
 	  eprintf "Warning: incorrect month in entry %s\n" k; 
+	if !Options.warn_error then exit 2;
 	0
     | Not_found -> 0
 

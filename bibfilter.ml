@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibfilter.ml,v 1.9 2001-02-21 09:51:51 filliatr Exp $ i*)
+(*i $Id: bibfilter.ml,v 1.10 2004-07-06 15:22:32 marche Exp $ i*)
 
 (*s Filtering and saturating BibTeX files. *)
 
@@ -58,12 +58,14 @@ let rec needed_keys_for_field biblio field value keys abbrevs =
 	      with Not_found ->
 		if not !Options.quiet then
 		  eprintf "Warning: cross-reference \"%s\" not found.\n" s;
+		if !Options.warn_error then exit 2;
 		(keys,abbrevs)
 	    end
 	  else (keys,abbrevs)
       | _ -> 
 	  if not !Options.quiet then
-	    printf "Warning: cross-references must be constant strings\n";
+	    eprintf "Warning: cross-references must be constant strings\n";
+	  if !Options.warn_error then exit 2;
 	  (keys,abbrevs)
   else
     List.fold_right
@@ -84,6 +86,7 @@ let rec needed_keys_for_field biblio field value keys abbrevs =
 		   with Not_found ->
 		     if not !Options.quiet then
 		       eprintf "Warning: string \"%s\" not found.\n" id;
+		     if !Options.warn_error then exit 2;
 		     (keys,abbrevs)
 	       else (keys,abbrevs)
 	   | _ -> (keys,abbrevs))

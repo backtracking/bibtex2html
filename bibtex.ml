@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibtex.ml,v 1.17 2003-06-19 13:02:02 marche Exp $ i*)
+(*i $Id: bibtex.ml,v 1.18 2004-07-06 15:22:32 marche Exp $ i*)
 
 (*s Datatype for BibTeX bibliographies. *)
 
@@ -100,7 +100,13 @@ let merge_biblios b1 b2 =
     fold
       (fun entry accu -> match entry with
 	 | Entry (_,key,_) -> 
-	     if KeySet.mem key b2keys then accu else entry :: accu
+	     if KeySet.mem key b2keys then 
+	       begin
+		 Format.eprintf "Warning, key '%s' duplicated@." key;
+		 if !Options.warn_error then exit 2;
+		 accu 
+	       end 
+	     else entry :: accu
 	 | _ -> entry :: accu)
       b1
       empty_biblio
@@ -109,7 +115,13 @@ let merge_biblios b1 b2 =
     fold
       (fun entry accu -> match entry with
 	 | Abbrev (key,_) -> 
-	     if KeySet.mem key b1abbrevs then accu else entry :: accu
+	     if KeySet.mem key b1abbrevs then 
+	       begin
+		 Format.eprintf "Warning, key '%s' duplicated@." key;
+		 if !Options.warn_error then exit 2;
+		 accu 
+	       end 
+	     else entry :: accu
 	 | _ -> entry :: accu)
       b2
       new_b1

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bib2bib.ml,v 1.18 2003-06-24 15:38:54 marche Exp $ i*)
+(*i $Id: bib2bib.ml,v 1.19 2004-07-06 15:22:32 marche Exp $ i*)
 
 open Printf
 open Bibtex
@@ -60,6 +60,7 @@ let args_spec =
     ("-oc", Arg.String (fun f -> cite_output_file_name := f),
      "citations output file name");
     ("-c", Arg.String (add_condition),"filter condition");
+    ("-w", Arg.Set Options.warn_error, "stop on warning");
     ("-d", Arg.Set Options.debug, "debug flag");
     ("-q", Arg.Set Options.quiet, "quiet flag");
     ("-s", Arg.String (fun s -> sort_criteria := (String.uppercase s):: !sort_criteria),
@@ -212,7 +213,7 @@ let main () =
   if KeySet.cardinal matching_keys = 0 then
     begin
       eprintf "Warning: no matching reference found.\n";
-      (* exit 2; *)
+      if !Options.warn_error then exit 2;
     end;
   
   let user_expanded = if !expand_abbrevs then expanded else all_entries in

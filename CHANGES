@@ -1,4 +1,7 @@
 
+ o added option -w (--warn-error) to stop immediately when a warning
+   is issued.
+
 Version 1.70, 30/6/2004
 =======================
  o fixed bug with crossrefs not translated from LaTeX to HTML
@@ -289,3 +292,7 @@ Version 0.2, 1997/10/24
 Version 0.1, 1997/07/17
 =======================
   o first public release
+
+Local Variables: 
+mode: text
+End: 
