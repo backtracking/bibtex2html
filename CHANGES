@@ -1,4 +1,5 @@
-
+ 
+ o fixed bug in translating unbalanced quotes to HTML
  o bib2bib: predicate "exists" added in conditions to check existence
    of a field
  o bib2bib: new semantics for non-existent fields in conditions
