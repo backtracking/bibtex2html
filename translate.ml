@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.64 2003-10-01 15:23:24 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.65 2004-03-24 08:10:10 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -385,9 +385,7 @@ let one_entry_summary ch biblio (_,b,((_,k,f) as e)) =
   else if !single then begin
     let ks = Bibtex.KeySet.singleton k in
     let ks = Bibfilter.saturate biblio ks in
-    Html.open_balise ch "pre";
     Biboutput.output_bib true ch biblio (Some ks);
-    Html.close_balise ch "pre"
   end else begin
     let links = make_links e in
     let links = if !bib_entries then bibtex_entry k :: links else links in
@@ -468,9 +466,7 @@ let bib_file bl keys =
   output_string ch !input_file;
   Html.close_balise ch "h1";
 
-  Html.open_balise ch "pre";
   Biboutput.output_bib true ch bl keys;
-  Html.close_balise ch "pre";
   
   if !print_footer then footer ch;
   if not !nodoc then Html.close_document ch;

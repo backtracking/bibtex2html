@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: biboutput.ml,v 1.13 2003-10-01 15:23:24 filliatr Exp $ i*)
+(*i $Id: biboutput.ml,v 1.14 2004-03-24 08:10:10 filliatr Exp $ i*)
 
 (*s Output a BibTeX bibliography. *)
 
@@ -94,23 +94,33 @@ let print_command html ch keys = function
 	end
       else
 i*)
-	output_string ch ("@COMMENT{{" ^ s ^ "}}\n\n")
+      if html then output_string ch "<pre>\n";
+      output_string ch ("@COMMENT{{" ^ s ^ "}}\n");
+      if html then output_string ch "</pre>\n";
+      output_string ch "\n"
   | Preamble l ->
+      if html then output_string ch "<pre>\n";
       output_string ch "@PREAMBLE{{";
       print_atom_list html ch l;
-      output_string ch "}}\n\n"
+      output_string ch "}}\n";
+      if html then output_string ch "</pre>\n";
+      output_string ch "\n"
   | Abbrev(s,l) ->
       if needs_output s keys then 
 	begin
 	  if html then begin Html.open_anchor ch s; Html.close_anchor ch end;
+	  if html then output_string ch "<pre>\n";
 	  output_string ch ("@STRING{" ^ s ^ " = ");
 	  print_atom_list html ch l;
-	  output_string ch "}\n\n"
+	  output_string ch "}\n";
+	  if html then output_string ch "</pre>\n";
+	  output_string ch "\n"
 	end
   | Entry (entry_type,key,fields) ->
       if needs_output key keys then 
 	begin
 	  if html then begin Html.open_anchor ch key; Html.close_anchor ch end;
+	  if html then output_string ch "<pre>\n";
 	  output_string ch ("@" ^ entry_type ^ "{" ^ key);
 	  List.iter
 	    (fun (field,l) ->
@@ -122,7 +132,10 @@ i*)
 	       else 
 		 print_atom_list html ch l)
 	    fields;
-	  output_string ch "\n}\n\n"
+	  output_string ch "\n}\n";
+	  if html then output_string ch "</pre>\n";
+	  output_string ch "\n"
+
 	end
 
 let output_bib html ch bib keys =

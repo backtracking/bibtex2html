@@ -1,4 +1,6 @@
 
+ o modified -bib.html output to circumvent a Konqueror bug
+
 Version 1.68, 16/03/2004
 ========================
  o fixed bug with parentheses-enclosed entries
