@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bbl_lexer.mll,v 1.6 2001-02-21 09:51:51 filliatr Exp $ i*)
+(*i $Id: bbl_lexer.mll,v 1.7 2004-08-31 14:38:37 filliatr Exp $ i*)
 
 (*s Lexer to analyze \verb!.bbl! files. *)
 
@@ -61,19 +61,26 @@ and bibitem = parse
   | _ { bibitem lexbuf }
 
 and bibitem1 = parse
-  | '[' [^']']* ']'
-      { let l = lexeme lexbuf in
-	let s = String.sub l 1 (String.length l - 2) in
-        opt_ref := Some s }
-    
+  | '[' { Buffer.reset buf; opt_ref := Some (bibitem1_body lexbuf) }
+
+and bibitem1_body = parse
+  | ']'   { Buffer.contents buf }
+  | "%\n" { bibitem1_body lexbuf }
+  | _     { Buffer.add_char buf (lexeme_char lexbuf 0); bibitem1_body lexbuf }
+  | eof   { raise End_of_file }
+
 and bibitem2 = parse
-  | '{' [^'}']* '}'
-      { let l = lexeme lexbuf in
-	let s = String.sub l 1 (String.length l - 2) in
-        key := s;
-	skip_end_of_line lexbuf;
-	Buffer.reset buf;
-	bibitem_body lexbuf }
+  | '{' { Buffer.reset buf; 
+	  key := bibitem2_body lexbuf;
+	  skip_end_of_line lexbuf;
+	  Buffer.reset buf;
+	  bibitem_body lexbuf }
+
+and bibitem2_body = parse
+  | '}'   { Buffer.contents buf }
+  | "%\n" { bibitem2_body lexbuf }
+  | _     { Buffer.add_char buf (lexeme_char lexbuf 0); bibitem2_body lexbuf }
+  | eof   { raise End_of_file }
 
 and bibitem_body = parse
   | "\n\n"

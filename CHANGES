@@ -1,4 +1,5 @@
 
+ o fixed bug with very long keys (when bibtex inserts % to cut lines)
  o arguments to macros read from a file (option -m) are discarded
 
 Version 1.71, 24/8/2004
