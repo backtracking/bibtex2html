@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.43 2000-06-30 02:36:45 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.44 2000-08-09 22:06:09 filliatr Exp $ *)
 
 open Printf
 
@@ -36,6 +36,7 @@ let bib_entries = ref true
 let input_file = ref ""
 let output_file = ref ""
 let bibentries_file = ref ""
+let title_url = ref false
 
 let (fields : string list ref) = ref []
 let add_field s = fields := (String.uppercase s) :: !fields
@@ -130,7 +131,8 @@ let decompressed f =
   in
   test_comp compression_suffixes
 
-let file_types = [ ".dvi","DVI"; ".ps","PS"; ".pdf","PDF"; ".rtf","RTF" ]
+let file_types = [ ".dvi","DVI"; ".DVI","DVI"; ".ps","PS"; ".PS","PS";
+		   ".pdf","PDF"; ".PDF","PDF"; ".rtf","RTF"; ".RTF","RTF" ]
 
 let file_type f =
   let (comp,f) = decompressed f in
@@ -158,16 +160,17 @@ let get_url s =
 let make_links ch ((t,k,_) as e) startb =
   (* URL's *)
   let first = ref startb in
-  List.iter (fun u -> 
-	       try
-		 let u = Expand.get_uppercase_field e u in
-		 let s = file_type u in
-		 if !first then first := false else output_string ch ",\n";
-		 let url = get_url u in
-		 Html.open_href ch url;
-		 output_string ch (if !raw_url then url else s);
-		 Html.close_href ch
-	       with Not_found -> ())
+  List.iter 
+    (fun u -> 
+       try
+	 let u = Expand.get_uppercase_field e u in
+	 let s = file_type u in
+	 if !first then first := false else output_string ch ",\n";
+	 let url = get_url u in
+	 Html.open_href ch url;
+	 output_string ch (if !raw_url then url else s);
+	 Html.close_href ch
+       with Not_found -> ())
     (!fields @ 
      [ "FTP"; "HTTP"; "URL"; "DVI"; "PS"; "PDF";
        "DOCUMENTURL"; "URLPS"; "URLDVI"; "URLPDF" ])
