@@ -14,11 +14,12 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.16 1998-05-28 07:21:05 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.17 1998-10-19 11:54:24 filliatr Exp $ *)
 
 (* options *)
 
 let nodoc = ref false
+let nokeys = ref false
 let suffix = ref ".html"
 let title = ref ""
 let title_spec = ref false
@@ -179,7 +180,8 @@ let one_entry_summary basen ch (_,b,((_,k,f) as e)) =
   output_string ch "\n";
   Html.open_balise ch "td";
   Html.anchor ch k;
-  latex2html ch ("[" ^ (Hashtbl.find cite_tab k) ^ "]");
+  if not !nokeys then
+    latex2html ch ("[" ^ (Hashtbl.find cite_tab k) ^ "]");
 
   output_string ch "\n";
   Html.open_balise ch "td";

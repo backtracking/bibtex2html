@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.15 1998-06-22 15:22:57 filliatr Exp $ *)
+(* $Id: main.ml,v 1.16 1998-10-19 11:54:23 filliatr Exp $ *)
 
 (* options *)
 
@@ -215,6 +215,7 @@ let usage () =
   prerr_endline "  -suffix s  give an alternate suffix for HTML files";
   prerr_endline "  -e key     exclude an entry";
   prerr_endline "  -m file    read (La)TeX macros in file";
+  prerr_endline "  -nokeys    do not print the BibTeX keys";
   prerr_endline "  -debug     verbose mode (to find incorrect BibTeX entries)";
   prerr_endline "  -v         print version and exit";
   exit 1
@@ -230,6 +231,8 @@ let parse () =
   let rec parse_rec = function
       "-nodoc" :: rem -> 
 	Translate.nodoc := true ; parse_rec rem
+    | "-nokeys" :: rem -> 
+	Translate.nokeys := true ; parse_rec rem
     | "-d" :: rem ->
 	sort := By_date ; parse_rec rem
     | "-a" :: rem ->
