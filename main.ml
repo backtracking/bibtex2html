@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: main.ml,v 1.50 2002-07-24 07:46:32 filliatr Exp $ i*)
+(*i $Id: main.ml,v 1.51 2003-04-09 07:34:40 filliatr Exp $ i*)
 
 (*s Main module of bibtex2html. *)
 
@@ -331,6 +331,8 @@ let usage () =
   prerr_endline "  -f field   add a web link for that BibTeX field";
   prerr_endline "  -nf field name";
   prerr_endline "             add a web link for that BibTeX field, with the supplied name";
+  prerr_endline "  -note field";
+  prerr_endline "             declare a note field";
   prerr_endline "  -dl        use DL lists instead of TABLEs";
   prerr_endline "  -labelname use the label name when inserting a link";
   prerr_endline "  -debug     verbose mode (to find incorrect BibTeX entries)";
@@ -390,6 +392,10 @@ i*)
     | ("-nf" | "-named-field" | "--named-field") :: s :: name :: rem ->
 	add_named_field s name; parse_rec rem
     | ("-nf" | "-named-field" | "--named-field") :: ([_] | []) ->
+	usage()
+    | ("-note" | "--note") :: s :: rem ->
+	add_note_field s; parse_rec rem
+    | ("-note" | "--note") :: [] ->
 	usage()
     | ("-ln" | "-labelname" | "--labelname" | "--label-name") :: rem ->
 	use_label_name := true; parse_rec rem

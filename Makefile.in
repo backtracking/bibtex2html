@@ -18,7 +18,7 @@ DOCDIR = $(prefix)/doc/bibtex2html
 #########################################
 
 MAJORVN=1
-MINORVN=56
+MINORVN=57
 
 OCAMLC   = @OCAMLC@
 OCAMLOPT = @OCAMLOPT@ 
@@ -88,6 +88,11 @@ bibtex2html.pbyte: $(OBJS:.cmx=.cmo)
 bibtex2html.static: $(OBJS)
 	$(OCAMLOPT) $(PROFILE) $(FLAGS) -o $@ str.cmxa $(OBJS) $(STRLIB) -cclib "-L. -static"
 	strip $@
+
+SRC=$(OBJS:.cmx=.ml)
+bibtex2html.dfc: $(SRC)
+	ocamldefun -d defun `ocamldefun-args $(SRC)`
+	cd defun; $(OCAMLOPT) $(FLAGS) -o ../$@ str.cmxa $(SRC)
 
 bib2bib: $(BIB2BIBOBJS)
 	$(OCAMLOPT) $(PROFILE) $(FLAGS) -o bib2bib str.cmxa $(BIB2BIBOBJS) $(STRLIB)

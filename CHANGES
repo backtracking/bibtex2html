@@ -1,4 +1,9 @@
 
+Version 1.57, 9/4/2003
+======================
+ o option --note f to declare field f as an annotation (and then displayed 
+   like an "abstract" field)
+
 Version 1.56 12/11/2002
 =======================
  o bib2bib: fixed bug in conditions lexer 

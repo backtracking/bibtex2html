@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.mli,v 1.4 2002-06-24 07:35:58 filliatr Exp $ i*)
+(*i $Id: translate.mli,v 1.5 2003-04-09 07:34:40 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -46,6 +46,7 @@ val table : bool ref
 
 val add_field : string -> unit
 val add_named_field : string -> string -> unit
+val add_note_field : string -> unit
 
 (*s Production of the HTML output. *)
 

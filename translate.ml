@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.57 2002-06-24 07:35:58 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.58 2003-04-09 07:34:40 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -43,6 +43,7 @@ let bibentries_file = ref ""
 let title_url = ref false
 let use_label_name = ref false
 let table = ref true
+let note_fields = ref ([] : string list)
 
 (* internal name, plus optional external name *)
 type field_info = string * (string option)
@@ -61,6 +62,10 @@ let add_field s =
 let add_named_field s name = 
   let u = String.uppercase s in 
   fields := (u, Some name) :: (List.remove_assoc u !fields)
+
+let add_note_field s =
+  let u = String.uppercase s in
+  note_fields := !note_fields @ [u]
 
 (* first pass to get the crossrefs *)
 
@@ -259,6 +264,16 @@ let blockquote ch f =
 
 let display_abstract ch a = blockquote ch (fun () -> latex2html ch a)
 
+let display_notes ch e =
+  List.iter 
+    (fun f -> 
+       try 
+	 let a = Expand.get_uppercase_field e f in 
+	 display_abstract ch a;
+	 Html.paragraph ch
+       with Not_found -> ())
+    !note_fields
+
 let display_keywords ch e =
   try
     let k = Expand.get_uppercase_field e "KEYWORDS" in
@@ -292,6 +307,7 @@ let separate_file (b,((_,k,f) as e)) =
     | No_abstract -> []
   in
   Html.paragraph ch;
+  display_notes ch e;
   if !print_keywords then display_keywords ch e;
   display_links ch (labs @ bibtex_entry k :: make_links e);
   Html.paragraph ch;
@@ -366,6 +382,7 @@ let one_entry_summary ch (_,b,((_,k,f) as e)) =
       | Alink l -> display_links ch (links @ [l])
       | No_abstract -> display_links ch links
   end;
+  display_notes ch e;
   if !print_keywords then display_keywords ch e;
   output_string ch "\n"; 
   close_row ch
