@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.mli,v 1.4 1998-05-28 07:21:03 filliatr Exp $ *)
+(* $Id: latexmacros.mli,v 1.5 1999-06-02 14:15:28 filliatr Exp $ *)
 
 (*This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -32,3 +32,5 @@ val find_macro: string -> action list
 val out_channel : out_channel ref
 val print_s : string -> unit
 val print_c : char -> unit
+
+val init_style_macros : string -> unit

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.22 1999-02-12 16:49:14 filliatr Exp $ *)
+(* $Id: main.ml,v 1.23 1999-06-02 14:15:28 filliatr Exp $ *)
 
 (* options *)
 
@@ -339,6 +339,8 @@ let main () =
       usage ()
     end
   in
+
+  Latexmacros.init_style_macros !style;
 
   if not !Translate.title_spec then Translate.title := f;
 

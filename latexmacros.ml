@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.19 1999-05-31 07:31:11 filliatr Exp $ *)
+(* $Id: latexmacros.ml,v 1.20 1999-06-02 14:15:28 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -22,8 +22,7 @@
 
 let out_channel = ref stdout
 let print_s s = output_string !out_channel s
-let print_c c = output_char !out_channel c;;
-
+let print_c c = output_char !out_channel c
 
 type action =
     Print of string
@@ -32,10 +31,10 @@ type action =
   | Raw_arg of (string -> unit)
   | Recursive of string  (* phrase LaTeX à analyser récursivement *)
 
-let cmdtable = (Hashtbl.create 19 : (string, action list) Hashtbl.t);;
+let cmdtable = (Hashtbl.create 19 : (string, action list) Hashtbl.t)
 
 let def name action =
-  Hashtbl.add cmdtable name action;;
+  Hashtbl.add cmdtable name action
 
 let find_macro name =
   try
@@ -202,8 +201,6 @@ def "\\bibitem" [Raw_arg (function r ->
   print_s r; print_s "]</A>\n";
   print_s "<dd>")];
 
-();;
-
 (* greek letters *)
 List.iter (fun symbol -> def ("\\" ^ symbol) [Print ("<I>" ^ symbol ^ "</I>")])
   ["alpha";"beta";"gamma";"delta";"epsilon";"varepsilon";"zeta";"eta";
@@ -211,6 +208,93 @@ List.iter (fun symbol -> def ("\\" ^ symbol) [Print ("<I>" ^ symbol ^ "</I>")])
    "rho";"varrho";"sigma";"varsigma";"tau";"upsilon";"phi";"varphi";
    "chi";"psi";"omega";"Gamma";"Delta";"Theta";"Lambda";"Xi";"Pi";
    "Sigma";"Upsilon";"Phi";"Psi";"Omega"];
-();;
 
+()
+
+let is_german_style = function
+  | "gerabbrv" | "geralpha" | "gerapali" | "gerplain" | "gerunsrt" -> true
+  | _ -> false
+
+let init_style_macros st =
+  if is_german_style st then begin
+    Printf.printf "OK============\n";
+    List.iter (fun (m,s) -> def m [ Print s; Print_arg ])
+      [ "\\btxetalshort", "et al" ;
+	"\\btxeditorshort", "Hrsg";
+	"\\Btxeditorshort", "Hrsg";
+	"\\btxeditorsshort", "Hrsg";
+	"\\Btxeditorsshort", "Hrsg";
+	"\\btxvolumeshort", "Bd";
+	"\\Btxvolumeshort", "Bd";
+	"\\btxnumbershort", "Nr";
+	"\\Btxnumbershort", "Nr";
+	"\\btxeditionshort", "Aufl";
+	"\\Btxeditionshort", "Aufl";
+	"\\btxchaptershort", "Kap";
+	"\\Btxchaptershort", "Kap";
+	"\\btxpageshort", "S";
+	"\\Btxpageshort", "S";
+	"\\btxpagesshort", "S";
+	"\\Btxpagesshort", "S";
+	"\\btxtechrepshort", "Techn. Ber";
+	"\\Btxtechrepshort", "Techn. Ber";
+	"\\btxmonjanshort", "Jan";
+	"\\btxmonfebshort", "Feb";
+	"\\btxmonaprshort", "Apr";
+	"\\btxmonaugshort", "Aug";
+	"\\btxmonsepshort", "Sep";
+	"\\btxmonoctshort", "Okt";
+	"\\btxmonnovshort", "Nov";
+	"\\btxmondecshort", "Dez";
+      ];
+    List.iter (fun (m,s) -> def m [ Skip_arg; Print s])
+      [ "\\btxetallong", "et alii";
+	"\\btxandshort", "und"; 
+	"\\btxandlong", "und";
+	"\\btxinlong", "in:"; 
+	"\\btxinshort", "in:";
+	"\\btxofseriesshort", "d. Reihe";
+	"\\btxinseriesshort", "in"; 
+	"\\btxofserieslong", "der Reihe";
+	"\\btxinserieslong", "in";
+	"\\btxeditorlong", "Herausgeber";
+	"\\Btxeditorlong", "Herausgeber";
+	"\\btxeditorslong", "Herausgeber";
+	"\\Btxeditorslong", "Herausgeber";
+	"\\btxvolumelong", "Band";
+	"\\Btxvolumelong", "Band";
+	"\\btxnumberlong", "Nummer";
+	"\\Btxnumberlong", "Nummer";
+	"\\btxeditionlong", "Auflage";
+	"\\Btxeditionlong", "Auflage";
+	"\\btxchapterlong", "Kapitel";
+	"\\Btxchapterlong", "Kapitel";
+	"\\btxpagelong", "Seite";
+	"\\Btxpagelong", "Seite";
+	"\\btxpageslong", "Seiten";
+	"\\Btxpageslong", "Seiten";
+	"\\btxmastthesis", "Diplomarbeit";
+	"\\btxphdthesis", "Doktorarbeit";
+	"\\btxtechreplong", "Technischer Bericht";
+	"\\Btxtechreplong", "Technischer Bericht";
+	"\\btxmonjanlong", "Januar";
+	"\\btxmonfeblong", "Februar";
+	"\\btxmonmarlong", "März";
+	"\\btxmonaprlong", "April";
+	"\\btxmonmaylong", "Mai";
+	"\\btxmonjunlong", "Juni";
+	"\\btxmonjullong", "Juli";
+	"\\btxmonauglong", "August";
+	"\\btxmonseplong", "September";
+	"\\btxmonoctlong", "Oktober";
+	"\\btxmonnovlong", "November";
+	"\\btxmondeclong", "Dezember";
+	"\\btxmonmarshort", "März";
+	"\\btxmonmayshort", "Mai";
+	"\\btxmonjunshort", "Juni";
+	"\\btxmonjulshort", "Juli";
+	"\\Btxinlong", "In:";
+	"\\Btxinshort", "In:";
+      ]
+  end
 

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.27 1999-04-22 09:23:06 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.28 1999-06-02 14:15:28 filliatr Exp $ *)
 
 (* options *)
 
@@ -310,6 +310,14 @@ let summary bl =
 
 (* HTML file with BibTeX entries f-bib.html *)
 
+let print_list print sep l = 
+  let rec print_rec = function
+    | [] -> ()
+    | [x] -> print x
+    | x::r -> print x; sep(); print_rec r
+  in
+  print_rec l
+
 let bib_file f bl =
   let fn = f ^ "-bib" ^ !suffix in
   Printf.printf "Making HTML list of BibTeX entries (%s)..." fn;
@@ -330,7 +338,7 @@ let bib_file f bl =
        List.iter (fun (_,_,(t,k,fs)) ->
 		    Html.anchor ch k;
 		    output_string ch ("@" ^ t ^ "{" ^ k ^ ",\n");
-		    List.iter
+		    print_list
 		      (fun (a,v) ->
 			 output_string ch "  ";
 			 output_string ch (String.lowercase a);
@@ -340,11 +348,13 @@ let bib_file f bl =
 			   Html.open_href ch ("#" ^ v);
 			   output_string ch v;
 			   Html.close_href ch;
-			   output_string ch "},\n"
+			   output_string ch "}"
 			 end else
-			   output_string ch ("{" ^ v ^ "},\n")
-		      ) fs;
-		    output_string ch "}\n") l)
+			   output_string ch ("{" ^ v ^ "}")
+		      )
+		      (fun () -> output_string ch ",\n")
+		      fs;
+		    output_string ch "\n}\n") l)
     bl;
 
   Html.close_balise ch "PRE";
