@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibtex_lexer.mll,v 1.12 2004-03-16 08:55:49 filliatr Exp $ i*)
+(*i $Id: bibtex_lexer.mll,v 1.13 2004-03-16 10:06:26 filliatr Exp $ i*)
 
 (*s Lexer for BibTeX files. *)
 
@@ -89,8 +89,7 @@ rule token = parse
 	    Trbrace
 	  end else
 	    token lexbuf }
-  | (['A'-'Z' 'a'-'z' '_' '\'' '0'-'9' ':' '-' '+' '?' '.' '*' '&' '/' '>'
-      ')' '(' '\192'-'\214' '\216'-'\246' '\248'-'\255']) +
+  | [^ ' ' '\t' '\n' '\r' '{' '}' '(' ')' '=' '#' ',' '"' '@']+
       { if !serious then
 	  Tident (Lexing.lexeme lexbuf)
       	else
@@ -136,8 +135,11 @@ and brace = parse
         brace lexbuf }
 
 and key = parse
-  | [^ ' ' '\t' '\n' '\r' ',']+ { lexeme lexbuf }
-  | eof | _ { raise Parsing.Parse_error }
+  | [^ ' ' '\t' '\n' '\r' ',']+ 
+    { lexeme lexbuf }
+  | eof 
+  | _ 
+    { raise Parsing.Parse_error }
 
 and comment = parse
   | eof 

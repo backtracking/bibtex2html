@@ -52,7 +52,7 @@ byte: bibtex2html.byte bib2bib.byte
 bench: bibtex2html
 	cd bench; sh bench
 
-test:
+test: bibtex2html bib2bib
 	make -C bench test
 
 install-indep:
