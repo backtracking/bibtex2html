@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.40 2000-08-10 20:55:53 filliatr Exp $ *)
+(* $Id: main.ml,v 1.41 2000-10-06 11:44:03 filliatr Exp $ *)
 
 open Printf
 open Translate
@@ -391,11 +391,11 @@ let parse () =
 	reverse_sort := true; parse_rec rem
 
     (* Options for selecting keys *)
-    | ("-citefile") :: f :: rem ->
+    | ("-citefile" | "--citefile") :: f :: rem ->
 	use_cite_file := true;
 	add_citations f;
 	parse_rec rem
-    | ("--citefile") :: [] ->
+    | ("-citefile" | "--citefile") :: [] ->
 	usage()
     | ("-e" | "--exclude") :: k :: rem ->
 	add_exclude k; parse_rec rem
