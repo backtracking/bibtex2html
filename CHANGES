@@ -1,4 +1,8 @@
 
+Version 0.72, 1999/01/21
+  o option -warranty to get the warranty conditions
+  o translation of various LaTeX accents
+
 Version 0.71, 1999/01/11
   o translation for macros \o, \O, \ae, \AE, \aa, \AA
   
