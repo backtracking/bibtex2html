@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  */
 
-/*i $Id: bibtex_parser.mly,v 1.8 2002-10-11 16:07:53 filliatr Exp $ i*/
+/*i $Id: bibtex_parser.mly,v 1.9 2004-03-16 08:55:49 filliatr Exp $ i*/
 
 /*s Parser for BibTeX files. */
 
@@ -24,9 +24,9 @@
 
 %}
 
-%token <string> Tident
-%token <string> Tstring
-%token Tabbrev Tcomment Tpreamble Tlbrace Trbrace Tcomma Tequal EOF Tsharp
+%token <string> Tident Tstring Tcomment
+%token <string * string> Tentry
+%token Tabbrev Tpreamble Tlbrace Trbrace Tcomma Tequal EOF Tsharp
 
 %start command_list
 %type <Bibtex.biblio> command_list
@@ -46,14 +46,14 @@ commands:
      { empty_biblio }
 ;
 command:
-   Tcomment Tlbrace anything_until_rbrace
-     { Comment $3 }
- | Tpreamble Tlbrace sharp_string_list Trbrace
-     { Preamble $3 }
- | Tabbrev Tlbrace Tident Tequal sharp_string_list Trbrace
-     { Abbrev (String.uppercase $3,$5) }
- | Tident Tlbrace Tident Tcomma comma_field_list Trbrace
-     { Entry (String.uppercase $1,$3,$5) }
+   Tcomment
+     { Comment $1 }
+ | Tpreamble sharp_string_list Trbrace
+     { Preamble $2 }
+ | Tabbrev Tident Tequal sharp_string_list Trbrace
+     { Abbrev (String.uppercase $2,$4) }
+ | Tentry Tcomma comma_field_list Trbrace
+     { let et,key = $1 in Entry (String.uppercase et, key, $3) }
 ;
 comma_field_list:
    field Tcomma comma_field_list
@@ -85,14 +85,5 @@ atom:
  | Tstring
      { String $1 }
 ;
-anything_until_rbrace:
-   Trbrace
-     { "" }
- | any_but_rbrace anything_until_rbrace
-     { $1 ^ $2 }
-;
-any_but_rbrace:
-   Tident  { $1 }
- | Tstring { $1 }
- | Tequal  { "=" }
+
 %%

@@ -17,7 +17,7 @@ DOCDIR = $(prefix)/doc/bibtex2html
 # End of configuration part
 #########################################
 
-VERSION=1.66
+VERSION=1.67
 
 OCAMLC   = @OCAMLC@
 OCAMLOPT = @OCAMLOPT@ 
@@ -48,6 +48,12 @@ all: @OCAMLBEST@
 opt: bibtex2html bib2bib
 
 byte: bibtex2html.byte bib2bib.byte
+
+bench: bibtex2html
+	cd bench; sh bench
+
+test:
+	make -C bench test
 
 install-indep:
 	mkdir -p $(BINDIR)

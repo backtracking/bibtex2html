@@ -14,20 +14,18 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibtex_lexer.mll,v 1.11 2004-02-18 14:25:53 filliatr Exp $ i*)
+(*i $Id: bibtex_lexer.mll,v 1.12 2004-03-16 08:55:49 filliatr Exp $ i*)
 
 (*s Lexer for BibTeX files. *)
 
 {
+
+open Lexing
 open Bibtex_parser
 
 let serious = ref false    (* if we are inside a command or not *) 
 
 let brace_depth = ref 0
-
-let line = ref 0
-
-let reset () = line := 0
 
 (*s To buffer string literals *)
 
@@ -36,8 +34,7 @@ let buffer = Buffer.create 8192
 let reset_string_buffer () = 
   Buffer.reset buffer
 
-let store_string_char c =
-  if c = '\n' then incr line; 
+let store_string_char c = 
   Buffer.add_char buffer c
  
 let get_stored_string () =
@@ -45,51 +42,64 @@ let get_stored_string () =
   Buffer.reset buffer;
   s
 
+let start_delim = ref ' '
+
+let check_delim d = match !start_delim, d with
+  | '{', '}' | '(', ')' -> ()
+  | _ -> failwith "closing character does not match opening"
+
 }
 
+let space = [' ' '\t' '\r' '\n']
+
 rule token = parse
-  | [' ' '\t'] +
+  | space +
       { token lexbuf }
-  | '\n' { incr line; token lexbuf }
-  | '@' { serious := true ; token lexbuf }
+  | '@' space* 
+    ([^ ' ' '\t' '\n' '\r' '{' '(']+ as entry_type) space* 
+    (('{' | '(') as delim) space*
+       { serious := true; 
+	 start_delim := delim; 
+	 match String.uppercase entry_type with 
+	   | "STRING" -> 
+	       Tabbrev
+	   | "COMMENT" -> 
+	       reset_string_buffer ();
+	       comment lexbuf;
+	       serious := false;
+	       Tcomment (get_stored_string ())
+	   | "PREAMBLE" -> 
+	       Tpreamble
+	   |  et -> 
+		Tentry (entry_type, key lexbuf) 
+       }
   | '=' { if !serious then Tequal else token lexbuf }
   | '#' { if !serious then Tsharp else token lexbuf }
   | ',' { if !serious then Tcomma else token lexbuf }
-  | '{' | '('
-        { if !serious then begin
-	    incr brace_depth ; 
-            if !brace_depth = 1 then
-	      Tlbrace 
-	    else begin
-	      reset_string_buffer();
-	      brace lexbuf;
-	      Tstring (get_stored_string())
-	    end 
+  | '{' { if !serious then begin
+	    reset_string_buffer ();
+	    brace lexbuf;
+	    Tstring (get_stored_string ())
           end else
 	    token lexbuf }
-  | '}' | ')'
+  | ('}' | ')') as d
         { if !serious then begin
-	    if !brace_depth > 0 then decr brace_depth ;
-	    if !brace_depth = 0 then serious := false ;
+	    check_delim d;
+	    serious := false;
 	    Trbrace
 	  end else
 	    token lexbuf }
   | (['A'-'Z' 'a'-'z' '_' '\'' '0'-'9' ':' '-' '+' '?' '.' '*' '&' '/' '>'
       ')' '(' '\192'-'\214' '\216'-'\246' '\248'-'\255']) +
       { if !serious then
-	  let s = Lexing.lexeme lexbuf in 
-          match String.uppercase s with
-              "STRING" -> Tabbrev
-	    | "COMMENT" -> Tcomment
-	    | "PREAMBLE" -> Tpreamble
-	    | _ -> Tident s 
+	  Tident (Lexing.lexeme lexbuf)
       	else
           token lexbuf }
   | "\""
       { if !serious then begin
-	  reset_string_buffer();
+	  reset_string_buffer ();
           string lexbuf;
-          Tstring (get_stored_string())
+          Tstring (get_stored_string ())
 	end else
 	  token lexbuf }
   | eof { EOF }
@@ -105,24 +115,35 @@ and string = parse
   | eof
       { failwith "unterminated string" }
   | _
-      { store_string_char(Lexing.lexeme_char lexbuf 0);
+      { let c = Lexing.lexeme_char lexbuf 0 in
+	store_string_char c;
         string lexbuf }
 
 and brace = parse
   | '{'
-      { incr brace_depth;
-        store_string_char '{';
-      	brace lexbuf
+      { store_string_char '{';
+      	brace lexbuf;
+	store_string_char '}';
+	brace lexbuf
       }
   | '}'
-      {  decr brace_depth;
-	 if !brace_depth > 1 then begin
-	   store_string_char '}';
-	   brace lexbuf
-	 end
-      }
+      { () }
   | eof
       { failwith "unterminated string" }
   | _
-      { store_string_char(Lexing.lexeme_char lexbuf 0);
+      { let c = Lexing.lexeme_char lexbuf 0 in
+	store_string_char c;
         brace lexbuf }
+
+and key = parse
+  | [^ ' ' '\t' '\n' '\r' ',']+ { lexeme lexbuf }
+  | eof | _ { raise Parsing.Parse_error }
+
+and comment = parse
+  | eof 
+      { () }
+  | [^ '}' '@']
+      { let c = Lexing.lexeme_char lexbuf 0 in
+	store_string_char c;
+        comment lexbuf }
+  | _ { () }

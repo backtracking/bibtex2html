@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: readbib.ml,v 1.9 2001-02-21 09:51:54 filliatr Exp $ i*)
+(*i $Id: readbib.ml,v 1.10 2004-03-16 08:55:49 filliatr Exp $ i*)
 
 (*s [(read_entries_from_file f)] returns the BibTeX entries of the
     BibTeX file [f]. *)
@@ -29,20 +29,17 @@ let read_entries_from_file f =
       eprintf "Reading %s..." f; 
     flush stderr
   end;
-  Bibtex_lexer.reset();
   let chan = if f = "" then stdin else open_in f in
+  let lb = Lexing.from_channel chan in
   try
-    let el =
-      Bibtex_parser.command_list Bibtex_lexer.token (Lexing.from_channel chan)
-    in
+    let el = Bibtex_parser.command_list Bibtex_lexer.token lb in
     if f <> "" then close_in chan;
     if not !Options.quiet then begin
       eprintf "ok (%d entries).\n" (Bibtex.size el); flush stderr
     end;
     el
-  with
-      Parsing.Parse_error | Failure "unterminated string" ->
-			      if f <> "" then close_in chan;
-	eprintf "Parse error line %d.\n" !Bibtex_lexer.line;
-	flush stderr;
-	exit 1 
+  with Parsing.Parse_error | Failure "unterminated string" ->
+    if f <> "" then close_in chan;
+    eprintf "Parse error character %d.\n" (Lexing.lexeme_start lb);
+    flush stderr;
+    exit 1 

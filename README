@@ -28,7 +28,7 @@ See the enclosed file COPYING.
 INSTALLATION
 ============
 
-  You need Objective Caml to compile the sources.
+  You need Objective Caml >= 3.07 to compile the sources.
  
   1. Configure with "./configure"
 

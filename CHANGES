@@ -1,4 +1,7 @@
 
+Version 1.67, 16/03/2004
+========================
+ o fixed bug with parentheses-enclosed entries
  o macros \relax, \hskip
 
 Version 1.66, 18/02/2004

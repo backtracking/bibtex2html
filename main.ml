@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: main.ml,v 1.54 2003-10-01 15:23:24 filliatr Exp $ i*)
+(*i $Id: main.ml,v 1.55 2004-03-16 08:55:49 filliatr Exp $ i*)
 
 (*s Main module of bibtex2html. *)
 
@@ -245,8 +245,11 @@ let insert_title_url bib =
     bib Bibtex.empty_biblio
 i*)
 
+let parse_only = ref false
+
 let translate fullname =
   let input_bib = Readbib.read_entries_from_file fullname in
+  if !parse_only then exit 0;
   let entries = List.rev (Expand.expand input_bib) in
   let biblios = 
     if fullname = "" then begin
@@ -480,6 +483,8 @@ i*)
 	Options.quiet := true; parse_rec rem
     | ("-debug" | "--debug") :: rem ->
 	Options.debug := true; parse_rec rem
+    | "-parse-only" :: rem ->
+	parse_only := true; parse_rec rem
 
     | [fbib] -> 
 	if not (Sys.file_exists fbib) then begin
