@@ -1,0 +1,234 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage{fullpage}
+\usepackage{url}
+
+\newcommand{\WEB}{\textsf{WEB}}
+\newcommand{\Caml}{\textsf{Caml}}
+\newcommand{\OCaml}{\textsf{Objective Caml}}
+\newcommand{\ocamlweb}{\textsf{ocamlweb}}
+\newcommand{\monurl}[2]{\url{#1}}
+%HEVEA\renewcommand{\monurl}[2]{\url{#2}{#2}}
+
+\begin{document}
+
+\title{BibTeX2HTML: a translator of BibTeX bibliographies into HTML}
+\author{Jean-Christophe Filli\^{a}tre and Claude March\'e \\
+        \normalsize\monurl{http://www.lri.fr/~filliatr/bibtex2html}{http://www.lri.fr/\~{}filliatr/bibtex2html}}
+\date{}
+\maketitle
+
+\tableofcontents
+
+
+\section{Introduction}
+
+
+bibtex2html is a BibTeX to HTML translator. It is invocated as 
+\begin{quote}
+\texttt{bibtex2html} [options] \textit{file.bib}
+\end{quote}
+where the possible 
+%HEVEA <a href="#options">
+options
+%HEVEA </a>
+are described below and where
+\textit{file.bib} is the name of the BibTeX file, which must have a
+\textit{.bib} suffix.
+
+Then two HTML documents are created: 
+\begin{itemize}
+\item \textit{file.html} which is the bibliography in HTML format
+%HEVEA, like <a href=examples/biblio-these.html>this</a>
+;
+\item \textit{file-bib.html} which contains all the entries in ASCII
+  format.
+%HEVEA ,like <a href=examples/biblio-these-bib.html>this</a>
+\end{itemize}
+\texttt{bibtex} is called on \textit{file.bib} in order to produce the
+a LaTeX document, and then this LaTeX document is translated into an
+HTML document.  The BibTeX file \textit{file.bib} is also parsed in
+order to collect additional fields (abstract, url, ps, http, etc.)
+that will be used in the translation.
+
+%HEVEA <a name=fields>
+\subsection{Additional fields and automatic web links}
+
+The main interest of \texttt{bibtex2html} with respect to a
+traditional LaTeX to HTML translator is the use of additional fields
+in the BibTeX database and the automatic insertion of web
+links.
+
+A link is inserted:
+\begin{itemize}
+
+\item  at each cross-reference inside the bibliography entries; 
+
+\item  when the \verb|\url| LaTeX macro is used in the text; 
+
+\item  for each BibTeX field whose name is "ftp", "http", "url", "ps"
+  ,"dvi", "rtf", "pdf",
+  "documenturl", "urlps" or "urldvi". The name of this link depends on
+  the nature of the link or file specified: 
+  \begin{itemize}
+  \item a suffix \texttt{.dvi} will give a link named "DVI";
+  \item a suffix \texttt{.ps} will give a link named "PS";
+  \item a suffix \texttt{.pdf} will give a link named "PDF";
+  \item a suffix \texttt{.rtf} will give a link named "RTF";
+  \item any other filename will give a link named "Available here".
+  \end{itemize}
+  
+  An additional suffix \texttt{.gz}, \texttt{.Z} or
+  \texttt{.zip} will add the prefix "Compressed" before the
+  file format.
+
+  The file format is prefixed 
+  You can insert web link for other fields with the option
+  \texttt{-f} (see below).
+  
+\end{itemize}
+
+
+%HEVEA See the result on <a href=examples/biblio-these.html>this example</a>.
+
+\subsubsection{Abstracts}
+
+If a BibTeX entry contains a field \texttt{abstract} then its contents
+is quoted right after the bibliography entry.
+%HEVEA like <a href=examples/publis-abstracts.html>this</a>. 
+
+This behavior may be suppressed with the option \texttt{--no-abstract}.
+
+If you want both versions with and without abstracts, use the option
+\texttt{--both}. In that case, links named "Abstract" will be
+inserted from the page without abstracts to the page with abstracts,
+%HEVEA like <a href=examples/publis.html>this</a>.
+
+%HEVEA <a name=options>
+\subsection{Command line options}
+
+Most of the command line options have a short version of one character
+(e.g. \texttt{-r}) and an easy-to-remember/understand long version 
+(e.g. \texttt{--reverse-sort}).
+
+\subsubsection{General aspect of the HTML document}
+
+\begin{description}
+  
+\item[\texttt{-t} \textit{string}, \texttt{--title} \textit{string}]
+  specify the title of the HTML file (default is the file name).
+
+  
+\item[\texttt{-s} \textit{string}, \texttt{--style} \textit{string}]
+  use BibTeX style \textit{string} (plain, alpha, etc.).  Default
+  style is plain.
+
+  
+\item[\texttt{-noabstract}, \texttt{--no-abstract}] do not print the
+  abstracts (if any).
+
+  
+\item[\texttt{-both}, \texttt{--both}] produce both pages with and
+  without abstracts. If the BibTeX file is foo.bib then the two pages
+  will be respectively foo.html and foo-abstracts.html (The suffix may
+  be different, see option \texttt{--suffix}). Links are inserted from
+  the page without abstracts to the page with abstracts.
+
+  
+\item[\texttt{-nokeys}, \texttt{--no-keys}] do not print the cite
+  keys.
+
+  
+\item[\texttt{-f} \textit{field}, \texttt{--field} \textit{field}] add
+  a web link for that BibTeX field.
+
+  
+\item[\texttt{-multiple}, \texttt{--multiple}] make a separate web
+  page for each entry.  \textit{Beware: this option produces as many
+    HTML files as BibTeX entries!}
+
+
+\end{description}
+
+
+\subsubsection{Controlling the translation}
+
+\begin{description}
+  
+\item[\texttt{-m} \textit{file}, \texttt{--macros-from} \textit{file}]
+  read the LaTeX macros in the given file.
+
+
+\end{description}
+
+
+\subsubsection{Sorting the entries}
+
+\begin{description}
+  
+\item[\texttt{-d}, \texttt{--sort-by-date}] sort by date.
+
+  
+\item[\texttt{-a}, \texttt{--sort-as-bibtex}] sort as BibTeX (usually
+  by author).
+
+  
+\item[\texttt{-u}, \texttt{--unsorted}] unsorted i.e. same order as in
+  .bib file (default).
+
+  
+\item[\texttt{-r}, \texttt{--reverse-sort}] reverse the sort.
+
+  
+\item[\texttt{-e} \textit{key}, \texttt{--exclude} \textit{key}]
+  exclude an entry.
+
+
+\end{description}
+
+
+\subsubsection{Miscellaneous options}
+
+\begin{description}
+  
+\item[\texttt{-nodoc}, \texttt{--nodoc}] do not produce a full HTML
+  document but only its body (useful to merge the HTML bibliography in
+  a bigger HTML document).
+
+  
+\item[\texttt{-suffix} \textit{string}, \texttt{--suffix}
+  \textit{string}] give an alternate suffix \textit{string} for the
+  HTML documents (default is \texttt{.html}).
+
+    
+\item[\texttt{-c} \textit{file}, \texttt{--command} \textit{file}]
+  specify the BibTeX command (default is \texttt{bibtex}).  Useful if
+  \texttt{bibtex} is not in your path.
+
+  
+\item[\texttt{-i}, \texttt{--ignore-errors}] ignore BibTeX errors.
+
+  
+\item[\texttt{-h}, \texttt{--help}] print a short usage and exit.
+
+  
+\item[\texttt{-v}, \texttt{--version}] print the version and exit.
+
+
+\end{description}
+
+
+%HEVEA <hr>
+%HEVEA <img src="http://www.lri.fr/~filliatr/icons/mail.gif" ALIGN=middle>
+%HEVEA <em><a href="mailto:Jean-Christophe.Filliatre@lri.fr">
+%HEVEA Jean-Christophe.Filliatre@lri.fr</a> , Fri Feb 12 17:46:23 1999 
+%HEVEA .</em>
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
