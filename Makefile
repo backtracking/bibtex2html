@@ -85,6 +85,13 @@ binary: bibtex2html
 	(cd export; tar czf $(BINARY).tar.gz $(BINARY))
 	cp export/$(BINARY).tar.gz $(FTP)
 
+AIX=bibtex2html-$(MAJORVN).$(MINORVN)-AIX
+
+aix:
+	mkdir -p export/$(AIX)
+	cp README COPYING GPL bibtex2html export/$(AIX)
+	(cd export; tar cf $(AIX).tar.gz $(AIX); gzip --best $(AIX))
+
 # generic rules :
 #################
 
