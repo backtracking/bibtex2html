@@ -17,8 +17,7 @@ DOCDIR = $(prefix)/doc/bibtex2html
 # End of configuration part
 #########################################
 
-MAJORVN=1
-MINORVN=61
+VERSION=1.61
 
 OCAMLC   = @OCAMLC@
 OCAMLOPT = @OCAMLOPT@ 
@@ -120,7 +119,7 @@ condition_parser.mli condition_parser.ml: condition_parser.mly
 	ocamlyacc condition_parser.mly
 
 version.ml: Makefile
-	echo "let version = \""$(MAJORVN).$(MINORVN)"\"" > version.ml
+	echo "let version = \""$(VERSION)"\"" > version.ml
 	echo "let date = \""`date`"\"" >> version.ml
 
 latexscan.ml: latexscan.mll
@@ -156,13 +155,16 @@ bibtex2html.tex: $(WEBFILES)
 # export
 ########
 
-NAME=bibtex2html-$(MAJORVN).$(MINORVN)
+NAME=bibtex2html-$(VERSION)
 
 FTP = /users/demons/filliatr/ftp/ocaml/bibtex2html
+WWWSRC = /users/demons/filliatr/www/bibtex2html
 
 SOURCEFILES = *.ml* aux2bib.in Makefile.in configure.in configure .depend README COPYING GPL CHANGES manual.tex *.1
 
-export: source export-doc linux solaris
+export: source export-doc linux
+	echo "<#def version>$(VERSION)</#def>" > $(WWWSRC)/version.prehtml
+	make -C $(WWWSRC) install
 	mail -s "nouvelle release de bibtex2html" treinen@debian.org < /dev/null
 	echo "*** prevenir Gerald Pfeifer <pfeifer@dbai.tuwien.ac.at> ***"
 
@@ -180,7 +182,7 @@ source: clean
 	fi
 	cp README COPYING GPL CHANGES export/$(NAME).tar.gz $(FTP)
 
-BINARY = bibtex2html-$(MAJORVN).$(MINORVN)-$(OSTYPE)
+BINARY = bibtex2html-$(VERSION)-$(OSTYPE)
 
 linux: clean binary
 
@@ -199,7 +201,7 @@ binary: bibtex2html bib2bib
 	(cd export; tar czf $(BINARY).tar.gz $(BINARY))
 	cp export/$(BINARY).tar.gz $(FTP)
 
-AIX=bibtex2html-$(MAJORVN).$(MINORVN)-AIX
+AIX=bibtex2html-$(VERSION)-AIX
 
 aix:
 	mkdir -p export/$(AIX)
