@@ -30,7 +30,7 @@ BIB2BIBOBJS = bibtex.cmx bibtex_lexer.cmx bibtex_parser.cmx readbib.cmx \
 	condition.cmx \
 	condition_parser.cmx condition_lexer.cmx parse_condition.cmx \
 	bibfilter.cmx \
-	html.cmx biboutput.cmx bib2bib.cmx
+	html.cmx biboutput.cmx version.cmx bib2bib.cmx
 
 all: bibtex2html bib2bib
 

@@ -3,7 +3,8 @@
 \usepackage[T1]{fontenc}
 \usepackage[latin1]{inputenc}
 \usepackage{fullpage}
-\usepackage{url}
+%\usepackage{url}
+\usepackage{hevea}
 
 \newcommand{\WEB}{\textsf{WEB}}
 \newcommand{\Caml}{\textsf{Caml}}
@@ -48,23 +49,19 @@ bibtex2html is a BibTeX to HTML translator. It is invocated as
 \begin{quote}
 \texttt{bibtex2html} [options] \textit{file.bib}
 \end{quote}
-where the possible 
-%HEVEA <a href="#options">
-options
-%HEVEA </a>
-are described below and where
-\textit{file.bib} is the name of the BibTeX file, which must have a
-\textit{.bib} suffix.
+where the possible \url{#options}{options} are described below and
+where \textit{file.bib} is the name of the BibTeX file, which must
+have a \textit{.bib} suffix.
 
 
 Then two HTML documents are created: 
 \begin{itemize}
 \item \textit{file.html} which is the bibliography in HTML format
-%HEVEA, like <a href=examples/biblio-these.html>this</a>
+%HEVEA, like \url{examples/biblio-these.html}{this}
 ;
 \item \textit{file-bib.html} which contains all the entries in ASCII
   format.
-%HEVEA ,like <a href=examples/biblio-these-bib.html>this</a>
+%HEVEA ,like \url{examples/biblio-these-bib.html}{this}
 \end{itemize}
 \texttt{bibtex} is called on \textit{file.bib} in order to produce the
 a LaTeX document, and then this LaTeX document is translated into an
@@ -72,7 +69,9 @@ HTML document.  The BibTeX file \textit{file.bib} is also parsed in
 order to collect additional fields (abstract, url, ps, http, etc.)
 that will be used in the translation.
 
-%HEVEA <a name=fields>
+\begin{rawhtml}
+<a name=fields>
+\end{rawhtml}
 
 \subsection{Additional fields and automatic web links}
 
@@ -111,22 +110,26 @@ A link is inserted:
 \end{itemize}
 
 
-%HEVEA See the result on <a href=examples/biblio-these.html>this example</a>.
+%HEVEA See the result on \url{examples/biblio-these.html}{this example}.
 
 \subsubsection{Abstracts}
 
 If a BibTeX entry contains a field \texttt{abstract} then its contents
-is quoted right after the bibliography entry.
-%HEVEA like <a href=examples/publis-abstracts.html>this</a>. 
+is quoted right after the bibliography entry
+%HEVEA , like \url{examples/publis-abstracts.html}{this}
+. 
 
 This behavior may be suppressed with the option \texttt{\mm{}no-abstract}.
 
 If you want both versions with and without abstracts, use the option
 \texttt{\mm{}both}. In that case, links named "Abstract" will be
 inserted from the page without abstracts to the page with abstracts,
-%HEVEA like <a href=examples/publis.html>this</a>.
+%HEVEA like \url{a href=examples/publis.html}{this}.
 
-%HEVEA <a name=options>
+
+\begin{rawhtml}
+<a name=options>
+\end{rawhtml}
 
 \subsection{Command line options}
 
@@ -264,8 +267,9 @@ or in conjonction with \verb|bib2bib|.
     
 \item[\texttt{-c} \textit{file}, \texttt{\mm{}command} \textit{file}] ~
 
-  specify the BibTeX command (default is \texttt{bibtex}).  Useful if
-  \texttt{bibtex} is not in your path.
+  specify the BibTeX command (default is \texttt{bibtex
+  -min-crossrefs=1000}).  Useful if \texttt{bibtex} is not in your
+path. 
 
   
 \item[\texttt{-i}, \texttt{\mm{}ignore-errors}] ~
@@ -293,11 +297,7 @@ bibliography files. It is invocated as
 \begin{quote}
 \texttt{bib2bib} [options] \textit{file1.bib} $\cdots$ \textit{filen.bib}
 \end{quote}
-where the possible 
-%HEVEA <a href="#options">
-options
-%HEVEA </a>
-are described below and where
+where the possible options are described below and where
 \textit{file1.bib} $\cdots$ \textit{filen.bib} are the names of the
 BibTeX files, which must have a \textit{.bib} suffix.
 
@@ -326,7 +326,7 @@ suitable for input as option \verb|-citefile| to \verb|bibtex2html|.
 
   specify a condition for selecting the entries. The output will
   retain only the entries that satisfy this condition. If several such
-  condition are given, then only the entries that satisky all the
+  condition are given, then only the entries that satisfy all the
   conditions are selected. The syntax of conditions is given below,
   notice that it is better to escape shell expansions in that
   conditions, in other words, you should write conditions between
@@ -428,7 +428,7 @@ Comp & \rightarrow & \verb|=| \mid \verb|>| \mid \verb|<| \mid
 \verb|>=| \mid \verb|<=| \mid \verb|<>| \\
 Expr & \rightarrow & Id \mid String \mid Int \\
 Id & \rightarrow & [\verb|a|-\verb|z|\verb|A|-\verb|Z|]^+ \\
-String & \rightarrow & \verb|"| [\hat{}\verb|"|]^* \verb|"| \\
+String & \rightarrow & \verb|"| [\verb|^"|]^* \verb|"| \\
 Integer & \rightarrow & [\verb|0|-\verb|9|]^+
 \end{eqnarray*}
 \caption{Syntax of conditions}
@@ -466,7 +466,7 @@ bib2bib -oc cite90-95 -ob 90-95.bib -c 'year>=1990 and year<=1995' biblio.bib
 
 \subsubsection{Selecting references of a given author}
 
-The following command reads input files \verb|bilbio.bib| and select
+The following command reads input files \verb|biblio.bib| and select
 only entries whose (co)author is Donald Knuth: 
 \begin{verbatim}
 bib2bib -oc knuth-citations -ob knuth.bib -c 'author : "Knuth"' biblio.bib
@@ -493,13 +493,15 @@ anything between ``lambda'' and ``calculus'':
 bib2bib -oc lambda -c 'year >= 1995 and title : "lambda.*calculus"' biblio.bib
 \end{verbatim}
 for example, it will select a title containing
-\verb|$lambda$-calculus|. 
+\verb|$\lambda$-calculus|. 
  
-%HEVEA <hr>
-%HEVEA <img src="http://www.lri.fr/~filliatr/icons/mail.gif" ALIGN=middle>
-%HEVEA <em><a href="mailto:Jean-Christophe.Filliatre@lri.fr">
-%HEVEA Jean-Christophe.Filliatre@lri.fr</a> , Fri Feb 12 17:46:23 1999 
-%HEVEA .</em>
+\begin{rawhtml}
+<hr>
+<img src="http://www.lri.fr/~filliatr/icons/mail.gif" ALIGN=middle>
+<em><a href="mailto:Jean-Christophe.Filliatre@lri.fr, Claude.Marche@lri.fr">
+mail to authors</a> , Fri Feb 12 17:46:23 1999 
+</em>
+\end{rawhtml}
 
 \end{document}
 

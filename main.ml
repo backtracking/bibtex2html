@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.27 1999-07-15 15:05:14 marche Exp $ *)
+(* $Id: main.ml,v 1.28 1999-07-15 16:54:29 marche Exp $ *)
 
 (* options *)
 
@@ -277,8 +277,8 @@ See the GNU General Public License version 2 for more details
 let banner () =
   Printf.printf "This is bibtex2html version %s, compiled on %s\n"
     Version.version Version.date;
-  Printf.printf "Copyright (c) 1997,1998,1999 Jean-Christophe Filliâtre\n";
-  Printf.printf "This is free software with ABSOLUTELY NO WARRANTY (use option -warranty)\n";
+  Printf.printf "Copyright (c) 1997,1998,1999 Jean-Christophe Filliâtre and Claude Marché\n";
+  Printf.printf "This is free software with ABSOLUTELY NO WARRANTY (use option -warranty)\n\n";
   flush stdout
 
 let parse () =

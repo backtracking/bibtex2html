@@ -4,39 +4,6 @@ open Printf;;
 open Bibtex;;
   
 
-  
-
-(*
-let test_criteria fields =
-  try
-    let date = List.assoc "YEAR" fields
-    in date = [Id("1996")]
-  with
-      Not_found -> false
-;;
-*)
-
-(*
-let test_criteria fields =
-  try
-    let [String(author)] = List.assoc "AUTHOR" fields
-    in 
-      try
-
-	let _ = Str.search_forward 
-		  (Str.regexp_case_fold "claude march")
-		  author
-		  0
-	in true
-      with
-	  Not_found -> false
-  with
-      Not_found -> false
-;;
-*)
-
-
-
 (* command-line arguments *)
 
 let input_file_names = ref ([] : string list);;
@@ -64,7 +31,6 @@ let add_condition c =
 	exit 1
 ;;
 
-
 let debug = ref false;;
 
 let args_spec =
@@ -76,7 +42,6 @@ let args_spec =
     ("-c", Arg.String(add_condition),"filter condition");
     ("-d", Arg.Unit(fun () -> debug := true), "debug flag")
   ]
-
 
 
 
@@ -112,16 +77,27 @@ let output_bib_file biblio keys =
       prerr_endline ("Cannot write output bib file (" ^ msg ^ ")"); 
       exit 1 ;;
 
+let usage = "Usage: bib2bib [options] <input file names>\nOptions are:";;
 
 let main () =
-  Printf.printf "bib2bib - version 0.1\n";
-  Arg.parse args_spec get_input_file_name "Usage: bib2bib [options] <input file names>\nOptions are:";
+  Printf.printf "This is bib2bib version %s, compiled on %s\n"
+    Version.version Version.date;
+  Printf.printf "Copyright (c) 1997,1998,1999 Jean-Christophe Filliâtre and Claude Marché\n";
+  Printf.printf "This is free software with ABSOLUTELY NO WARRANTY (use option -warranty)\n\n";
+
+  Arg.parse args_spec get_input_file_name usage;
   if !debug then
     begin
       Printf.printf "command line:\n";
       for i=0 to pred (Array.length Sys.argv) do
 	Printf.printf "%s\n" Sys.argv.(i)
       done;
+    end;
+  if !input_file_names = [] then 
+    begin
+      Printf.printf "No input file.\n";
+     Arg.usage args_spec usage;
+      exit 1;
     end;
   if !debug then
     begin      
