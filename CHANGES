@@ -1,4 +1,5 @@
 
+ o arguments to option -f are now turned into uppercase
  o added options -fsuffix / -lsuffix to specify different suffixes for
    HTML files and links (-suffix s is equivalent to -fsuffix s -lsuffix s)
  o fixed bug: entries were sorted in reverse order when no order specified

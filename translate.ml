@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.40 2000-06-05 21:50:24 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.41 2000-06-07 23:37:30 filliatr Exp $ *)
 
 (* options *)
 
@@ -36,7 +36,7 @@ let output_file = ref ""
 let bibentries_file = ref ""
 
 let (fields : string list ref) = ref []
-let add_field s = fields := s :: !fields
+let add_field s = fields := (String.uppercase s) :: !fields
 
 let debug = ref false
 
