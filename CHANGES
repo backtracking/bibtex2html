@@ -1,4 +1,7 @@
 
+Version 0.61, 1998/10/19
+  o option -nokeys
+
 Version 0.6, 1998/02/17
   o spaces in URL are removed
   o compilation in native code  
