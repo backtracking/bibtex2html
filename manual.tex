@@ -5,10 +5,12 @@
 \usepackage{fullpage}
 \usepackage{url}
 
-\newcommand{\monurl}[1]{#1}
-%HEVEA\renewcommand{\monurl}[1]{\ahref{#1}{#1}}
+%BEGIN LATEX
+\newcommand{\link}[2]{#2}
+%END LATEX
+%HEVEA\newcommand{\link}[2]{\ahref{#1}{#2}}
+\newcommand{\monurl}[1]{\link{#1}{#1}}
 \newcommand{\mm}{\symbol{45}\symbol{45}}
-
 
 \begin{document}
 
@@ -44,7 +46,7 @@ bibtex2html is a BibTeX to HTML translator. It is invocated as
 \begin{quote}
 \texttt{bibtex2html} [options] [\textit{file.bib}]
 \end{quote}
-where the possible \url{#options}{options} are described below and
+where the possible \link{\#options}{options} are described below and
 where \textit{file.bib} is the name of the BibTeX file, which must
 have a \textit{.bib} suffix. If this file is not given, then entries
 are input from standard input.
@@ -54,11 +56,11 @@ Then two HTML documents are created (unless option
 \verb|-nobibsource| is selected or input is standard input, see below) : 
 \begin{itemize}
 \item \textit{file.html} which is the bibliography in HTML format
-%HEVEA, like \url{examples/biblio-these.html}{this}
+%HEVEA, like \link{examples/biblio-these.html}{this}
 ;
 \item \textit{file-bib.html} which contains all the entries in ASCII
   format.
-%HEVEA ,like \url{examples/biblio-these-bib.html}{this}
+%HEVEA ,like \link{examples/biblio-these-bib.html}{this}
 \end{itemize}
 \texttt{bibtex} is called on \textit{file.bib} in order to produce the
 a LaTeX document, and then this LaTeX document is translated into an
@@ -89,33 +91,30 @@ A link is inserted:
 \item  for each BibTeX field whose name is "ftp", "http", "url", "ps"
   ,"dvi", "rtf", "pdf",
   "documenturl", "urlps" or "urldvi". The name of this link depends on
-  the nature of the link or file specified: 
+  the nature of the link: 
   \begin{itemize}
-  \item a suffix \texttt{.dvi} will give a link named "DVI";
-  \item a suffix \texttt{.ps} will give a link named "PS";
-  \item a suffix \texttt{.pdf} will give a link named "PDF";
-  \item a suffix \texttt{.rtf} will give a link named "RTF";
-  \item any other filename will give a link named "Available here".
+  \item it is the file suffix, whenever this suffix is \texttt{.dvi},
+    \texttt{.ps}, \texttt{.pdf}, \texttt{.rtf}, \texttt{.txt} or
+    \texttt{.html}, possibly followed by a compression sufix,
+    \texttt{.gz}, \texttt{.Z} or \texttt{.zip};
+  \item otherwise the name of the link is either \texttt{http} or
+    \texttt{ftp} depending on the protocol.
   \end{itemize}
   
-  An additional suffix \texttt{.gz}, \texttt{.Z} or
-  \texttt{.zip} will add the prefix "Compressed" before the
-  file format.
-
-  The file format is prefixed 
-  You can insert web link for other fields with the options
+  You can insert web link for other fields and/or specify alternative
+  names for the links using the options
   \texttt{-f} and \texttt{-nf} (see below).
   
 \end{itemize}
 
 
-%HEVEA See the result on \url{examples/biblio-these.html}{this example}.
+%HEVEA See the result on \link{examples/biblio-these.html}{this example}.
 
 \subsubsection{Abstracts}
 
 If a BibTeX entry contains a field \texttt{abstract} then its contents
 is quoted right after the bibliography entry
-%HEVEA , like \url{examples/publis-abstracts.html}{this}
+%HEVEA , like \link{examples/publis-abstracts.html}{this}
 . 
 
 This behavior may be suppressed with the option \texttt{\mm{}no-abstract}.
@@ -123,7 +122,7 @@ This behavior may be suppressed with the option \texttt{\mm{}no-abstract}.
 If you want both versions with and without abstracts, use the option
 \texttt{\mm{}both}. In that case, links named "Abstract" will be
 inserted from the page without abstracts to the page with abstracts,
-%HEVEA like \url{a href=examples/publis.html}{this}.
+%HEVEA like \link{examples/publis.html}{this}.
 
 
 %HEVEA\begin{rawhtml}<a name=options>\end{rawhtml}

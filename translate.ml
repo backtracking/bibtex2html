@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.51 2001-10-15 07:28:17 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.52 2001-10-17 12:51:42 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -148,7 +148,8 @@ let compression_suffixes = [ ".gz"; ".Z"; ".zip" ]
 let file_suffixes =
   List.flatten 
     (List.map (fun s -> s :: List.map ((^) s) compression_suffixes)
-       [ ".dvi"; ".DVI"; ".ps"; ".PS"; ".pdf"; ".PDF"; ".rtf"; ".RTF" ])
+       [ ".dvi"; ".DVI"; ".ps"; ".PS"; ".pdf"; ".PDF"; 
+	 ".rtf"; ".RTF"; ".txt"; ".TXT"; ".html"; ".HTML" ])
 
 let is_http s =
   String.length s > 3 & String.lowercase (String.sub s 0 4) = "http"
@@ -162,11 +163,10 @@ let is_www s =
 let is_url s = is_http s || is_ftp s || is_www s
 
 let file_type f =
-  let rec test_type = function
-    | [] -> if is_http f then "http" else if is_ftp f then "ftp" else "www"
-    | suff::rem -> if Filename.check_suffix f suff then suff else test_type rem
-  in
-  test_type file_suffixes
+  try
+    List.find (Filename.check_suffix f) file_suffixes
+  with Not_found ->
+    if is_http f then "http" else if is_ftp f then "ftp" else "www"
 
 let get_url s =
   if (String.length s > 3 & String.lowercase (String.sub s 0 4) = "www:") then

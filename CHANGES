@@ -1,4 +1,6 @@
 
+ o added .txt and .html as recognized file extensions
+
 Version 1.51 15/10/2001
 =======================
  o fixed bug in links to not compressed documents; nicer names for links
