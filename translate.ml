@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.66 2004-06-30 07:05:35 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.67 2004-09-16 09:39:16 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -31,6 +31,7 @@ let title = ref ""
 let title_spec = ref false
 let print_abstract = ref true
 let print_keywords = ref true
+let print_links = ref true
 let print_header = ref true
 let print_footer = ref true
 let multiple = ref false
@@ -216,7 +217,9 @@ let display_links ch links =
 	if r <> [] then output_string ch " | \n";
 	display r
   in
-  if links <> [] then begin output_string ch "[ "; display links end
+  if !print_links && links <> [] then begin 
+    output_string ch "[ "; display links 
+  end
 
 exception Caught
 

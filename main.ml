@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: main.ml,v 1.57 2004-09-02 07:22:36 filliatr Exp $ i*)
+(*i $Id: main.ml,v 1.58 2004-09-16 09:39:16 filliatr Exp $ i*)
 
 (*s Main module of bibtex2html. *)
 
@@ -316,6 +316,7 @@ Usage: bibtex2html <options> [filename]
   -single    produce a single page (with BibTeX input and output)
   -nodoc     only produces the body of the HTML documents
   -nokeys    do not print the BibTeX keys
+  -nolinks   do not print any web link
   -rawurl    print URL instead of file type
   -heveaurl  use HeVeA's \\url macro
   -noabstract
@@ -376,6 +377,8 @@ let parse () =
 	print_abstract := false; parse_rec rem
     | ("-nokeywords" | "-no-keywords" | "--no-keywords") :: rem ->
 	print_keywords := false; parse_rec rem
+    | ("-nolinks" | "-no-links" | "--no-links") :: rem -> 
+	print_links := false; parse_rec rem
     | ("-nokeys" | "-no-keys" | "--no-keys") :: rem -> 
 	nokeys := true; parse_rec rem
     | ("-usekeys" | "-use-keys" | "--use-keys") :: rem ->
