@@ -1,4 +1,8 @@
  
+Version 1.1, 1999/11/05
+=======================
+ o bibtex2html version is written at the end of the document and inside the
+   HTML source
  o options --output and --nobibsource for bibtex2html
  o bibtex2html now reads on standard input if no input file is given, 
    and writes on standard output (if no output file is specified).
@@ -16,6 +20,7 @@
  o autorize + in keys
 
 Version 1.0, 1999/07/15
+=======================
  o option --footer
  o condition are now arbitrary boolean expressions over comparaisons
    and matchings
@@ -35,20 +40,24 @@ Version 1.0, 1999/07/15
  o macros \sim, \symbol; macros for accents without argument (\~{}, \'{}, etc.)
 
 Version 0.95, 1999/06/02
+========================
  o german macros when using a german BibTeX style
  o comma suppressed after last field in BibTeX entries file
  o macro \textit
  o comma after "BibTeX entry" suppressed when not needed
 
 Version 0.91, 1999/04/19
+========================
  o bug fix in links to BibTeX entries in the page with abstracts
  o code optimization
 
 Version 0.9, 1999/02/12
+=======================
   o option -both to make both versions with and without abstracts
   o suffix .zip added for compressed files
 
 Version 0.8, 1999/02/08
+=======================
   o option -multiple (one file per entry)
   o bug fixed in syntax error line report
   o translation for macros \DH, \th
@@ -57,13 +66,16 @@ Version 0.8, 1999/02/08
   o abstracts printed in a smaller font (<font size=-1>)
 
 Version 0.72, 1999/01/21
+========================
   o option -warranty to get the warranty conditions
   o translation of various LaTeX accents
 
 Version 0.71, 1999/01/11
+========================
   o translation for macros \o, \O, \ae, \AE, \aa, \AA
   
 Version 0.7, 1998/11/18
+=======================
   o on-line documentation
   o option -f, --field
   o long names for all options
@@ -72,23 +84,29 @@ Version 0.7, 1998/11/18
   o option -nofooter
 
 Version 0.61, 1998/10/19
+========================
   o option -nokeys
 
 Version 0.6, 1998/02/17
+=======================
   o spaces in URL are removed
   o compilation in native code  
 
 Version 0.4, 1998/01/28
+=======================
   o multiple bibliographies
   o read macros in a file
 
 Version 0.3, 1997/11/06
+=======================
   o option -c to specify a command
   o quick sort of entries
   o macro \url is translated into a HTML link
 
 Version 0.2, 1997/10/24
+=======================
   o new presentation with only 2 files (F.html and F-bib.html)
 
 Version 0.1, 1997/07/17
+=======================
   o first public release

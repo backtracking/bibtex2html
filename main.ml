@@ -14,7 +14,9 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.30 1999-11-04 16:32:07 filliatr Exp $ *)
+(* $Id: main.ml,v 1.31 1999-11-05 11:36:34 filliatr Exp $ *)
+
+open Translate
 
 (* options *)
 
@@ -120,7 +122,7 @@ let create_aux_file fbib tmp =
 let rm f = try Sys.remove f with _ -> ()
 
 let clean tmp =
-  if not !Translate.debug then begin
+  if not !debug then begin
     rm (tmp ^ ".aux");
     rm (tmp ^ ".blg");
     rm (tmp ^ ".bbl");
@@ -130,7 +132,7 @@ let clean tmp =
 let call_bibtex tmp =
   Printf.eprintf "calling BibTeX..."; flush stderr;
   match 
-    let redir = if !Translate.standard_output then ">& /dev/null" else "" in
+    let redir = if !output_file = "" then ">& /dev/null" else "" in
     Sys.command (Printf.sprintf "%s %s %s" !command tmp redir)
   with
     | 0 -> Printf.printf "\n"; flush stdout
@@ -147,7 +149,7 @@ let read_one_biblio lb =
   let rec read_items acc lb =
     try
       let (_,k,_) as item = Bbl_lexer.bibitem lb in
-	if !Translate.debug then begin
+	if !debug then begin
 	  Printf.eprintf "[%s]" k; flush stderr
   	end;
       read_items (item::acc) lb
@@ -193,7 +195,7 @@ let get_biblios fbib =
     e -> clean tmp ; raise e
 
 
-let translate fullname basename =
+let translate fullname =
   let input_bib = Readbib.read_entries_from_file fullname in
   let entries = Expand.expand input_bib in
   let biblios = 
@@ -213,8 +215,7 @@ let translate fullname basename =
       (fun (name,bibitems) -> (name,sort_entries entries bibitems))
       biblios 
   in
-  Translate.format_list 
-    basename 
+  format_list 
     (if !expand_abbrev_in_bib_output then 
        Bibtex.expand_abbrevs input_bib 
      else input_bib) 
@@ -282,11 +283,11 @@ let parse () =
 
     (* General aspect of the web page *)
     | ("-t" | "--title") :: s :: rem ->
-	Translate.title := s ; Translate.title_spec := true; parse_rec rem
+	title := s ; title_spec := true; parse_rec rem
     | ("-t" | "--title") :: [] ->
 	usage()
     | ("-footer" | "--footer") :: s :: rem ->
-	Translate.user_footer := s; parse_rec rem
+	user_footer := s; parse_rec rem
     | ("-footer" | "--footer") :: [] ->
 	usage()
     | ("-s" | "--style") :: s :: rem ->
@@ -294,19 +295,19 @@ let parse () =
     | ("-s" | "--style") :: [] ->
 	usage()
     | ("-noabstract" | "--no-abstract") :: rem ->
-	Translate.print_abstract := false; parse_rec rem
+	print_abstract := false; parse_rec rem
     | ("-nokeys" | "--no-keys") :: rem -> 
-	Translate.nokeys := true ; parse_rec rem
+	nokeys := true ; parse_rec rem
     | ("-nofooter" | "--no-footer") :: rem ->
-	Translate.print_footer := false; parse_rec rem
+	print_footer := false; parse_rec rem
     | ("-f" | "--field") :: s :: rem ->
-	Translate.add_field s; parse_rec rem
+	add_field s; parse_rec rem
     | ("-f" | "--field") :: [] ->
 	usage()
     | ("-multiple" | "--multiple") :: rem ->
-	Translate.multiple := true; parse_rec rem
+	multiple := true; parse_rec rem
     | ("-both" | "--both") :: rem ->
-	Translate.both := true; parse_rec rem
+	both := true; parse_rec rem
  
     (* Controlling the translation *)
     | ("-m" | "--macros-from") :: f :: rem ->
@@ -338,21 +339,20 @@ let parse () =
  
     (* Miscellaneous options *)
     | ("-o" | "--output") :: f :: rem ->
-	Translate.standard_output := false;
-	Translate.output_file := f;
+	output_file := f;
 	parse_rec rem
     | ("-o" | "--output") :: [] ->
 	usage()
     | ("-nobibsource" | "--nobibsource") :: rem ->
-	Translate.bib_entries := false; parse_rec rem
+	bib_entries := false; parse_rec rem
     | ("-nodoc" | "--no-doc") :: rem -> 
-	Translate.nodoc := true ; parse_rec rem
+	nodoc := true ; parse_rec rem
     | ("-noexpand" | "--no-expand") :: rem -> 
 	expand_abbrev_in_bib_output := false ; parse_rec rem
     | ("-i" | "--ignore-errors") :: rem ->
 	ignore_bibtex_errors := true ; parse_rec rem
     | ("-suffix" | "--suffix") :: s :: rem ->
-	Translate.suffix := s ; parse_rec rem
+	suffix := s ; parse_rec rem
     | ("-suffix" | "--suffix") :: [] ->
 	usage()
     | ("-c" | "--command") :: s :: rem ->
@@ -367,15 +367,19 @@ let parse () =
 	Copying.copying(); exit 0
 
     | ("-debug" | "--debug") :: rem ->
-	Translate.debug := true ; parse_rec rem
+	debug := true ; parse_rec rem
 
     | [fbib] -> 
+	if not (Sys.file_exists fbib) then begin
+	  Printf.eprintf "%s: no such file\n" fbib;
+	  exit 1
+	end;
 	let basename = Filename.basename fbib in
 	if Filename.check_suffix basename ".bib" then
 	  (fbib, Filename.chop_suffix basename ".bib")
 	else begin
-	  prerr_endline "BibTeX file must have suffix .bib !";
-	  usage ()
+	  prerr_endline "BibTeX file must have suffix .bib";
+	  exit 1
 	end
     | [] ->
 	("","")
@@ -389,14 +393,24 @@ let parse () =
 let main () =
   Copying.banner "bibtex2html";
   let (fbib,f) = parse () in
-  if fbib = "" then 
-    Translate.title := "bibtex2html output"
-  else begin
-    Translate.standard_output := false;
-    if not !Translate.title_spec then Translate.title := f
+  if fbib = "" then begin
+    title := "bibtex2html output";
+    begin match !output_file with
+      | "" -> bib_entries := false
+      | "-" -> output_file := ""; bib_entries := false
+      | _ -> ()
+    end
+  end else begin
+    input_file := f ^ ".bib";
+    begin match !output_file with
+      | "" -> output_file := f;
+      | "-" -> output_file := ""; bib_entries := false
+      | _ -> ()
+    end;
+    if not !title_spec then title := f
   end;
   Latexmacros.init_style_macros !style;
   (* producing the documents *)
-  translate fbib f
+  translate fbib
 
 let _ = Printexc.catch main ()

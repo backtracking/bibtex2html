@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.32 1999-11-04 16:32:07 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.33 1999-11-05 11:36:35 filliatr Exp $ *)
 
 (* options *)
 
@@ -29,7 +29,7 @@ let multiple = ref false
 let both = ref false
 let user_footer = ref ""
 let bib_entries = ref true
-let standard_output = ref true
+let input_file = ref ""
 let output_file = ref ""
 
 let (fields : string list ref) = ref []
@@ -64,8 +64,6 @@ let first_pass bl =
 open Latexmacros
 
 let in_summary = ref false
-let file_basename = ref ""
-let bibfile_basename = ref ""
 
 let cite k =
   try
@@ -73,7 +71,7 @@ let cite k =
       if !in_summary then 
 	Printf.sprintf "#%s" k
       else
-	Printf.sprintf "%s%s#%s" !file_basename !suffix k in
+	Printf.sprintf "%s%s#%s" !output_file !suffix k in
     let c = Hashtbl.find cite_tab k in
       print_s (Printf.sprintf "<A HREF=\"%s\">[%s]</A>" url c)
   with
@@ -204,7 +202,7 @@ let make_abstract ch ((t,k,_) as e) =
 	(* 3. we have to insert a link to the file f-abstracts *)
 	output_string ch ", ";
 	let url = 
-	  Printf.sprintf "%s-abstracts%s#%s" !file_basename !suffix k in
+	  Printf.sprintf "%s-abstracts%s#%s" !output_file !suffix k in
 	Html.open_href ch url;
 	output_string ch "Abstract";
 	Html.close_href ch;
@@ -214,7 +212,7 @@ let make_abstract ch ((t,k,_) as e) =
 (* Printing of one entry *)  
 
 let bibtex_entry ch k =
-  Html.open_href ch (Printf.sprintf "%s%s#%s" !bibfile_basename !suffix k);
+  Html.open_href ch (Printf.sprintf "%s-bib%s#%s" !output_file !suffix k);
   output_string ch "BibTeX entry";
   Html.close_href ch
 
@@ -222,7 +220,7 @@ let separate_file (b,((_,k,f) as e)) =
   in_summary := false;
   let file = k ^ !suffix in
   let ch = open_out file in
-  let title = Printf.sprintf "%s : %s" !file_basename k in
+  let title = Printf.sprintf "%s : %s" !output_file k in
   Html.open_document ch (fun () -> output_string ch title);
   header ch;
   Html.open_balise ch "h2";
@@ -235,7 +233,7 @@ let separate_file (b,((_,k,f) as e)) =
   Html.paragraph ch;
   make_links ch e true;
   Html.paragraph ch;
-  Html.open_href ch (!file_basename ^ !suffix);
+  Html.open_href ch (!output_file ^ !suffix);
   output_string ch "Back";
   Html.close_href ch;
   if !print_footer then footer ch;
@@ -282,13 +280,10 @@ let one_entry_summary ch (_,b,((_,k,f) as e)) =
 
 let summary bl =
   let (ch,filename) = 
-    if !standard_output then 
+    if !output_file = "" then 
       (stdout, "standard output")
     else
-      let filename = 
-	(if !output_file <> "" then !output_file else !file_basename) 
-	^ !suffix
-      in
+      let filename = !output_file ^ !suffix in
       (open_out filename, filename)
   in
   Printf.eprintf "Making HTML document (%s)..." filename; flush stderr;
@@ -333,17 +328,17 @@ let print_list print sep l =
   print_rec l
 
 
-let bib_file f bl keys =
-  let fn = !bibfile_basename ^ !suffix in
+let bib_file bl keys =
+  let fn = !output_file ^ "-bib" ^ !suffix in
   Printf.eprintf "Making HTML list of BibTeX entries (%s)..." fn;
   flush stderr;
   let ch = open_out fn in
 
   if not !nodoc then
-    Html.open_document ch (fun _ -> output_string ch (f ^ ".bib"));
+    Html.open_document ch (fun _ -> output_string ch !input_file);
 
   Html.open_balise ch "H1";
-  output_string ch (f ^ ".bib");
+  output_string ch !input_file;
   Html.close_balise ch "H1";
 
   Html.open_balise ch "PRE";
@@ -359,26 +354,20 @@ let bib_file f bl keys =
 
 (* main function *)
 
-let format_list basename entries sorted_bl keys =
+let format_list entries sorted_bl keys =
   first_pass sorted_bl;
-  if !output_file <> "" then begin
-    file_basename := !output_file;
-    bibfile_basename := !output_file ^ "-bib"
-  end else begin
-    file_basename := basename;
-    bibfile_basename := basename ^ "-bib"
-  end;
   if !both then begin
     (* short version *)
     print_abstract := false;
     summary sorted_bl;
     (* long version with abstracts *)
     print_abstract := true;
-    file_basename := basename ^ "-abstracts";
+    let old_output = !output_file in
+    output_file := !output_file ^ "-abstracts";
     summary sorted_bl;
-    file_basename := basename
+    output_file := old_output
   end else
     summary sorted_bl;
   (* BibTeX entries file *)
-  if !bib_entries then bib_file basename entries keys
+  if !bib_entries then bib_file entries keys
 
