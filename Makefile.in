@@ -85,8 +85,8 @@ bibtex2html.pbyte: $(OBJS:.cmx=.cmo)
 		-o bibtex2html.pbyte str.cma $(OBJS:.cmx=.cmo)  
 
 bibtex2html.static: $(OBJS)
-	ocamlopt $(PROFILE) $(FLAGS) -o bibtex2html.static str.cmxa $(OBJS) $(STRLIB) -cclib "-L. -static"
-	strip bibtex2html.static
+	ocamlopt $(PROFILE) $(FLAGS) -o $@ str.cmxa $(OBJS) $(STRLIB) -cclib "-L. -static"
+	strip $@
 
 bib2bib: $(BIB2BIBOBJS)
 	ocamlopt $(PROFILE) $(FLAGS) -o bib2bib str.cmxa $(BIB2BIBOBJS) $(STRLIB)
@@ -100,8 +100,8 @@ bib2bib.pbyte: $(BIB2BIBOBJS:.cmx=.cmo)
 		-o bib2bib.pbyte str.cma $(BIB2BIBOBJS:.cmx=.cmo) 
 
 bib2bib.static: $(BIB2BIBOBJS)
-	ocamlopt $(PROFILE) $(FLAGS) -o bib2bib.static str.cmxa $(BIB2BIBOBJS) $(STRLIB) -cclib "-L. -static"
-	strip bib2bib.static
+	ocamlopt $(PROFILE) $(FLAGS) -o $@ str.cmxa $(BIB2BIBOBJS) $(STRLIB) -cclib "-L. -static"
+	strip $@
 
 static: bibtex2html.static bib2bib.static
 	cp bibtex2html.static $$HOME/bin/$$OSTYPE/bibtex2html
