@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.37 2000-06-30 02:36:43 filliatr Exp $ *)
+(* $Id: main.ml,v 1.38 2000-06-30 17:23:58 filliatr Exp $ *)
 
 open Printf
 open Translate
@@ -136,7 +136,7 @@ let call_bibtex tmp =
   end;
   match 
     let redir = 
-      if !output_file = "" || !Options.quiet then ">& /dev/null" else "" 
+      if !output_file = "" || !Options.quiet then "> /dev/null 2>&1" else "" 
     in
     Sys.command (Printf.sprintf "%s %s %s" !command tmp redir)
   with
