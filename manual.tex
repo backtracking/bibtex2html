@@ -138,41 +138,50 @@ Most of the command line options have a short version of one character
 
 \begin{description}
   
-\item[\texttt{-t} \textit{string}, \texttt{\mm{}title} \textit{string}]
+\item[\texttt{-t} \textit{string}, \texttt{\mm{}title} \textit{string}] ~
+
   specify the title of the HTML file (default is the file name).
 
 
-\item[\texttt{\mm{}footer} \textit{string}]
+\item[\texttt{\mm{}footer} \textit{string}] ~
+
   give an additional footer for the HTML document.
 
   
-\item[\texttt{-s} \textit{string}, \texttt{\mm{}style} \textit{string}]
+\item[\texttt{-s} \textit{string}, \texttt{\mm{}style} \textit{string}] ~
+  
   use BibTeX style \textit{string} (plain, alpha, etc.).  Default
   style is plain.
 
   
-\item[\texttt{-noabstract}, \texttt{\mm{}no-abstract}] do not print the
-  abstracts (if any).
+\item[\texttt{-noabstract}, \texttt{\mm{}no-abstract}] ~
+  
+  do not print the abstracts (if any).
 
   
-\item[\texttt{-both}, \texttt{\mm{}both}] produce both pages with and
-  without abstracts. If the BibTeX file is foo.bib then the two pages
-  will be respectively foo.html and foo-abstracts.html (The suffix may
-  be different, see option \texttt{\mm{}suffix}). Links are inserted from
-  the page without abstracts to the page with abstracts.
+\item[\texttt{-both}, \texttt{\mm{}both}] ~
+  
+  produce both pages with and without abstracts. If the BibTeX file is
+  foo.bib then the two pages will be respectively foo.html and
+  foo-abstracts.html (The suffix may be different, see option
+  \texttt{\mm{}suffix}). Links are inserted from the page without
+  abstracts to the page with abstracts.
 
   
-\item[\texttt{-nokeys}, \texttt{\mm{}no-keys}] do not print the cite
-  keys.
+\item[\texttt{-nokeys}, \texttt{\mm{}no-keys}] ~
+  
+  do not print the cite keys.
 
   
-\item[\texttt{-f} \textit{field}, \texttt{\mm{}field} \textit{field}] add
-  a web link for that BibTeX field.
+\item[\texttt{-f} \textit{field}, \texttt{\mm{}field} \textit{field}] ~
+  
+  add a web link for that BibTeX field.
 
   
-\item[\texttt{-multiple}, \texttt{\mm{}multiple}] make a separate web
-  page for each entry.  \textit{Beware: this option produces as many
-    HTML files as BibTeX entries!}
+\item[\texttt{-multiple}, \texttt{\mm{}multiple}] ~
+  
+  make a separate web page for each entry.  \textit{Beware: this
+    option produces as many HTML files as BibTeX entries!}
 
 
 \end{description}
@@ -182,7 +191,8 @@ Most of the command line options have a short version of one character
 
 \begin{description}
   
-\item[\texttt{-m} \textit{file}, \texttt{\mm{}macros-from} \textit{file}]
+\item[\texttt{-m} \textit{file}, \texttt{\mm{}macros-from} \textit{file}] ~
+
   read the LaTeX macros in the given file.
 
 
@@ -193,21 +203,28 @@ Most of the command line options have a short version of one character
 
 \begin{description}
   
-\item[\texttt{-d}, \texttt{\mm{}sort-by-date}] sort by date.
+\item[\texttt{-d}, \texttt{\mm{}sort-by-date}] ~
+
+ sort by date.
 
   
-\item[\texttt{-a}, \texttt{\mm{}sort-as-bibtex}] sort as BibTeX (usually
-  by author).
+\item[\texttt{-a}, \texttt{\mm{}sort-as-bibtex}] ~
+  
+  sort as BibTeX (usually by author).
 
   
-\item[\texttt{-u}, \texttt{\mm{}unsorted}] unsorted i.e. same order as in
-  .bib file (default).
+\item[\texttt{-u}, \texttt{\mm{}unsorted}] ~
+  
+  unsorted i.e. same order as in .bib file (default).
 
   
-\item[\texttt{-r}, \texttt{\mm{}reverse-sort}] reverse the sort.
+\item[\texttt{-r}, \texttt{\mm{}reverse-sort}] ~
+
+ reverse the sort.
 
   
-\item[\texttt{-e} \textit{key}, \texttt{\mm{}exclude} \textit{key}]
+\item[\texttt{-e} \textit{key}, \texttt{\mm{}exclude} \textit{key}] ~
+
   exclude an entry.
 
 
@@ -218,28 +235,37 @@ Most of the command line options have a short version of one character
 
 \begin{description}
   
-\item[\texttt{-nodoc}, \texttt{\mm{}nodoc}] do not produce a full HTML
-  document but only its body (useful to merge the HTML bibliography in
-  a bigger HTML document).
+\item[\texttt{-nodoc}, \texttt{\mm{}nodoc}] ~
+
+  do not produce a full HTML document but only its body (useful to
+  merge the HTML bibliography in a bigger HTML document).
 
   
-\item[\texttt{-suffix} \textit{string}, \texttt{\mm{}suffix}
-  \textit{string}] give an alternate suffix \textit{string} for the
+\item[\texttt{-suffix} \textit{string}, \texttt{\mm{}suffix} \textit{string}] ~
+
+  give an alternate suffix \textit{string} for the
   HTML documents (default is \texttt{.html}).
 
     
-\item[\texttt{-c} \textit{file}, \texttt{\mm{}command} \textit{file}]
+\item[\texttt{-c} \textit{file}, \texttt{\mm{}command} \textit{file}] ~
+
   specify the BibTeX command (default is \texttt{bibtex}).  Useful if
   \texttt{bibtex} is not in your path.
 
   
-\item[\texttt{-i}, \texttt{\mm{}ignore-errors}] ignore BibTeX errors.
+\item[\texttt{-i}, \texttt{\mm{}ignore-errors}] ~
+
+ ignore BibTeX errors.
 
   
-\item[\texttt{-h}, \texttt{\mm{}help}] print a short usage and exit.
+\item[\texttt{-h}, \texttt{\mm{}help}] ~
+
+ print a short usage and exit.
 
   
-\item[\texttt{-v}, \texttt{\mm{}version}] print the version and exit.
+\item[\texttt{-v}, \texttt{\mm{}version}] ~
+
+ print the version and exit.
 
 
 \end{description}
@@ -264,17 +290,20 @@ BibTeX files, which must have a \textit{.bib} suffix.
 
 \begin{description}
   
-\item[\texttt{-oc} \textit{filename}]
+\item[\texttt{-oc} \textit{filename}] ~
+
   specify the filename where the list of selected keys is output. This
   option is mandatory.
 
-\item[\texttt{-ob} \textit{filename}]
+\item[\texttt{-ob} \textit{filename}] ~
+
   specify the filename where the selected entries are output. If not
   given, no such file is created. Notice that this output file
   contains all the necessary informations: each string and each
   cross-reference needed will be also in that file.
 
-\item[\texttt{-c} \textit{condition}]
+\item[\texttt{-c} \textit{condition}] ~
+
   specify a condition for selecting the entries. The output will
   retain only the entries that satisfy this condition. If several such
   condition are given, then only the entries that satisky all the
