@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: main.ml,v 1.49 2002-06-24 07:43:29 filliatr Exp $ i*)
+(*i $Id: main.ml,v 1.50 2002-07-24 07:46:32 filliatr Exp $ i*)
 
 (*s Main module of bibtex2html. *)
 
@@ -303,7 +303,7 @@ let usage () =
   prerr_endline "  -r         reverse the sort";
   prerr_endline "  -t title   title of the HTML file (default is the filename)";
   prerr_endline "  -bg color  background color of the HTML file (default is none)";
-  prerr_endline "  -css file  background color of the HTML file (default is none)";
+  prerr_endline "  -css file  specify a style sheet file";
   prerr_endline "  -o file    redirect the output";
   prerr_endline "  -footer    additional footer in the HTML file";
   prerr_endline "  -i         ignore BibTeX errors";

@@ -1,4 +1,6 @@
 
+ o ./configure updated
+
 Version 1.54 10/7/2002
 ======================
  o option --no-header to suppress bibtex2html command in the HTML output
