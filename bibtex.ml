@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibtex.ml,v 1.18 2004-07-06 15:22:32 marche Exp $ i*)
+(*i $Id: bibtex.ml,v 1.19 2004-07-13 14:32:59 marche Exp $ i*)
 
 (*s Datatype for BibTeX bibliographies. *)
 
@@ -202,6 +202,72 @@ let rec expand_abbrevs biblio =
 	     e :: accu)
     biblio
     []
+
+let rec expand_crossrefs biblio = 
+  let crossref_table = Hashtbl.create 97 in
+  let add_crossref a l = Hashtbl.add crossref_table a l in
+  List.iter 
+    (fun command ->
+       match command with
+	 | Entry (t,k,f) ->
+	     begin
+	       try
+		 match List.assoc "CROSSREF" f with
+		   | [String(s)] -> 
+		       add_crossref s []
+		   | _ -> 
+		       begin
+			 Format.eprintf 
+			   "Warning: invalid cross-reference in entry '%s'.@." k;
+			 if !Options.warn_error then exit 2;
+		   end
+	       with Not_found -> ();
+	     end
+	 | _ -> ())
+    biblio;
+  List.iter 
+    (fun command ->
+       match command with
+	 | Entry (t,k,f) ->
+	     begin
+	       try 
+		 let _ = Hashtbl.find crossref_table k in
+		 if !Options.debug then
+		   Format.eprintf "recording cross-reference '%s'.@." k;
+		 Hashtbl.replace crossref_table k f
+	       with Not_found -> ()
+	     end
+	 | _ -> ())
+    biblio;
+  fold 
+    (fun command accu ->
+       match command with
+	 | Entry (t,k,f) ->
+	     begin
+	       try
+		 match List.assoc "CROSSREF" f with
+		   | [String(s)] -> 
+		       begin
+			 try 
+			   let f' = Hashtbl.find crossref_table s in
+			   if f' = [] then
+			     begin
+			       Format.eprintf 
+				 "Warning: cross-reference '%s' not found.@." s;
+			       if !Options.warn_error then exit 2;
+			     end;
+			   Entry (t,k,f@f') :: accu
+			 with Not_found ->
+			   assert false
+		       end
+		   | _ ->  command :: accu
+	       with Not_found -> command :: accu
+	     end
+	 | e ->
+	     e :: accu)
+    biblio
+    []
+
 
 
 let sort comp bib = 

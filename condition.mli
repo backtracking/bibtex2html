@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: condition.mli,v 1.5 2001-02-21 09:51:52 filliatr Exp $ i*)
+(*i $Id: condition.mli,v 1.6 2004-07-13 14:32:59 marche Exp $ i*)
 
 type constante =
   | Key
@@ -35,7 +35,7 @@ type condition =
 (*
 
   [(evaluate_cond e k fields cond)] returns the boolean value of
-  [cond] with respect to the entry of type [e], of key [k], and fileds
+  [cond] with respect to the entry of type [e], of key [k], and fields
   [fields].
 
 *)

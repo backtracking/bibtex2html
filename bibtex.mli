@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibtex.mli,v 1.18 2004-07-06 15:22:33 marche Exp $ i*)
+(*i $Id: bibtex.mli,v 1.19 2004-07-13 14:32:59 marche Exp $ i*)
 
 (*s A datatype for BibTeX bibliographies. *)
 
@@ -84,6 +84,8 @@ val find_abbrev : key -> biblio -> command
    bibliography where all strings have been expanded *)
 
 val expand_abbrevs : biblio -> biblio
+
+val expand_crossrefs : biblio -> biblio
 
 
 (*s sorting bibliography

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bib2bib.ml,v 1.19 2004-07-06 15:22:32 marche Exp $ i*)
+(*i $Id: bib2bib.ml,v 1.20 2004-07-13 14:32:59 marche Exp $ i*)
 
 open Printf
 open Bibtex
@@ -207,7 +207,7 @@ let main () =
   let expanded = Bibtex.expand_abbrevs all_entries
   in
   let matching_keys =
-    Bibfilter.filter expanded 
+    Bibfilter.filter (Bibtex.expand_crossrefs expanded)
       (fun e k f -> Condition.evaluate_cond e k f !condition) 
   in
   if KeySet.cardinal matching_keys = 0 then

@@ -26,7 +26,7 @@ rule token = parse
   | (">" | "<" | ">=" | "<=" | "=" | "<>") 
                           { COMP(Lexing.lexeme lexbuf) }
   | ['0'-'9']+            { INT(Lexing.lexeme lexbuf) }
-  | ['A'-'Z' 'a'-'z'] +   { IDENT(Lexing.lexeme lexbuf) }
+  | ['A'-'Z' 'a'-'z' '_'] +   { IDENT(Lexing.lexeme lexbuf) }
   | '"'                   { Buffer.clear string_buf; STRING(string lexbuf) }
   | '\''                  { Buffer.clear string_buf; STRING(string2 lexbuf) }
   | eof                   { EOF }
