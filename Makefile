@@ -180,21 +180,19 @@ manual.html: manual.tex
 # clean and depend
 ##################
 
-clean:
+GENERATED = bibtex_lexer.ml bbl_lexer.ml \
+	    latexscan.ml latex_accents.ml condition_lexer.ml \
+	    bibtex_parser.mli bibtex_parser.ml \
+            condition_parser.mli condition_parser.ml version.ml
+
+clean::
 	rm -f *~ *.cm[iox] *.o 
-	rm -f bibtex_lexer.ml bibtex_parser.ml bibtex_parser.mli 
-	rm -f latexscan.ml bibtex2html bbl_lexer.ml
-	rm -f bib2bib condition_parser.mli condition_parser.ml
-	rm -f condition_lexer.ml manual.html
+	rm -f $(GENERATED)
+	rm -f bibtex2html bib2bib
+	rm -f manual.{aux,log,dvi,ps,toc,haux,html}
 	rm -f bibtex2html.static bib2bib.static
 
-
-depend .depend: \
-	bibtex_lexer.ml bbl_lexer.ml \
-	latexscan.ml latex_accents.ml \
-	bibtex_parser.mli bibtex_parser.ml \
-	condition_parser.mli condition_parser.ml \
-	condition_lexer.ml
+depend:: $(GENERATED)
 	rm -f .depend
 	ocamldep $(ZLIBS) *.mli *.ml > .depend
 
