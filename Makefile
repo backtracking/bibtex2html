@@ -22,16 +22,22 @@ PROFILE  =
 STRLIB = -cclib -lstr 
 
 OBJS = latexmacros.cmx latexscan.cmx bbl_lexer.cmx \
-       bibtex.cmx bibtex_lexer.cmx bibtex_parser.cmx html.cmx \
-       translate.cmx version.cmx main.cmx
+	bibtex.cmx bibtex_lexer.cmx bibtex_parser.cmx \
+	expand.cmx bibfilter.cmx \
+	html.cmx biboutput.cmx translate.cmx version.cmx main.cmx
 
-all: bibtex2html
+BIB2BIBOBJS = bibtex.cmx bibtex_lexer.cmx bibtex_parser.cmx bibfilter.cmx html.cmx biboutput.cmx bib2bib.cmx
+
+all: bibtex2html bib2bib
 
 install:
-	cp bibtex2html $(BINDIR)
+	cp bibtex2html bib2bib $(BINDIR)
 
 bibtex2html: $(OBJS)
 	ocamlopt $(PROFILE) $(FLAGS) -o bibtex2html str.cmxa $(OBJS) $(STRLIB)
+
+bib2bib: $(BIB2BIBOBJS)
+	ocamlopt $(PROFILE) $(FLAGS) -o bib2bib str.cmxa $(BIB2BIBOBJS) $(STRLIB)
 
 bibtex_parser.mli bibtex_parser.ml: bibtex_parser.mly
 	ocamlyacc bibtex_parser.mly

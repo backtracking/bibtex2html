@@ -14,20 +14,22 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.24 1999-06-28 13:27:35 marche Exp $ *)
+(* $Id: main.ml,v 1.25 1999-06-29 15:48:56 marche Exp $ *)
 
 (* options *)
 
 let excluded = ref ([] : string list)
 let add_exclude k = excluded := k :: !excluded
 let style = ref "plain"
-let command = ref "bibtex"
+let command = ref "bibtex -min-crossrefs=1000"
 
 type sort = Unsorted | By_date | By_author
 let sort = ref Unsorted
 let reverse_sort = ref false
 
 let ignore_bibtex_errors = ref false
+
+let expand_abbrev_in_bib_output = ref true
 
 (* optional citation file *)
 
@@ -88,7 +90,7 @@ let sort_entries entries bibitems =
   in
   let sl = 
     if !sort = By_date then
-      Sort.list (fun (_,_,e1) (_,_,e2) -> Bibtex.date_order e1 e2) el
+      Sort.list (fun (_,_,e1) (_,_,e2) -> Expand.date_order e1 e2) el
     else
       el in
   Printf.printf "ok.\n"; flush stdout;
@@ -200,7 +202,7 @@ let get_bibtex_entries fbib =
   let chan = open_in fbib in
   let el =
     try
-      Bibtex_parser.entry_list Bibtex_lexer.token (Lexing.from_channel chan)
+      Bibtex_parser.command_list Bibtex_lexer.token (Lexing.from_channel chan)
     with
 	Parsing.Parse_error | Failure "unterminated string" ->
 	  close_in chan;
@@ -212,12 +214,27 @@ let get_bibtex_entries fbib =
   el
 
 let translate fullname basename =
-  let entries = get_bibtex_entries fullname in
+  let input_bib = get_bibtex_entries fullname in
+  let entries = Expand.expand input_bib in
   let biblios = get_biblios fullname in
   let sb = List.map 
 	     (fun (name,bibitems) -> (name,sort_entries entries bibitems))
 	     biblios in
-  Translate.format_list basename sb
+  Translate.format_list 
+    basename 
+    (if !expand_abbrev_in_bib_output then 
+       Bibtex.expand_abbrevs input_bib 
+     else input_bib) 
+    sb 
+    (if !use_cite_file then
+       let keys = 
+	 List.fold_right 
+	   (fun s e -> Bibtex.KeySet.add s e) !citations Bibtex.KeySet.empty in
+       let keys =
+	 List.fold_right 
+	   (fun s e -> Bibtex.KeySet.remove s e) !excluded keys in
+	 Some (Bibfilter.saturate input_bib keys)
+     else None)
 
 
 (* reading macros in a file *)
@@ -249,6 +266,7 @@ let usage () =
   prerr_endline "  -noabstract";
   prerr_endline "             do not print the abstracts (if any)";
   prerr_endline "  -nofooter  do not print the footer (bibtex2html web link)";
+  prerr_endline "  -noexpand  do not expand abbreviations in the BibTeX output";
   prerr_endline "  -suffix s  give an alternate suffix for HTML files";
   prerr_endline "  -citefile f";
   prerr_endline "             read keys to include from file f";
@@ -338,6 +356,8 @@ let parse () =
     (* Miscellaneous options *)
     | ("-nodoc" | "--no-doc") :: rem -> 
 	Translate.nodoc := true ; parse_rec rem
+    | ("-noexpand" | "--no-expand") :: rem -> 
+	expand_abbrev_in_bib_output := false ; parse_rec rem
     | ("-i" | "--ignore-errors") :: rem ->
 	ignore_bibtex_errors := true ; parse_rec rem
     | ("-suffix" | "--suffix") :: s :: rem ->

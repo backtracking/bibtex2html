@@ -14,38 +14,44 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibtex.mli,v 1.6 1999-03-01 22:17:55 filliatr Exp $ *)
+(* $Id: bibtex.mli,v 1.7 1999-06-29 15:48:55 marche Exp $ *)
 
 type entry_type = string
 		    
 type key = string
 
+module KeySet : Set.S with type elt = key;;
+
 type atom =
     Id     of string
   | String of string
 
-type fields = (string * string) list
-
-type entry = entry_type * key * fields
-		
 type command = 
-    Comment
+    Comment of string
   | Preamble of string
   | Abbrev of string * atom list
   | Entry  of entry_type * key * (string * atom list) list
 
-val expand : command list -> entry list (* expand the abbreviations *)
+type biblio = command list
 
-val date_order : entry -> entry -> bool
+(* acces functions *)
+
+(* [find_entry k b] returns the first entry of key [k] in biblio
+   [b]. Raises [Not_found] if no entry of this key exist. *)
+
+val find_entry : key -> biblio -> command;;
+
+(* [abbrev_is_implicit k] is true when [k] is an integer or a month
+   name.  [abbrev_exists k b] is true when [k] appears in biblio [b].
+   *)
+
+val abbrev_is_implicit : key -> bool;;
+val abbrev_exists : key -> biblio -> bool;;
 
 
-(* access to the fields *)
+(* expansion of abbreviations. [expand_abbrevs bib] returns a new
+   bibliography where all strings have been expanded *)
 
-val get_field : entry -> string -> string
-val get_uppercase_field : entry -> string -> string
+val expand_abbrevs : biblio -> biblio;;
 
-val get_title : entry -> string
-val get_year  : entry -> string
-val get_month : entry -> string
-val get_author : entry -> string
 

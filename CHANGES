@@ -1,5 +1,12 @@
 
- o macros with nested braces now recognized correctly in @PREAMBLE
+ o the bib output :
+    . is in the same order as the original one
+    . option -noexpand produces an bib output still containing @STRINGs 
+      (but notice that crossrefs are never expanded)
+ o the default bibtex command is "bibtex -min-crossrefs=1000" in order
+    to avoid citation to the crossrefs. (This behaviour is obtained
+    only when using a -citefile where the crossrefs are not included.)
+ o macros with nested braces now recognized correctly 
  o macros \textrm and \textsl
  o option -citefile to read keys to cite from a file
  o macros \sim, \symbol; macros for accents without argument (\~{}, \'{}, etc.)

@@ -1,19 +1,30 @@
+bibfilter.cmi: bibtex.cmi 
+biboutput.cmi: bibtex.cmi 
 bibtex_parser.cmi: bibtex.cmi 
-bibtex.cmo: latexscan.cmo bibtex.cmi 
-bibtex.cmx: latexscan.cmx bibtex.cmi 
+expand.cmi: bibtex.cmi 
+bib2bib.cmo: bibfilter.cmi biboutput.cmi bibtex.cmi bibtex_lexer.cmo \
+    bibtex_parser.cmi 
+bib2bib.cmx: bibfilter.cmx biboutput.cmx bibtex.cmx bibtex_lexer.cmx \
+    bibtex_parser.cmx 
+bibfilter.cmo: bibtex.cmi bibfilter.cmi 
+bibfilter.cmx: bibtex.cmx bibfilter.cmi 
+biboutput.cmo: bibtex.cmi html.cmo biboutput.cmi 
+biboutput.cmx: bibtex.cmx html.cmx biboutput.cmi 
+bibtex.cmo: bibtex.cmi 
+bibtex.cmx: bibtex.cmi 
 bibtex_lexer.cmo: bibtex_parser.cmi 
 bibtex_lexer.cmx: bibtex_parser.cmx 
 bibtex_parser.cmo: bibtex.cmi bibtex_parser.cmi 
 bibtex_parser.cmx: bibtex.cmx bibtex_parser.cmi 
+expand.cmo: bibtex.cmi latexscan.cmo expand.cmi 
+expand.cmx: bibtex.cmx latexscan.cmx expand.cmi 
 latexmacros.cmo: latexmacros.cmi 
 latexmacros.cmx: latexmacros.cmi 
 latexscan.cmo: latexmacros.cmi 
 latexscan.cmx: latexmacros.cmx 
-main.cmo: bbl_lexer.cmo bibtex.cmi bibtex_lexer.cmo bibtex_parser.cmi \
-    latexscan.cmo translate.cmo version.cmo 
-main.cmx: bbl_lexer.cmx bibtex.cmx bibtex_lexer.cmx bibtex_parser.cmx \
-    latexscan.cmx translate.cmx version.cmx 
-test.cmo: bibtex.cmi bibtex_lexer.cmo bibtex_parser.cmi 
-test.cmx: bibtex.cmx bibtex_lexer.cmx bibtex_parser.cmx 
-translate.cmo: bibtex.cmi html.cmo latexmacros.cmi latexscan.cmo 
-translate.cmx: bibtex.cmx html.cmx latexmacros.cmx latexscan.cmx 
+main.cmo: bbl_lexer.cmo bibtex_lexer.cmo bibtex_parser.cmi expand.cmi \
+    latexmacros.cmi latexscan.cmo translate.cmo version.cmo 
+main.cmx: bbl_lexer.cmx bibtex_lexer.cmx bibtex_parser.cmx expand.cmx \
+    latexmacros.cmx latexscan.cmx translate.cmx version.cmx 
+translate.cmo: expand.cmi html.cmo latexmacros.cmi latexscan.cmo 
+translate.cmx: expand.cmx html.cmx latexmacros.cmx latexscan.cmx 

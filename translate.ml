@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.28 1999-06-02 14:15:28 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.29 1999-06-29 15:48:56 marche Exp $ *)
 
 (* options *)
 
@@ -94,7 +94,7 @@ let latex2html ch s =
   Latexscan.main (Lexing.from_string s)
 
 let safe_title e =
-  try Bibtex.get_title e with Not_found -> "No title"
+  try Expand.get_title e with Not_found -> "No title"
 
 
 (* header and footer of HTML files *)
@@ -163,7 +163,7 @@ let make_links ch ((t,k,_) as e) startb =
   let first = ref startb in
   List.iter (fun u -> 
 	       try
-		 let u = Bibtex.get_uppercase_field e u in
+		 let u = Expand.get_uppercase_field e u in
 		 let s = file_type u in
 		   if !first then first := false else output_string ch ", ";
 		   Html.open_href ch (get_url u);
@@ -176,7 +176,7 @@ let make_links ch ((t,k,_) as e) startb =
 
 let make_abstract ch ((t,k,_) as e) =
   try
-    let a = Bibtex.get_uppercase_field e "ABSTRACT" in
+    let a = Expand.get_uppercase_field e "ABSTRACT" in
       if is_url a then begin
 	(* 1. it is an URL *)
 	output_string ch ", ";
@@ -318,7 +318,8 @@ let print_list print sep l =
   in
   print_rec l
 
-let bib_file f bl =
+
+let bib_file f bl keys =
   let fn = f ^ "-bib" ^ !suffix in
   Printf.printf "Making HTML list of BibTeX entries (%s)..." fn;
   flush stdout;
@@ -333,6 +334,7 @@ let bib_file f bl =
 
   Html.open_balise ch "PRE";
 
+(*
   List.iter
     (fun (_,l) ->
        List.iter (fun (_,_,(t,k,fs)) ->
@@ -356,6 +358,11 @@ let bib_file f bl =
 		      fs;
 		    output_string ch "\n}\n") l)
     bl;
+*)
+
+(**)
+  Biboutput.output_bib true ch bl keys;
+(**)
 
   Html.close_balise ch "PRE";
   
@@ -368,21 +375,21 @@ let bib_file f bl =
 
 (* main function *)
 
-let format_list basename bl =
-  first_pass bl;
+let format_list basename entries sorted_bl keys =
+  first_pass sorted_bl;
   file_basename := basename;
   bibfile_basename := basename ^ "-bib";
   if !both then begin
     (* short version *)
     print_abstract := false;
-    summary bl;
+    summary sorted_bl;
     (* long version with abstracts *)
     print_abstract := true;
     file_basename := basename ^ "-abstracts";
-    summary bl;
+    summary sorted_bl;
     file_basename := basename
   end else
-    summary bl;
+    summary sorted_bl;
   (* BibTeX entries file *)
-  bib_file basename bl
+  bib_file basename entries keys
 
