@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.mli,v 1.1 2001-02-21 09:51:54 filliatr Exp $ i*)
+(*i $Id: translate.mli,v 1.2 2001-10-15 07:28:17 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -38,6 +38,7 @@ val bib_entries : bool ref
 val input_file : string ref
 val output_file : string ref
 val use_label_name : bool ref
+val table : bool ref
 
 (*s Inserting links for some BibTeX fields. *)
 

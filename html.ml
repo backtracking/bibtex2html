@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: html.ml,v 1.15 2001-10-12 07:39:03 filliatr Exp $ i*)
+(*i $Id: html.ml,v 1.16 2001-10-15 07:28:17 filliatr Exp $ i*)
 
 (*s Production of HTML syntax. *)
 
@@ -83,10 +83,10 @@ let close_href ch =
   close_balise ch "A"
 
 let open_h ch i =
-  open_balise ch (Printf.sprintf "H%d" i)
+  open_balise ch (sprintf "H%d" i)
 
 let close_h ch i =
-  close_balise ch (Printf.sprintf "H%d" i)
+  close_balise ch (sprintf "H%d" i)
 
 let open_em ch =
   open_balise ch "EM"
@@ -104,7 +104,7 @@ let paragraph ch =
   open_balise ch "p"
 
 let h_title ch n title =
-  let s = Printf.sprintf "H%d" n in
+  let s = sprintf "H%d" n in
   open_balise ch s;
   output_string ch title;
   close_balise ch s

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bib2bib.ml,v 1.15 2001-02-21 09:51:51 filliatr Exp $ i*)
+(*i $Id: bib2bib.ml,v 1.16 2001-10-15 07:28:16 filliatr Exp $ i*)
 
 open Printf
 open Bibtex
@@ -126,14 +126,14 @@ let main () =
   Copying.banner "bib2bib";
   if !Options.debug then
     begin
-      Printf.eprintf "command line:\n";
+      eprintf "command line:\n";
       for i = 0 to pred (Array.length Sys.argv) do
-	Printf.eprintf "%s\n" Sys.argv.(i)
+	eprintf "%s\n" Sys.argv.(i)
       done;
     end;
   if !input_file_names = [] then input_file_names := [""];
   if !Options.debug then begin 
-    Condition.print !condition; Printf.printf "\n"
+    Condition.print !condition; printf "\n"
   end;
   let all_entries =
     List.fold_right
@@ -150,7 +150,7 @@ let main () =
   in
   if KeySet.cardinal matching_keys = 0 then
     begin
-      Printf.eprintf "No matching reference found. Giving up.\n";
+      eprintf "No matching reference found. Giving up.\n";
       exit 2;
     end;
   

@@ -1,4 +1,12 @@
 
+Version 1.51 15/10/2001
+=======================
+ o fixed bug in links to not compressed documents; nicer names for links
+ o fixed bug in --quiet
+ o option -dl to format entries with <DL> instead of <TABLE>
+ o spaces quoted in HTML comment giving the bibtex2html command
+ o macro \path (treated like \verb)
+
 Version 1.5 10/10/2001
 ======================
  o less invasive links (to BibTeX entries and files)

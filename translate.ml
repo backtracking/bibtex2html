@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.50 2001-10-12 07:39:03 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.51 2001-10-15 07:28:17 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -40,6 +40,7 @@ let output_file = ref ""
 let bibentries_file = ref ""
 let title_url = ref false
 let use_label_name = ref false
+let table = ref true
 
 (* internal name, plus optional external name *)
 type field_info = string * (string option)
@@ -91,11 +92,11 @@ let cite k =
   try
     let url =
       if !in_summary then 
-	Printf.sprintf "#%s" k
+	sprintf "#%s" k
       else
-	Printf.sprintf "%s%s#%s" !output_file !link_suffix k in
+	sprintf "%s%s#%s" !output_file !link_suffix k in
     let c = Hashtbl.find cite_tab k in
-      print_s (Printf.sprintf "<A HREF=\"%s\">[%s]</A>" url c)
+      print_s (sprintf "<A HREF=\"%s\">[%s]</A>" url c)
   with
       Not_found -> print_s "[?]"
 
@@ -115,12 +116,18 @@ let safe_title e =
 let own_address = "http://www.lri.fr/~filliatr/bibtex2html/"
 
 let header ch =
-  Printf.fprintf ch "
+  let print_arg s =
+    if String.contains s ' ' then 
+      fprintf ch "\"%s\" " s 
+    else 
+      fprintf ch "%s " s
+  in
+  fprintf ch "
 <!-- This document was automatically generated with bibtex2html %s
      (see http://www.lri.fr/~filliatr/bibtex2html/),
      with the following command:
      " Version.version;
-  Array.iter (Printf.fprintf ch "%s ") Sys.argv;
+  Array.iter print_arg Sys.argv;
   output_string ch " -->\n\n"
 
 let footer ch =
@@ -140,20 +147,26 @@ let compression_suffixes = [ ".gz"; ".Z"; ".zip" ]
 
 let file_suffixes =
   List.flatten 
-    (List.map (fun s -> List.map ((^) s) compression_suffixes)
+    (List.map (fun s -> s :: List.map ((^) s) compression_suffixes)
        [ ".dvi"; ".DVI"; ".ps"; ".PS"; ".pdf"; ".PDF"; ".rtf"; ".RTF" ])
+
+let is_http s =
+  String.length s > 3 & String.lowercase (String.sub s 0 4) = "http"
+
+let is_ftp s =
+  String.length s > 2 & String.lowercase (String.sub s 0 3) = "ftp"
+
+let is_www s =
+  String.length s > 3 & String.lowercase (String.sub s 0 4) = "www:"
+
+let is_url s = is_http s || is_ftp s || is_www s
 
 let file_type f =
   let rec test_type = function
-    | [] -> "here"
+    | [] -> if is_http f then "http" else if is_ftp f then "ftp" else "www"
     | suff::rem -> if Filename.check_suffix f suff then suff else test_type rem
   in
   test_type file_suffixes
-
-let is_url s =
-  (String.length s > 3 & String.lowercase (String.sub s 0 4) = "http") || 
-  (String.length s > 2 & String.lowercase (String.sub s 0 3) = "ftp") ||
-  (String.length s > 3 & String.lowercase (String.sub s 0 4) = "www:")
 
 let get_url s =
   if (String.length s > 3 & String.lowercase (String.sub s 0 4) = "www:") then
@@ -214,8 +227,7 @@ let make_abstract ch ((t,k,_) as e) =
       end else if !both then begin
 	(* 3. we have to insert a link to the file f-abstracts *)
 	output_string ch " | ";
-	let url = 
-	  Printf.sprintf "%s-abstracts%s#%s" !output_file !link_suffix k in
+	let url = sprintf "%s-abstracts%s#%s" !output_file !link_suffix k in
 	Html.open_href ch url;
 	output_string ch "Abstract";
 	Html.close_href ch;
@@ -228,8 +240,7 @@ let make_abstract ch ((t,k,_) as e) =
 
 let bibtex_entry ch k =
   Html.open_href ch 
-    (Printf.sprintf "%s%s#%s" 
-       (Filename.basename !bibentries_file) !link_suffix k);
+    (sprintf "%s%s#%s" (Filename.basename !bibentries_file) !link_suffix k);
   output_string ch "bib";
   Html.close_href ch
 
@@ -237,7 +248,7 @@ let separate_file (b,((_,k,f) as e)) =
   in_summary := false;
   let file = k ^ !file_suffix in
   let ch = open_out file in
-  let title = Printf.sprintf "%s : %s" !output_file k in
+  let title = sprintf "%s : %s" !output_file k in
   if not !nodoc then
     Html.open_document ch (fun () -> output_string ch title);
   header ch;
@@ -259,15 +270,44 @@ let separate_file (b,((_,k,f) as e)) =
   close_out ch;
   in_summary := true
 
+let open_table ch = 
+  Html.open_balise ch (if !table then "table" else "dl")
+
+let close_table ch =
+  Html.close_balise ch (if !table then "table" else "dl")
+
+let open_row ch =
+  if !table then begin
+    Html.open_balise ch "tr valign=top"; output_string ch "\n";
+    Html.open_balise ch "td align=right"; output_string ch "\n"
+  end else begin
+    Html.open_balise ch "dt"; output_string ch "\n"
+  end
+
+let new_column ch =
+  if !table then begin
+    Html.close_balise ch "td"; output_string ch "\n";
+    Html.open_balise ch "td"; output_string ch "\n"
+  end else begin
+    Html.close_balise ch "dt"; output_string ch "\n";
+    Html.open_balise ch "dd"; output_string ch "\n"
+  end
+
+let close_row ch =
+  if !table then begin
+    Html.close_balise ch "td"; output_string ch "\n";
+    Html.close_balise ch "tr"; output_string ch "\n"
+  end else begin
+    Html.paragraph ch; output_string ch "\n";
+    Html.close_balise ch "dd"; output_string ch "\n"
+  end
+
 let one_entry_summary ch (_,b,((_,k,f) as e)) =
   if !Options.debug then begin
-    Printf.eprintf "[%s]" k; flush stderr
+    eprintf "[%s]" k; flush stderr
   end;
   output_string ch "\n\n";
-  Html.open_balise ch "tr valign=top";
-
-  output_string ch "\n";
-  Html.open_balise ch "td align=right"; output_string ch "\n";
+  open_row ch;
   Html.open_anchor ch k; Html.close_anchor ch;
   if (not !nokeys) or !multiple then begin
     output_string ch "[";
@@ -278,9 +318,7 @@ let one_entry_summary ch (_,b,((_,k,f) as e)) =
   end;
   (*i Html.close_anchor ch; i*)
   output_string ch "\n"; 
-  Html.close_balise ch "td"; output_string ch "\n";
-
-  Html.open_balise ch "td"; output_string ch "\n";
+  new_column ch;
   latex2html ch b;
   Html.open_balise ch "BR";
   output_string ch "\n";
@@ -294,8 +332,7 @@ let one_entry_summary ch (_,b,((_,k,f) as e)) =
     make_abstract ch e
   end;
   output_string ch "\n"; 
-  Html.close_balise ch "td"; output_string ch "\n";
-  Html.close_balise ch "tr"; output_string ch "\n"
+  close_row ch
 
 (* summary file f.html *)
 
@@ -327,9 +364,9 @@ let summary bl =
 	     Html.close_balise ch "H2";
 	     output_string ch "\n"
        end;
-       Html.open_balise ch "table";
+       open_table ch;
        List.iter (one_entry_summary ch) el;
-       Html.close_balise ch "table")
+       close_table ch)
     bl;
   in_summary := false;
   if !print_footer then footer ch;

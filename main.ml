@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: main.ml,v 1.45 2001-10-12 07:39:03 filliatr Exp $ i*)
+(*i $Id: main.ml,v 1.46 2001-10-15 07:28:17 filliatr Exp $ i*)
 
 (*s Main module of bibtex2html. *)
 
@@ -95,7 +95,7 @@ let sort_entries entries bibitems =
     else
       el 
   in
-  if not !Options.quiet then begin Printf.eprintf "ok.\n"; flush stderr end;
+  if not !Options.quiet then begin eprintf "ok.\n"; flush stderr end;
   if !reverse_sort then List.rev sl else sl
 
 
@@ -140,7 +140,7 @@ let call_bibtex tmp =
     let redir = 
       if !output_file = "" || !Options.quiet then "> /dev/null 2>&1" else "" 
     in
-    Sys.command (Printf.sprintf "%s %s %s" !command tmp redir)
+    Sys.command (sprintf "%s %s %s" !command tmp redir)
   with
     | 0 -> 
 	if not !Options.quiet then begin eprintf "\n"; flush stderr end
@@ -330,6 +330,7 @@ let usage () =
   prerr_endline "  -f field   add a web link for that BibTeX field";
   prerr_endline "  -nf field name";
   prerr_endline "             add a web link for that BibTeX field, with the supplied name";
+  prerr_endline "  -dl        use DL lists instead of TABLEs";
   prerr_endline "  -labelname use the label name when inserting a link";
   prerr_endline "  -debug     verbose mode (to find incorrect BibTeX entries)";
   prerr_endline "  -q         quiet mode";
@@ -391,6 +392,8 @@ i*)
 	multiple := true; parse_rec rem
     | ("-both" | "--both") :: rem ->
 	both := true; parse_rec rem
+    | ("-dl" | "--dl") :: rem ->
+	table := false; parse_rec rem
  
     (* Controlling the translation *)
     | ("-m" | "--macros-from") :: f :: rem ->

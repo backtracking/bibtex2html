@@ -14,11 +14,12 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexscan.mll,v 1.19 2001-10-10 13:06:19 filliatr Exp $ i*)
+(*i $Id: latexscan.mll,v 1.20 2001-10-15 07:28:17 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997 Xavier Leroy. *)
 
 {
+  open Printf
   open Latexmacros
 
   let brace_nesting = ref 0
@@ -46,11 +47,11 @@
 
   let print_latex_url u =
     let u = remove_whitespace u in
-    print_s (Printf.sprintf "<A HREF=\"%s\">%s</A>" u u)
+    print_s (sprintf "<A HREF=\"%s\">%s</A>" u u)
   
   let print_hevea_url u t = 
     let u = remove_whitespace u in
-    print_s (Printf.sprintf "<A HREF=\"%s\">%s</A>" u t)
+    print_s (sprintf "<A HREF=\"%s\">%s</A>" u t)
 
 }
 
@@ -80,7 +81,8 @@ rule main = parse
   | '"'           { print_s "<tt>"; indoublequote lexbuf;
                     print_s "</tt>"; main lexbuf }
 (* Verb, verbatim *)
-  | "\\verb" _  { verb_delim := Lexing.lexeme_char lexbuf 5;
+  | ("\\verb" | "\\path") _  
+                { verb_delim := Lexing.lexeme_char lexbuf 5;
                   print_s "<tt>"; inverb lexbuf; print_s "</tt>";
                   main lexbuf }
   | "\\begin{verbatim}"
@@ -256,7 +258,7 @@ and read_def = parse
       { let s = Lexing.lexeme lexbuf in
 	let b = raw_arg lexbuf in
 	if not !Options.quiet then begin
-	  Printf.eprintf "macro: %s = %s\n" s b; 
+	  eprintf "macro: %s = %s\n" s b; 
 	  flush stderr
 	end;
 	def s [Recursive b] }
@@ -265,7 +267,7 @@ and read_def = parse
 	let s = String.sub l 1 (String.length l - 2) in
 	let b = raw_arg lexbuf in
 	if not !Options.quiet then begin
-	  Printf.eprintf "macro: %s = %s\n" s b; 
+	  eprintf "macro: %s = %s\n" s b; 
 	  flush stderr
 	end;
 	def s [Recursive b] }

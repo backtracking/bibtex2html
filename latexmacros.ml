@@ -14,9 +14,12 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.42 2001-10-10 13:06:19 filliatr Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.43 2001-10-15 07:28:17 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
+
+open Printf
+open Options
 
 (*s Output functions. *)
 
@@ -43,7 +46,9 @@ let find_macro name =
   try
     Hashtbl.find cmdtable name
   with Not_found ->
-    prerr_string "Unknown macro: "; prerr_endline name; [];;
+    if not !quiet then eprintf "Unknown macro: %s\n" name;
+    []
+;;
 
 (*s Translations of general LaTeX macros. *)
 
