@@ -1,4 +1,6 @@
 
+ o in case of syntax error, the key of the entry where the error
+    occurred is shown
  o new option -no-links to disable weblinks
  o fix bug in bib2bib: preamble now enclosed with a single pair of braces
 

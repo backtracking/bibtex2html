@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibtex.mli,v 1.19 2004-07-13 14:32:59 marche Exp $ i*)
+(*i $Id: bibtex.mli,v 1.20 2004-09-17 12:58:33 marche Exp $ i*)
 
 (*s A datatype for BibTeX bibliographies. *)
 
@@ -104,3 +104,12 @@ val expand_crossrefs : biblio -> biblio
 *)
 
 val sort : (command -> command -> int) -> biblio -> biblio
+
+
+(*
+
+  for parsing
+
+*)
+
+val current_key : string ref

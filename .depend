@@ -1,8 +1,8 @@
 bibfilter.cmi: bibtex.cmi 
 biboutput.cmi: bibtex.cmi 
 bibtex_parser.cmi: bibtex.cmi 
-condition.cmi: bibtex.cmi 
 condition_lexer.cmi: condition_parser.cmi 
+condition.cmi: bibtex.cmi 
 condition_parser.cmi: condition.cmi 
 expand.cmi: bibtex.cmi 
 parse_condition.cmi: condition.cmi 
@@ -18,18 +18,18 @@ bibfilter.cmo: bibtex.cmi options.cmi bibfilter.cmi
 bibfilter.cmx: bibtex.cmx options.cmx bibfilter.cmi 
 biboutput.cmo: bibtex.cmi html.cmo options.cmi biboutput.cmi 
 biboutput.cmx: bibtex.cmx html.cmx options.cmx biboutput.cmi 
-bibtex.cmo: bibtex.cmi 
-bibtex.cmx: bibtex.cmi 
 bibtex_lexer.cmo: bibtex_parser.cmi 
 bibtex_lexer.cmx: bibtex_parser.cmx 
+bibtex.cmo: options.cmi bibtex.cmi 
+bibtex.cmx: options.cmx bibtex.cmi 
 bibtex_parser.cmo: bibtex.cmi bibtex_parser.cmi 
 bibtex_parser.cmx: bibtex.cmx bibtex_parser.cmi 
-condition.cmo: bibtex.cmi latex_accents.cmi options.cmi condition.cmi 
-condition.cmx: bibtex.cmx latex_accents.cmx options.cmx condition.cmi 
 condition_lexer.cmo: condition_parser.cmi condition_lexer.cmi 
 condition_lexer.cmx: condition_parser.cmx condition_lexer.cmi 
-condition_parser.cmo: condition.cmi condition_parser.cmi 
-condition_parser.cmx: condition.cmx condition_parser.cmi 
+condition.cmo: bibtex.cmi latex_accents.cmi options.cmi condition.cmi 
+condition.cmx: bibtex.cmx latex_accents.cmx options.cmx condition.cmi 
+condition_parser.cmo: condition.cmi latex_accents.cmi condition_parser.cmi 
+condition_parser.cmx: condition.cmx latex_accents.cmx condition_parser.cmi 
 copying.cmo: options.cmi version.cmi copying.cmi 
 copying.cmx: options.cmx version.cmx copying.cmi 
 expand.cmo: bibtex.cmi latexscan.cmo options.cmi expand.cmi 
@@ -56,9 +56,9 @@ readbib.cmo: bibtex.cmi bibtex_lexer.cmo bibtex_parser.cmi options.cmi \
     readbib.cmi 
 readbib.cmx: bibtex.cmx bibtex_lexer.cmx bibtex_parser.cmx options.cmx \
     readbib.cmi 
-translate.cmo: biboutput.cmi expand.cmi html.cmo latexmacros.cmi \
-    latexscan.cmo options.cmi version.cmi translate.cmi 
-translate.cmx: biboutput.cmx expand.cmx html.cmx latexmacros.cmx \
-    latexscan.cmx options.cmx version.cmx translate.cmi 
+translate.cmo: bibfilter.cmi biboutput.cmi bibtex.cmi expand.cmi html.cmo \
+    latexmacros.cmi latexscan.cmo options.cmi version.cmi translate.cmi 
+translate.cmx: bibfilter.cmx biboutput.cmx bibtex.cmx expand.cmx html.cmx \
+    latexmacros.cmx latexscan.cmx options.cmx version.cmx translate.cmi 
 version.cmo: version.cmi 
 version.cmx: version.cmi 

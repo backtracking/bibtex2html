@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  */
 
-/*i $Id: bibtex_parser.mly,v 1.9 2004-03-16 08:55:49 filliatr Exp $ i*/
+/*i $Id: bibtex_parser.mly,v 1.10 2004-09-17 12:58:33 marche Exp $ i*/
 
 /*s Parser for BibTeX files. */
 
@@ -52,9 +52,14 @@ command:
      { Preamble $2 }
  | Tabbrev Tident Tequal sharp_string_list Trbrace
      { Abbrev (String.uppercase $2,$4) }
- | Tentry Tcomma comma_field_list Trbrace
+ | entry Tcomma comma_field_list Trbrace
      { let et,key = $1 in Entry (String.uppercase et, key, $3) }
 ;
+
+entry: 
+ | Tentry  
+     { let et,key = $1 in Bibtex.current_key := key; (et,key) }
+
 comma_field_list:
    field Tcomma comma_field_list
      { $1::$3 }

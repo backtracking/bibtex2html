@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: readbib.ml,v 1.10 2004-03-16 08:55:49 filliatr Exp $ i*)
+(*i $Id: readbib.ml,v 1.11 2004-09-17 12:58:33 marche Exp $ i*)
 
 (*s [(read_entries_from_file f)] returns the BibTeX entries of the
     BibTeX file [f]. *)
@@ -40,6 +40,7 @@ let read_entries_from_file f =
     el
   with Parsing.Parse_error | Failure "unterminated string" ->
     if f <> "" then close_in chan;
-    eprintf "Parse error character %d.\n" (Lexing.lexeme_start lb);
+    eprintf "Parse error character %d, in or after entry '%s'.\n" 
+      (Lexing.lexeme_start lb) !Bibtex.current_key;
     flush stderr;
     exit 1 

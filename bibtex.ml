@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibtex.ml,v 1.19 2004-07-13 14:32:59 marche Exp $ i*)
+(*i $Id: bibtex.ml,v 1.20 2004-09-17 12:58:33 marche Exp $ i*)
 
 (*s Datatype for BibTeX bibliographies. *)
 
@@ -289,4 +289,8 @@ let sort comp bib =
     (List.rev_append sort_abbrevs
        (List.rev_append preambles (List.rev comments)))
 
+
+
+
+let current_key = ref ""
 
