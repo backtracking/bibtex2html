@@ -81,6 +81,7 @@ def "\\oe" [Print "oe"];
 def "\\&" [Print "&amp;"];
 def "\\_" [Print "_"];
 def "\\leq" [Print "&lt;="];
+def "\\log" [Print "log"];
 def "\\geq" [Print "&gt;="];
 def "\\hbox" [Print_arg];
 def "\\copyright" [Print "(c)"];
@@ -90,13 +91,11 @@ def "\\end{flushleft}" [Print "</blockquote>"];
 def "\\\\" [Print "<br>"];
 def "\\(" [Print "<I>"];
 def "\\)" [Print "</I>"];
-def "\\cite" [Raw_arg(function r -> 
-  print_s ("<A HREF=\"biblio.html#" ^ r ^ "\">[" ^ r ^ "]</A>"))];
 def "\\begin{htmlonly}" [];
 def "\\end{htmlonly}" [];
 def "\\begin{thebibliography}" [Print "<H2>References</H2>\n<dl>\n"; Skip_arg];
 def "\\end{thebibliography}" [Print "</dl>"];
-def "\\bibitem" [Raw_arg(function r ->
+def "\\bibitem" [Raw_arg (function r ->
   print_s "<dt><A name=\""; print_s r; print_s "\">[";
   print_s r; print_s "]</A>\n";
   print_s "<dd>")];

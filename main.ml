@@ -7,6 +7,7 @@
 let excluded = ref ([] : string list)
 let add_exclude k = excluded := k :: !excluded
 let style = ref "plain"
+let command = ref "bibtex"
 
 type sort = Unsorted | By_date | By_author
 let sort = ref Unsorted
@@ -16,43 +17,34 @@ let ignore_bibtex_errors = ref false
 
 (* sort of entries *)
 
-let first p l =
-  let rec first_rec = function
-      [] -> raise Not_found
-    | x::rem -> if p x then x else first_rec rem
-  in
-    first_rec l
+module KeyMap = Map.Make(struct type t = string let compare = compare end);;
 
-let keep_combine keep find combine l1 l2 =
+let keep_combine combine l1 l2 =
+  let map = List.fold_left (fun m ((_,k,_) as e) -> KeyMap.add k e m)
+	      KeyMap.empty l2 in
   let rec keep_rec = function
       [] ->
 	[]
-    | x::rem ->
-	if keep x then
-	  let y = first (find x) l2 in
+    | ((_,k,_) as x)::rem ->
+	if not (List.mem k !excluded) then
+	  let y = KeyMap.find k map in
 	  (combine x y) :: (keep_rec rem)
 	else
 	  keep_rec rem
   in
     keep_rec l1
 
-let keep_f (_,k,_) = not (List.mem k !excluded)
-
-let find_f (_,k1,_) (_,k2,_) = k1=k2
-
 let combine_f (c,_,b) e = c,b,e
 
 let rev_combine_f x y = combine_f y x
-
-(* sort_entries est en n^2 ==> ameliorer cela *)
 
 let sort_entries entries bibitems =
   Printf.printf "Sorting..."; flush stdout;
   let el =
     if !sort = By_author then 
-      keep_combine keep_f find_f combine_f bibitems entries
+      keep_combine combine_f bibitems entries
     else
-      keep_combine keep_f find_f rev_combine_f entries bibitems
+      keep_combine rev_combine_f entries bibitems
   in
   let sl = 
     if !sort = By_date then
@@ -63,7 +55,7 @@ let sort_entries entries bibitems =
   if !reverse_sort then List.rev sl else sl
 
 
-(* we use BibTeX itself to format the entries. Operations:
+(* We use BibTeX itself to format the entries. Operations:
  *
  * 1. create an auxiliary file tmp.aux
  * 2. call bibtex on it
@@ -88,15 +80,17 @@ let clean tmp =
 let call_bibtex tmp =
   Printf.printf "calling BibTeX..."; flush stdout;
   match 
-    Sys.command ("bibtex " ^ tmp)
+    Sys.command (Printf.sprintf "%s %s" !command tmp)
   with
       0 -> Printf.printf "\n"; flush stdout
     | n ->
 	if !ignore_bibtex_errors then begin
 	  Printf.printf "error %d (ignored)\n" n;
 	  flush stdout
-      	end else
-	  failwith "error while running bibtex"
+      	end else begin
+	  Printf.fprintf stderr "error %d while running bibtex\n" n;
+	  exit n
+	end
 
 let read_bbl tmp =
   let rec read_items acc lb =
@@ -125,6 +119,8 @@ let get_bibitems fbib =
     read_bbl tmp
   with
     e -> clean tmp ; raise e
+
+(* [get_bibtex_entries] returns the BibTeX entries of a BibTeX file *)
 
 let get_bibtex_entries fbib =
   Printf.printf "Reading %s..." fbib; flush stdout;
@@ -155,6 +151,7 @@ let translate fbib f =
 let usage () =
   prerr_endline "Usage: bibtex2html <options> filename";
   prerr_endline "  -s style   BibTeX style (plain, alpha, ...)";
+  prerr_endline "  -c command BibTeX command (otherwise bibtex is searched in your path)";
   prerr_endline "  -d         sort by date";
   prerr_endline "  -a         sort as BibTeX (usually by author)";
   prerr_endline "  -u         unsorted i.e. same order as in .bib file (default)";
@@ -193,6 +190,10 @@ let parse () =
     | "-s" :: s :: rem ->
 	style := s ; parse_rec rem
     | "-s" :: [] ->
+	usage()
+    | "-c" :: s :: rem ->
+	command := s ; parse_rec rem
+    | "-c" :: [] ->
 	usage()
     | "-e" :: k :: rem ->
 	add_exclude k ; parse_rec rem

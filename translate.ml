@@ -46,7 +46,7 @@ let cite k =
       else
 	Printf.sprintf "%s%s#%s" !directory !suffix k in
     let c = Hashtbl.find cite_tab k in
-      print_s ("<A HREF=\"" ^ url ^ "\">[" ^ c ^ "]</A>")
+      print_s (Printf.sprintf "<A HREF=\"%s\">[%s]</A>" url c)
   with
       Not_found -> print_s "[?]"
 ;;
@@ -54,6 +54,11 @@ let cite k =
 def "\\cite" [ Raw_arg cite ];;
 def "\\etalchar" [ Print "<sup>" ; Raw_arg print_s ; Print "</sup>" ];;
 def "\\newblock" [Print " "];;
+
+let latex_url u =
+  print_s (Printf.sprintf "<A HREF=\"%s\">%s</A>" u u);;
+  
+def "\\url" [Raw_arg latex_url];;
 
 let latex2html ch s =
   Latexmacros.out_channel := ch;

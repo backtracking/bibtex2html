@@ -17,7 +17,7 @@ OBJS = latexmacros.cmo latexscan.cmo bbl_lexer.cmo \
        bibtex.cmo bibtex_lexer.cmo bibtex_parser.cmo html.cmo \
        translate.cmo main.cmo
 
-all: install
+all: bibtex2html
 
 install: bibtex2html
 	cp bibtex2html $(BINDIR)

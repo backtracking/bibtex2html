@@ -7,6 +7,7 @@ The invocation is
 
 Options are:
   -s style   BibTeX style (plain, alpha, ...)
+  -c command BibTeX command (otherwise bibtex is searched in your path)
   -d         sort by date
   -a         sort as BibTeX (usually by author)
   -u         unsorted i.e. same order as in .bib file (default)
