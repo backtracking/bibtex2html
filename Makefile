@@ -8,6 +8,9 @@ BINDIR = /usr/local/bin
 # where to install the man pages
 MANDIR = /usr/local/man
 
+# where to install the doc
+DOCDIR = /usr/doc/bibtex2html
+
 #########################################
 # End of configuration part
 #########################################
@@ -41,7 +44,9 @@ BIB2BIBOBJS = options.cmx bibtex.cmx bibtex_lexer.cmx \
 all: bibtex2html bib2bib
 
 install:
+	mkdir -p $(BINDIR)
 	cp bibtex2html bib2bib $(BINDIR)
+	mkdir -p $(MANDIR)
 	cp bibtex2html.1 $(MANDIR)/man1/bibtex2html.1
 	cp bibtex2html.1 $(MANDIR)/man1/bib2bib.1
 
@@ -147,6 +152,13 @@ aix:
 WWW=/users/demons/filliatr/WWW/bibtex2html
 
 doc: manual.ps manual.html
+
+install-doc: manual.ps manual.html
+	mkdir -p $(DOCDIR)
+	gzip -c manual.ps > $(DOCDIR)/manual.ps.gz
+	cp -f manual.html $(DOCDIR)
+
+local-doc: manual.ps manual.html
 	gzip -c manual.ps > $(WWW)/doc/manual.ps.gz
 	cp -f manual.html $(WWW)/doc
 

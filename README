@@ -27,11 +27,17 @@ INSTALLATION
 
   You need Objective Caml to compile the sources.
  
-  1. Compile with "make all". It creates two binary files, "bibtex2html" 
-     and "bib2bib" .
+  1. Compile   with  "make   all".  It   creates  two   binary  files,
+     "bibtex2html" and "bib2bib" .
 
-  2. Edit the Makefile to set the variables BINDIR and MANDIR (at the very
-     beginning) and do "make install". You may need superuser permissions.
+     If you want  to build the documentation, do  "make doc" (You need
+     both LaTeX and Hevea).
 
-     (Note: you can also just move the two executables in any directory of
-     your choice) 
+  2. Edit the Makefile to set  the variables BINDIR, MANDIR and DOCDIR
+     (at  the very  beginning) and  do  "make install".  You may  need
+     superuser permissions.
+
+     (Note:  you  can  also  just  move the  two  executables  in  any
+     directory of your choice)
+
+     To install the doc, do "make install-doc".
