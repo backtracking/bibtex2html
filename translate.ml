@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.60 2003-06-16 09:36:27 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.61 2003-07-15 08:13:26 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -258,7 +258,7 @@ let blockquote ch f =
   Html.paragraph ch; output_string ch "\n";
   Html.open_balise ch "blockquote";
   let font_size = not !multiple && !Html.css = None in
-  if font_size then Html.open_balise ch "font size=-1";
+  if font_size then Html.open_balise ch "font size=\"-1\"";
   output_string ch "\n";
   f (); output_string ch "\n";
   if font_size then Html.close_balise ch "font";
