@@ -11,17 +11,17 @@ Options are:
   -a         sort as BibTeX (usually by author)
   -u         unsorted i.e. same order as in .bib file (default)
   -r         reverse the sort
+  -t         title of the HTML file (default is the filename)
+  -i         ignore BibTeX errors
   -nodoc     only produces the body of the HTML documents
   -suffix s  give an alternate suffix for HTML files
   -e key     exclude an entry
 
-It will create  a file foo.html with   the list of  the BibTeX entries
-(the summary) and a directory foo  with files key.bib and key.html for
-each key "key" in the BibTeX file. The file foo/key.html describes the
-entry is more details: it gives the abstract  if a field "abstract" is
-present, and  links if fields  of the kind  "url",  "url1", "url2" are
-present.  It also give  a link to the  field foo/key.bib, which is the
-BibTeX entry in ASCII format. Crossrefs are correctly handled.
+It will create a file  foo.html with the  list of the references and a
+file foo-bib.html with  the BibTeX entries (in  ASCII format) The file
+foo.html contains links  if fields of  the kind "ftp", "http",  "url",
+etc. are presen and gives the astract if there  is a field "abstract".
+Crossrefs are correctly handled.
 
 
 COPYRIGHT
