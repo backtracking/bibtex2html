@@ -56,7 +56,11 @@ def "\\cite" [ Raw_arg cite ];;
 def "\\etalchar" [ Print "<sup>" ; Raw_arg print_s ; Print "</sup>" ];;
 def "\\newblock" [Print " "];;
 
+let r = Str.regexp "[ \t\n]+"
+let remove_whitespace u = Str.global_replace r "" u
+
 let latex_url u =
+  let u = remove_whitespace u in
   print_s (Printf.sprintf "<A HREF=\"%s\">%s</A>" u u);;
   
 def "\\url" [Raw_arg latex_url];;
