@@ -41,11 +41,22 @@ BIB2BIBOBJS = options.cmx bibtex.cmx bibtex_lexer.cmx \
 	bibfilter.cmx \
 	html.cmx biboutput.cmx version.cmx copying.cmx bib2bib.cmx
 
-all: bibtex2html bib2bib
+all: 
+	if test -n `which ocamlopt` ; then make -C . opt ; \
+		else make -C . byte ; fi
+
+opt: bibtex2html bib2bib
+
+byte: bibtex2html.byte bib2bib.byte
 
 install:
 	mkdir -p $(BINDIR)
-	cp bibtex2html bib2bib $(BINDIR)
+	if test -n `which ocamlopt` ; then \
+		cp bibtex2html bib2bib $(BINDIR) ; \
+	else \
+		cp bibtex2html.byte $(BINDIR)/bibtex2html ; \
+		cp bib2bib.byte $(BINDIR)/bib2bib ; \
+	fi
 	mkdir -p $(MANDIR)
 	cp bibtex2html.1 $(MANDIR)/man1/bibtex2html.1
 	cp bibtex2html.1 $(MANDIR)/man1/bib2bib.1
@@ -58,8 +69,11 @@ bibtex2html: $(OBJS)
 	strip bibtex2html
 
 bibtex2html.byte: $(OBJS:.cmx=.cmo)
+	ocamlc -custom $(PROFILE) $(FLAGS)-o bibtex2html.byte str.cma $(OBJS:.cmx=.cmo) $(STRLIB) 
+
+bibtex2html.pbyte: $(OBJS:.cmx=.cmo)
 	ocamlc -use-runtime ~demons/bin/$(OSTYPE)/ocamlcustomrun \
-		-o bibtex2html.byte str.cma $(OBJS:.cmx=.cmo)  
+		-o bibtex2html.pbyte str.cma $(OBJS:.cmx=.cmo)  
 
 bibtex2html.static: $(OBJS)
 	ocamlopt $(PROFILE) $(FLAGS) -o bibtex2html.static str.cmxa $(OBJS) $(STRLIB) -cclib "-L. -static"
@@ -69,13 +83,16 @@ bib2bib: $(BIB2BIBOBJS)
 	ocamlopt $(PROFILE) $(FLAGS) -o bib2bib str.cmxa $(BIB2BIBOBJS) $(STRLIB)
 	strip bib2bib
 
+bib2bib.byte: $(BIB2BIBOBJS:.cmx=.cmo)
+	ocamlc -custom $(PROFILE) $(FLAGS) -o bib2bib.byte str.cma $(BIB2BIBOBJS:.cmx=.cmo) $(STRLIB)
+
+bib2bib.pbyte: $(BIB2BIBOBJS:.cmx=.cmo)
+	ocamlc -use-runtime ~demons/bin/$(OSTYPE)/ocamlcustomrun \
+		-o bib2bib.pbyte str.cma $(BIB2BIBOBJS:.cmx=.cmo) 
+
 bib2bib.static: $(BIB2BIBOBJS)
 	ocamlopt $(PROFILE) $(FLAGS) -o bib2bib.static str.cmxa $(BIB2BIBOBJS) $(STRLIB) -cclib "-L. -static"
 	strip bib2bib.static
-
-bib2bib.byte: $(BIB2BIBOBJS:.cmx=.cmo)
-	ocamlc -use-runtime ~demons/bin/$(OSTYPE)/ocamlcustomrun \
-		-o bib2bib.byte str.cma $(BIB2BIBOBJS:.cmx=.cmo) 
 
 static:
 	ln -sf /usr/lib/libncurses.a libcurses.a
@@ -203,6 +220,7 @@ clean::
 	rm -f bibtex2html bib2bib
 	rm -f manual.{aux,log,dvi,ps,toc,haux,html}
 	rm -f bibtex2html.static bib2bib.static
+	rm -f bibtex2html.byte bib2bib.byte
 
 depend:: $(GENERATED)
 	rm -f .depend
