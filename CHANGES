@@ -1,4 +1,7 @@
 
+Version 1.70, 30/6/2004
+=======================
+ o fixed bug with crossrefs not translated from LaTeX to HTML
  o macros for Greek letters now translated to HTML entities
 
 Version 1.69, 6/4/2004

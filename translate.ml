@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.65 2004-03-24 08:10:10 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.66 2004-06-30 07:05:35 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -98,6 +98,11 @@ let first_pass bl =
 
 (* latex2html : to print LaTeX strings in HTML format *)
 
+let latex2html ch s =
+  Latexmacros.out_channel := ch;
+  Latexscan.brace_nesting := 0;
+  Latexscan.main (Lexing.from_string s)
+
 open Latexmacros
 
 let in_summary = ref false
@@ -111,16 +116,13 @@ let cite k =
 	sprintf "%s%s#%s" !output_file !link_suffix k 
     in
     let c = if !use_keys then k else Hashtbl.find cite_tab k in
-    print_s (sprintf "<A HREF=\"%s\">[%s]</A>" url c)
+    print_s (sprintf "<A HREF=\"%s\">[" url);
+    latex2html !out_channel c;
+    print_s "]</A>"
   with
       Not_found -> print_s "[?]"
 
 let _ = def "\\cite" [ Raw_arg cite ]
-
-let latex2html ch s =
-  Latexmacros.out_channel := ch;
-  Latexscan.brace_nesting := 0;
-  Latexscan.main (Lexing.from_string s)
 
 let safe_title e =
   try Expand.get_title e with Not_found -> "No title"

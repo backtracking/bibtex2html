@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.51 2004-04-21 08:29:10 filliatr Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.52 2004-06-30 07:05:35 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -381,6 +381,14 @@ def "\\MR"
 def "\\MRhref" 
   [Print "<a href=\"http://www.ams.org/mathscinet-getitem?mr=";
    Print_arg; Print "\">"; Print_arg; Print "</a>"];
+
+(* macros for the aaai-named style *)
+
+def "\\em" [];
+def "\\protect" [];
+def "\\bgroup" []; (* should go into latexscan? *)
+def "\\egroup" []; (* should go into latexscan? *)
+def "\\citename" [];
 
 ()
 
