@@ -55,7 +55,7 @@ FILES = bibtex.mli latexmacros.ml Makefile bibtex_lexer.mll latexmacros.mli \
 export: move-olds source binary
 
 move-olds:
-	mv $(FTP)/bibtex2html* $(FTP)/olds
+	cp $(FTP)/bibtex2html* $(FTP)/olds
 
 source: $(FILES)
 	mkdir -p export/bibtex2html
