@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# auto bench for bibtex2html parser
+
+pgm="../bibtex2html -parse-only"
+
+# good files
+echo "=== Checking parsing ==="
+for f in good/*.bib; do
+    echo -n "  "$f"... "
+    if ! $pgm $f > /dev/null 2>&1; then
+	echo "parsing FAILED"
+        $pgm $f
+	exit 1
+    fi
+    echo "parsing ok... "
+done
+
+# bad files
+echo "=== Checking parsing errors ==="
+for f in bad/*.bib; do
+    echo -n "  "$f"... "
+    if $pgm $f > /dev/null 2>&1; then 
+	echo "$pgm $f"
+	echo "FAILED!"
+	exit 1 
+    else 
+	echo "ok"
+    fi
+done
