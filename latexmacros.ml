@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.24 1999-07-16 12:44:36 marche Exp $ *)
+(* $Id: latexmacros.ml,v 1.25 1999-07-19 08:55:27 marche Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -108,6 +108,7 @@ def "\\AE" [Print "&AElig;"];
 def "\\aa" [Print "&aring;"];
 def "\\AA" [Print "&Aring;"];
 def "\\&" [Print "&amp;"];
+def "\\%" [Print "%"];
 def "\\_" [Print "_"];
 def "\\copyright" [Print "(c)"];
 def "\\th" [Print "&thorn;"];
