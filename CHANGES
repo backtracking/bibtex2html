@@ -1,4 +1,7 @@
- 
+
+Version 1.55 12/11/2002
+=======================
+ o bib2bib: fixed bug in conditions lexer 
  o fixed parser error in @preamble
  o ./configure updated
 

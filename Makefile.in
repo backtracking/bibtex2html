@@ -18,7 +18,7 @@ DOCDIR = $(prefix)/doc/bibtex2html
 #########################################
 
 MAJORVN=1
-MINORVN=56
+MINORVN=55
 
 OCAMLC   = @OCAMLC@
 OCAMLOPT = @OCAMLOPT@ 
@@ -185,7 +185,7 @@ solaris:
 sunos4:
 	rmake ??? $(HOME)/soft/ocaml/bibtex clean binary
 
-BINARYFILES = README COPYING GPL bibtex2html bib2bib \
+BINARYFILES = README COPYING GPL bibtex2html bib2bib aux2bib \
 	      bibtex2html.1 bib2bib.1 aux2bib.1
 
 binary: bibtex2html bib2bib

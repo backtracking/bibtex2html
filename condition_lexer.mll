@@ -38,20 +38,20 @@ rule token = parse
 and string = parse
     '"'                   { Buffer.contents string_buf }
   | eof                   { raise (Lex_error ("Unterminated string")) }
-  | [^ '"' '\\']          { Buffer.add_char
-			      string_buf (Lexing.lexeme_char lexbuf 0);
-			    string lexbuf }
-  | '\\' ['"' '\\']       { Buffer.add_string
+  | '\\' '"'              { Buffer.add_string
 			      string_buf (Lexing.lexeme lexbuf);
+			    string lexbuf }
+  | _                     { Buffer.add_char
+			      string_buf (Lexing.lexeme_char lexbuf 0);
 			    string lexbuf }
  
 and string2 = parse
     '\''                  { Buffer.contents string_buf }
   | eof                   { raise (Lex_error ("Unterminated string")) }
-  | [^ '\'' '\\' ]        { Buffer.add_char 
-			      string_buf (Lexing.lexeme_char lexbuf 0);
-			    string2 lexbuf }
-  | '\\' ['\'' '\\']       { Buffer.add_string
+  | '\\' '\''             { Buffer.add_string
 			      string_buf (Lexing.lexeme lexbuf);
+			    string2 lexbuf }
+  | _                     { Buffer.add_char 
+			      string_buf (Lexing.lexeme_char lexbuf 0);
 			    string2 lexbuf }
 
