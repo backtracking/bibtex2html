@@ -1,4 +1,6 @@
 
+ o macros \sim, \symbol; macros for accents without argument (\~{}, \'{}, etc.)
+
 Version 0.95, 1999/06/02
  o german macros when using a german BibTeX style
  o comma suppressed after last field in BibTeX entries file

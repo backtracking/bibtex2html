@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.20 1999-06-02 14:15:28 filliatr Exp $ *)
+(* $Id: latexmacros.ml,v 1.21 1999-06-28 07:58:55 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -122,6 +122,7 @@ def "\\'" [Raw_arg(function "e" -> print_c 'é'
 			  | "I" -> print_c 'Í'
 			  | "u" -> print_c 'ú'
 			  | "U" -> print_c 'Ú'
+			  | ""  -> print_c '\''
                           | s   -> print_s s)];
 def "\\`" [Raw_arg(function "e" -> print_c 'è'
                           | "E" -> print_c 'È'
@@ -134,8 +135,10 @@ def "\\`" [Raw_arg(function "e" -> print_c 'è'
 			  | "I" -> print_c 'Ì'
                           | "u" -> print_c 'ù'
                           | "U" -> print_c 'Ù'
+			  | ""  -> print_c '`'
                           | s   -> print_s s)];
 def "\\~" [Raw_arg(function "n" -> print_c 'ñ'
+		          | ""  -> print_c '~'
                           | s   -> print_s s)];
 def "\\c" [Raw_arg(function "c" -> print_c 'ç'
                           | s   -> print_s s)];
@@ -150,6 +153,7 @@ def "\\^" [Raw_arg(function "a" -> print_c 'â'
                           | "O" -> print_c 'Ô'
                           | "u" -> print_c 'û'
                           | "U" -> print_c 'Û'
+			  | ""  -> print_c '^'
                           | s   -> print_s s)];
 def "\\\"" [Raw_arg(function "e" -> print_c 'ë'
                           | "E" -> print_c 'Ë'
@@ -169,6 +173,7 @@ def "\\leq" [Print "&lt;="];
 def "\\log" [Print "log"];
 def "\\geq" [Print "&gt;="];
 def "\\circ" [Print "o"];
+def "\\sim" [Print "~"];
 def "\\(" [Print "<I>"];
 def "\\)" [Print "</I>"];
 def "\\mapsto" [Print "<tt>|-&gt;</tt>"];
@@ -192,6 +197,11 @@ def "\\ref" [Print "<A href=\"#"; Print_arg; Print "\">(ref)</A>"];
 def "\\index" [Skip_arg];
 def "\\\\" [Print "<br>"];
 def "\\," [];
+def "\\symbol" 
+  [Raw_arg (function s -> 
+	      try let n = int_of_string s in print_c (Char.chr n) 
+	      with _ -> ())];
+			   
 
 (* Bibliography *)
 def "\\begin{thebibliography}" [Print "<H2>References</H2>\n<dl>\n"; Skip_arg];
