@@ -15,7 +15,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexscan.mll,v 1.6 1998-05-28 07:21:04 filliatr Exp $ *)
+(* $Id: latexscan.mll,v 1.7 1998-11-10 08:52:02 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -102,6 +102,11 @@ rule main = parse
 		    print_s ("<sup>" ^ (raw_arg lexbuf) ^ "</sup>")
 		  else
 		    print_s "^"; 
+		  main lexbuf }
+  | "_"         { if !math_mode then
+		    print_s ("<sub>" ^ (raw_arg lexbuf) ^ "</sub>")
+		  else
+		    print_s "_"; 
 		  main lexbuf }
 (* General case for environments and commands *)
   | ("\\begin{" | "\\end{") ['A'-'Z' 'a'-'z']+ "}" |
