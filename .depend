@@ -45,8 +45,8 @@ parse_condition.cmo: condition.cmi condition_lexer.cmi condition_parser.cmi \
     parse_condition.cmi 
 parse_condition.cmx: condition.cmx condition_lexer.cmx condition_parser.cmx \
     parse_condition.cmi 
-readbib.cmo: bibtex_lexer.cmo bibtex_parser.cmi readbib.cmi 
-readbib.cmx: bibtex_lexer.cmx bibtex_parser.cmx readbib.cmi 
+readbib.cmo: bibtex.cmi bibtex_lexer.cmo bibtex_parser.cmi readbib.cmi 
+readbib.cmx: bibtex.cmx bibtex_lexer.cmx bibtex_parser.cmx readbib.cmi 
 translate.cmo: biboutput.cmi expand.cmi html.cmo latexmacros.cmi \
     latexscan.cmo version.cmo 
 translate.cmx: biboutput.cmx expand.cmx html.cmx latexmacros.cmx \

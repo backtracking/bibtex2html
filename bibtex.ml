@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibtex.ml,v 1.8 1999-06-29 15:48:54 marche Exp $ *)
+(* $Id: bibtex.ml,v 1.9 2000-04-03 14:14:46 marche Exp $ *)
 
 type entry_type = string
 		    
@@ -33,8 +33,27 @@ type command =
   | Entry  of entry_type * key * (string * atom list) list
 
 
+(*
+
+  biblio is stored as a list. BEWARE! this in reverse order : the
+  first entry is at the end of the list. this is intentional !
+
+*)
+
 type biblio = command list
 
+let empty_biblio = [];;
+
+let size b = List.length b;;
+
+(*
+
+  the natural iterator on biblio must start at the first entry, so it
+  is the fold_right function on lists, NOT the fold_left !
+
+*)
+
+let fold = List.fold_right;;
 
 let rec find_entry key biblio =
   match biblio with
@@ -42,6 +61,74 @@ let rec find_entry key biblio =
     | (Entry(_,s,_) as e)::b ->
 	if s=key then e else find_entry key b
     | _::b -> find_entry key b
+;;
+
+let add_new_entry command biblio = command::biblio;;
+
+let rec remove_entry key biblio =
+  match biblio with
+      [] -> raise Not_found
+    | (Entry(_,s,_) as e)::b ->
+	if s=key then b else e::(remove_entry key b)
+    | e::b -> e::(remove_entry key b)
+;;
+
+let add_entry command biblio =
+  match command with
+      Entry(_,key,_) ->
+	begin
+	  try
+	    let new_bib = remove_entry key biblio in
+	    command::new_bib
+	  with 
+	      Not_found -> command::biblio
+	end
+    | _ -> command::biblio
+;;
+
+let merge_biblios b1 b2 =
+  let b2keys =
+    fold
+      (fun entry accu ->
+	 match entry with
+	     Entry(_,key,_) -> KeySet.add key accu
+	   | _ -> accu)
+      b2
+      KeySet.empty
+  and b1abbrevs =
+    fold
+      (fun entry accu ->
+	 match entry with
+	     Abbrev(key,_) -> KeySet.add key accu
+	   | _ -> accu)
+      b1
+      KeySet.empty
+  in
+  let new_b1 = 
+    fold
+      (fun entry accu ->
+	 match entry with
+	     Entry(_,key,_) -> 
+	       if KeySet.mem key b2keys
+	       then accu
+	       else entry::accu
+	   | _ -> entry::accu)
+      b1
+      []
+  in
+  let new_bib =
+    fold
+      (fun entry accu ->
+	 match entry with
+	     Abbrev(key,_) -> 
+	       if KeySet.mem key b1abbrevs
+	       then accu
+	       else entry::accu
+	   | _ -> entry::accu)
+      b2
+      new_b1
+  in
+  new_bib
 ;;
 
 

@@ -26,7 +26,9 @@ let evaluate_constante key fields = function
 	  match List.assoc f fields with
 	    | [Bibtex.String(v)] -> 
 		let v' = Latex_accents.normalize v in
-		Printf.printf "normalize(%s) -> %s\n" v v';
+		(*
+		  Printf.printf "normalize(%s) -> %s\n" v v';
+		*)
 		v'
 	    | [Bibtex.Id(v)] -> v
 	    | _ -> raise Unavailable

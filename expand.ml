@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: expand.ml,v 1.1 1999-06-29 15:48:55 marche Exp $ *)
+(* $Id: expand.ml,v 1.2 2000-04-03 14:14:47 marche Exp $ *)
 
 
 open Bibtex
@@ -71,20 +71,22 @@ let macros_in_preamble s =
     let lb = Lexing.from_string s in Latexscan.read_macros lb
   with _ -> ()
 
-let rec expand = function
-    [] ->
-      []
-  | (Abbrev (a,l)) :: rem ->
-      let s = expand_list l in
-      add_abbrev (a,s) ; expand rem
-  | (Entry (t,k,f)) :: rem ->
-      (t,k,expand_fields f) :: (expand rem)
-  | (Preamble s) :: rem ->
-      macros_in_preamble s;
-      expand rem
-  | (Comment _) :: rem ->
-      expand rem
-
+let rec expand biblio = 
+  Bibtex.fold 
+    (fun command accu ->
+       match command with
+	 | Abbrev (a,l) ->
+	     let s = expand_list l in
+	     add_abbrev (a,s) ; accu
+	 | Entry (t,k,f) ->
+	     (t,k,expand_fields f) :: accu
+	 | Preamble(s) ->
+	     macros_in_preamble s;
+	     accu
+	 | Comment(_) -> accu)	
+    biblio
+    []
+;;
 
 (* sort BibTeX entries by decreasing dates *)
 

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  */
 
-/* $Id: bibtex_parser.mly,v 1.5 1999-06-29 15:37:21 marche Exp $ */
+/* $Id: bibtex_parser.mly,v 1.6 2000-04-03 14:14:46 marche Exp $ */
 
 %{
 
@@ -27,17 +27,21 @@
 %token Tabbrev Tcomment Tpreamble Tlbrace Trbrace Tcomma Tequal EOF Tsharp
 
 %start command_list
-%type <(Bibtex.command list)> command_list
+%type <Bibtex.biblio> command_list
 %start command
 %type <Bibtex.command> command
 
 %%
 
 command_list:
-   command command_list
-     { $1::$2 }
- | EOF
-     { [] }
+  commands EOF { $1 }
+;
+
+commands:
+   commands command
+     { add_new_entry $2 $1 }
+ | /* epsilon */
+     { empty_biblio }
 ;
 command:
    Tcomment Tlbrace anything_until_rbrace

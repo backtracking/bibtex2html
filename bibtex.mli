@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibtex.mli,v 1.8 1999-06-30 16:44:40 marche Exp $ *)
+(* $Id: bibtex.mli,v 1.9 2000-04-03 14:14:46 marche Exp $ *)
 
 type entry_type = string
 		    
@@ -32,7 +32,54 @@ type command =
   | Abbrev of string * atom list
   | Entry  of entry_type * key * (string * atom list) list
 
-type biblio = command list
+type biblio;;
+
+(*
+
+  [empty_biblio] is an empty bibliography
+
+*)
+
+val empty_biblio : biblio;;
+
+(* [add_new_entry k c b] adds an entry of key [k] and command [c] in
+   biblio [b] and returns the new biblio. The entry [k]
+   is supposed not to exists yet in [b].
+*)
+
+val add_new_entry : command -> biblio -> biblio;;
+
+(* [add_entry k c b] adds an entry of key [k] and command [c] in
+   biblio [b] and returns the new biblio. If an entry of key [k]
+   already exists in [b], it is replaced by the new one. 
+  
+
+*)
+
+(*
+
+use merge_biblios !
+
+\begin{verbatim}
+val add_entry : command -> biblio -> biblio;;
+\end{verbatim}
+
+*)
+
+(*
+
+[merge_biblios b1 b2] merges biblios [b1] and [b2]. Commands in the
+resulting biblio are the commands of b1, then the commands of b2,
+except for dupliacates: any abbrev in [b2] that already exists in [b1]
+is ignored, and conversely every regular entries of [b1] which key
+exists also in [b2] is ignored. This behaviour is because abbrevs are
+supposed to be used by entries AFTER the definition of abbrevs,
+whereas regular entries are supposed to be used as crossrefs by
+entries BEFORE the definition of this entry.
+
+*)
+
+val merge_biblios : biblio -> biblio -> biblio;;
 
 (* access functions *)
 
@@ -40,6 +87,20 @@ type biblio = command list
    [b]. Raises [Not_found] if no entry of this key exist. *)
 
 val find_entry : key -> biblio -> command;;
+
+(* [size b] is the number of commands in [b] *)
+
+val size : biblio -> int;;
+
+(*
+
+[fold f b accu] iterates [f] on the commands of [b], starting from
+[a]. If the commands of [b] are $c_1,\ldots,c_n$ in this order, then
+it computes [f $c_n$ (f $c_{n-1}$ $\cdots$ (f $c_1$ a)$\cdots$)]
+
+*)
+
+val fold : (command -> 'a -> 'a) -> biblio -> 'a -> 'a;;
 
 (* [abbrev_is_implicit k] is true when [k] is an integer or a month
    name.  [abbrev_exists k b] is true when [k] appears in biblio [b].

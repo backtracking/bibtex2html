@@ -1,4 +1,8 @@
 
+ o bib2bib now takes care of repeated entries. See the manual for
+   explanations, and also in bibtex.ml. To do this, the type
+   Bibtex.biblio has been made abstract and constructor functions added
+   in module Bibtex.
  o \textsf now translated as \textbf (i.e. to bold face)
  o production of valid HTML (Thanks to John Kewley)
 

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibfilter.ml,v 1.2 1999-06-30 16:44:39 marche Exp $ *)
+(* $Id: bibfilter.ml,v 1.3 2000-04-03 14:14:46 marche Exp $ *)
 
 open Bibtex;;
 
@@ -22,7 +22,7 @@ open Bibtex;;
    satisfy the filter criterion [f] *)
 
 let filter biblio criterion =
-  List.fold_right
+  Bibtex.fold
     (fun entry keys ->
        match entry with
 	   Entry(entry_type,key,fields) when criterion key fields ->
@@ -103,7 +103,7 @@ and needed_keys_for_entry biblio keys = function
 
 
 let saturate biblio s =
-  List.fold_right
+  Bibtex.fold
     (fun entry keys ->
        match entry with
 	   Entry(_,key,_) as e when KeySet.mem key s ->
