@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bib2bib.ml,v 1.13 2000-07-25 14:25:22 marche Exp $ *)
+(* $Id: bib2bib.ml,v 1.14 2000-07-25 14:56:58 marche Exp $ *)
 
 open Printf
 open Bibtex
@@ -90,7 +90,16 @@ let output_bib_file biblio keys =
       else open_out !bib_output_file_name 
     in 
     let cmd = 
-      List.fold_right (fun s t -> " "^s^t) (Array.to_list Sys.argv) "" 
+      List.fold_right 
+	(fun s t -> 
+	   if String.contains s ' ' 
+	   then 
+	     if String.contains s '\'' 
+	     then " \"" ^ s ^ "\"" ^ t 
+	     else " '" ^ s ^ "'" ^ t 
+	   else " " ^ s ^ t) 
+	(Array.to_list Sys.argv) 
+	"" 
     in 
     let comments =
       add_new_entry
