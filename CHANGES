@@ -1,4 +1,5 @@
-
+ 
+ o fixed parser error in @preamble
  o ./configure updated
 
 Version 1.54 10/7/2002

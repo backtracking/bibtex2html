@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  */
 
-/*i $Id: bibtex_parser.mly,v 1.7 2001-02-21 09:51:52 filliatr Exp $ i*/
+/*i $Id: bibtex_parser.mly,v 1.8 2002-10-11 16:07:53 filliatr Exp $ i*/
 
 /*s Parser for BibTeX files. */
 
@@ -48,7 +48,7 @@ commands:
 command:
    Tcomment Tlbrace anything_until_rbrace
      { Comment $3 }
- | Tpreamble Tlbrace Tstring Trbrace
+ | Tpreamble Tlbrace sharp_string_list Trbrace
      { Preamble $3 }
  | Tabbrev Tlbrace Tident Tequal sharp_string_list Trbrace
      { Abbrev (String.uppercase $3,$5) }

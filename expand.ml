@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: expand.ml,v 1.9 2001-02-21 09:51:53 filliatr Exp $ i*)
+(*i $Id: expand.ml,v 1.10 2002-10-11 16:07:53 filliatr Exp $ i*)
 
 (*s Expansion of abbreviations in BibTeX databases. *)
 
@@ -81,7 +81,8 @@ let rec expand biblio =
 	     accu
 	 | Entry (t,k,f) ->
 	     (t,k,expand_fields f) :: accu
-	 | Preamble s ->
+	 | Preamble l ->
+	     let s = expand_list l in
 	     macros_in_preamble s;
 	     accu
 	 | Comment _ -> accu)	

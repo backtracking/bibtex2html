@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: biboutput.ml,v 1.10 2001-07-13 12:37:57 filliatr Exp $ i*)
+(*i $Id: biboutput.ml,v 1.11 2002-10-11 16:07:53 filliatr Exp $ i*)
 
 (*s Output a BibTeX bibliography. *)
 
@@ -70,8 +70,10 @@ let print_command html ch keys = function
       else
 i*)
 	output_string ch ("@COMMENT{{" ^ s ^ "}}\n\n")
-  | Preamble s ->
-      output_string ch ("@PREAMBLE{{" ^ s ^ "}}\n\n")
+  | Preamble l ->
+      output_string ch "@PREAMBLE{{";
+      print_atom_list html ch keys l;
+      output_string ch "}}\n\n"
   | Abbrev(s,l) ->
       if needs_output s keys then 
 	begin
