@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibtex.mli,v 1.16 2002-10-11 16:07:53 filliatr Exp $ i*)
+(*i $Id: bibtex.mli,v 1.17 2003-06-19 13:02:02 marche Exp $ i*)
 
 (*s A datatype for BibTeX bibliographies. *)
 
@@ -85,3 +85,20 @@ val find_abbrev : key -> biblio -> command
 
 val expand_abbrevs : biblio -> biblio
 
+
+(*s sorting bibliography
+
+  As with the \texttt{bibsort} command of Nelson H. F. Beebe, comments
+  are placed first, then preamble, then abbrevs, then regular entries.
+
+  Within the last two categories, entries are sorted with respect to
+  the comparison function given in argument. This function may be
+  assumed called only on pairs of the form (Abbrev _,Abbrev _) or
+  (Entry _, Entry _)
+
+  Warning! it is up to you to provide a comparison function that will
+  not place crossrefs after regular entries!
+
+*)
+
+val sort : (command -> command -> int) -> biblio -> biblio

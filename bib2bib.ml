@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bib2bib.ml,v 1.16 2001-10-15 07:28:16 filliatr Exp $ i*)
+(*i $Id: bib2bib.ml,v 1.17 2003-06-19 13:02:02 marche Exp $ i*)
 
 open Printf
 open Bibtex
@@ -49,6 +49,10 @@ let add_condition c =
 
 let expand_abbrevs = ref false
 
+let sort_criteria = ref []
+
+let reverse_sort = ref false
+
 let args_spec =
   [
     ("-ob", Arg.String (fun f -> bib_output_file_name := f),
@@ -58,6 +62,10 @@ let args_spec =
     ("-c", Arg.String (add_condition),"filter condition");
     ("-d", Arg.Set Options.debug, "debug flag");
     ("-q", Arg.Set Options.quiet, "quiet flag");
+    ("-s", Arg.String (fun s -> sort_criteria := (String.uppercase s):: !sort_criteria),
+     "sort with respect to keys or a given field");
+    ("-r", Arg.Set reverse_sort,
+     "reverse the sort order");
     ("--expand", Arg.Unit (fun () -> expand_abbrevs := true), 
      "expand the abbreviations");
     ("--version", Arg.Unit (fun () -> Copying.banner "bib2bib"; exit 0), 
@@ -119,6 +127,59 @@ let output_bib_file biblio keys =
     exit 1 
 
 
+let rec make_compare_fun criteria c1 c2 =
+  match criteria with
+    | [] -> 0	
+    | field :: rem ->
+	let comp = 
+	  match field with
+	    | "$KEY"  ->
+		begin
+		  match (c1,c2) with
+		    | (Abbrev(s1,_),Abbrev(s2,_))
+		    | (Entry(_,s1,_),Entry(_,s2,_)) ->
+			compare s1 s2
+		    | _ -> 0
+		end
+	    | "$TYPE" ->
+		begin
+		  match (c1,c2) with
+		    | (Entry(s1,_,_),Entry(s2,_,_)) ->
+			compare s1 s2
+		    | _ -> 0
+		end
+	    | _ ->
+		begin
+		  match (c1,c2) with
+		    | (Entry(_,_,l1),Entry(_,_,l2)) ->
+			let s1 = 
+			  try 
+			    match List.assoc field l1 with
+			      | [Bibtex.String(s)] -> s
+			      | [Bibtex.Id(s)] -> s
+			      | _ -> ""
+			  with
+			      Not_found -> ""
+			and s2 =
+			  try 
+			    match List.assoc field l2 with
+			      | [Bibtex.String(s)] -> s
+			      | [Bibtex.Id(s)] -> s
+			      | _ -> ""
+			  with
+			      Not_found -> ""
+			in
+			compare s1 s2
+		    | _ -> 0
+		end
+	in
+	if comp = 0
+	then make_compare_fun rem c1 c2
+	else 
+	  if !reverse_sort then -comp else comp
+;;
+	
+
 let usage = "Usage: bib2bib [options] <input file names>\nOptions are:"
 
 let main () =
@@ -156,8 +217,18 @@ let main () =
   
   let user_expanded = if !expand_abbrevs then expanded else all_entries in
   let needed_keys = Bibfilter.saturate user_expanded matching_keys in
+  (* this should be to right place to sort the output bibliography *)
+  let final_bib =
+    if !sort_criteria = [] then user_expanded
+    else      
+      let comp = make_compare_fun (List.rev !sort_criteria) in
+      eprintf "Sorting...";
+      let b = Bibtex.sort comp user_expanded in
+      eprintf "done.\n";
+      b
+  in
   output_cite_file matching_keys;
-  output_bib_file user_expanded (Some needed_keys)
+  output_bib_file final_bib (Some needed_keys)
 
 
 let _ = 

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibtex.ml,v 1.16 2002-10-11 16:07:53 filliatr Exp $ i*)
+(*i $Id: bibtex.ml,v 1.17 2003-06-19 13:02:02 marche Exp $ i*)
 
 (*s Datatype for BibTeX bibliographies. *)
 
@@ -190,3 +190,25 @@ let rec expand_abbrevs biblio =
 	     e :: accu)
     biblio
     []
+
+
+let sort comp bib = 
+  let comments,preambles,abbrevs,entries =
+    List.fold_left
+      (fun (c,p,a,e) command ->
+	 match command with
+	   | Comment _ -> (command::c,p,a,e)
+	   | Preamble _ -> (c,command::p,a,e)
+	   | Abbrev _ -> (c,p,command::a,e)
+	   | Entry _ -> (c,p,a,command::e))
+      ([],[],[],[])
+      bib
+  in
+  let sort_abbrevs = List.sort comp abbrevs
+  and sort_entries = List.sort comp entries
+  in
+  List.rev_append sort_entries
+    (List.rev_append sort_abbrevs
+       (List.rev_append preambles (List.rev comments)))
+
+

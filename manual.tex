@@ -425,6 +425,23 @@ suitable for input as option \verb|-citefile| to \verb|bibtex2html|.
   bibtex2html) handle the cross-references himself, depending on the
   style considered.
 
+\item[\texttt{-s} \textit{field}] ~
+
+  sorts the entries of the bibliography with respect to the given
+  \textit{field}, which may be \texttt{\$key} or \texttt{\$type} to
+  refer to the key or to the entry type, as for filter conditions.
+  This options may be used several times to specifiy a lexicographic
+  order, such as by year, then by keys.
+
+  When sorting, the resulting bibliography will always contains the
+  comments first, then the preambles, then the abbreviations, and
+  finally the regular entries. Be warn that such a sort when put
+  cross-references before entries that refers to them, so be cautious.
+
+\item[\texttt{-r}] ~
+
+  reverses the sort
+
 \end{description}
 
 Notice that the two output files are suitable for use with
