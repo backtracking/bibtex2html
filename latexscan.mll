@@ -15,7 +15,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexscan.mll,v 1.11 2000-04-07 17:23:40 filliatr Exp $ *)
+(* $Id: latexscan.mll,v 1.12 2000-05-04 17:03:19 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -61,14 +61,12 @@ rule main = parse
   | "\n\n" '\n' *
                 { print_s "<P>\n"; main lexbuf }
 (* Font changes *)
-  | "{\\it" " "* | "{\\em" " "*
+  | "{\\it" " "* | "{\\em" " "* | "{\\sl" " "*
                   { print_s "<i>";
                     save_state main lexbuf;
                     print_s "</i>"; main lexbuf }
-  | "{\\bf" " "*  { print_s "<b>";
-                    save_state main lexbuf;
-                    print_s "</b>"; main lexbuf }
-  | "{\\sf" " "*  { print_s "<b>";
+  | "{\\bf" " "* | "{\\sf" " "*
+                  { print_s "<b>";
                     save_state main lexbuf;
                     print_s "</b>"; main lexbuf }
   | "{\\sc" " "*  { save_state main lexbuf; main lexbuf }

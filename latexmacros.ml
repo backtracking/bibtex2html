@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.31 2000-04-07 17:23:40 filliatr Exp $ *)
+(* $Id: latexmacros.ml,v 1.32 2000-05-04 17:03:19 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -158,7 +158,6 @@ def "\\~" [Raw_arg(function "n" -> print_c 'ñ'
                           | s   -> print_s s)];
 def "\\c" [Raw_arg(function "c" -> print_c 'ç'
                           | s   -> print_s s)];
-def "\\u" [Raw_arg(function s   -> print_s s)];
 def "\\^" [Raw_arg(function "a" -> print_c 'â'
                           | "A" -> print_c 'Â'
                           | "e" -> print_c 'ê'
@@ -184,6 +183,8 @@ def "\\\"" [Raw_arg(function "e" -> print_c 'ë'
                           | "u" -> print_c 'ü'
                           | "U" -> print_c 'Ü'
                           | s   -> print_s s)];
+def "\\u" [Raw_arg print_s ];
+def "\\v" [Raw_arg print_s ];
 
 (* math macros *)
 def "\\[" [Print "<blockquote>"];
@@ -230,6 +231,8 @@ def "\\cup" [Print "U"];
 def "\\inf" [Print "inf"];
 
 (* misc. macros *)
+def "\\LaTeX" [Print "L<sup>A</sup>T<sub>E</sub>X"];
+def "\\tm" [Print "<sup><font size=-1>TM</font></sup>"];
 def "\\par" [Print "<br>"];
 def "\\@" [];
 def "\\#" [Print "#"];
