@@ -65,7 +65,7 @@ rule token = parse
 	    Trbrace
 	  end else
 	    token lexbuf }
-  | (['A'-'Z' 'a'-'z' '_' '\'' '0'-'9' ':' '-' '?' '.' '*'
+  | (['A'-'Z' 'a'-'z' '_' '\'' '0'-'9' ':' '-' '+' '?' '.' '*'
       '\192'-'\214' '\216'-'\246' '\248'-'\255']) +
       { if !serious then
 	  let s = Lexing.lexeme lexbuf in 
