@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.58 2003-04-09 07:34:40 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.59 2003-06-16 08:28:47 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -44,6 +44,7 @@ let title_url = ref false
 let use_label_name = ref false
 let table = ref true
 let note_fields = ref ([] : string list)
+let abstract_name = ref "Abstract"
 
 (* internal name, plus optional external name *)
 type field_info = string * (string option)
@@ -61,7 +62,9 @@ let add_field s =
 
 let add_named_field s name = 
   let u = String.uppercase s in 
-  fields := (u, Some name) :: (List.remove_assoc u !fields)
+  if u = "ABSTRACT" then abstract_name := name; 
+  if not !both || u <> "ABSTRACT" then
+    fields := (u, Some name) :: (List.remove_assoc u !fields)
 
 let add_note_field s =
   let u = String.uppercase s in
@@ -238,14 +241,14 @@ let make_abstract ((t,k,_) as e) =
     let a = Expand.get_uppercase_field e "ABSTRACT" in
     if is_url a then begin
       (* 1. it is an URL *)
-      Alink { l_url = get_url a; l_name = "Abstract" }
+      Alink { l_url = get_url a; l_name = !abstract_name }
     end else if !print_abstract then begin
       (* 2. we have to print it right here *)
       Atext a
     end else if !both then begin
       (* 3. we have to insert a link to the file f-abstracts *)
       let url = sprintf "%s-abstracts%s#%s" !output_file !link_suffix k in
-      Alink { l_url = url; l_name = "Abstract" }
+      Alink { l_url = url; l_name = !abstract_name }
     end else
       No_abstract
   with Not_found -> 
@@ -285,7 +288,7 @@ let display_keywords ch e =
 
 let bibtex_entry k =
   { l_url = 
-      sprintf "%s%s#%s" (Filename.basename !bibentries_file) !link_suffix k;
+      sprintf "%s%s#%s" !bibentries_file !link_suffix k;
     l_name = 
       "bib" }
 

@@ -1,4 +1,8 @@
 
+Version 1.58, 16/6/2003
+=======================
+ o fixed links when -o used with a full path
+ o fixed behavior with -nf abstract ...
  o macro \$
 
 Version 1.57, 9/4/2003
