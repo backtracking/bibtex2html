@@ -1,4 +1,6 @@
 
+ o fix bug in bib2bib: preamble now enclosed with a single pair of braces
+
 Version 1.72, 3/9/2004
 ======================
  o --help now prints on standard output and exits successfully
