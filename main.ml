@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.26 1999-06-29 16:50:53 marche Exp $ *)
+(* $Id: main.ml,v 1.27 1999-07-15 15:05:14 marche Exp $ *)
 
 (* options *)
 
@@ -240,6 +240,7 @@ let usage () =
   prerr_endline "  -u         unsorted i.e. same order as in .bib file (default)";
   prerr_endline "  -r         reverse the sort";
   prerr_endline "  -t         title of the HTML file (default is the filename)";
+  prerr_endline "  -footer    additional footer in the HTML file";
   prerr_endline "  -i         ignore BibTeX errors";
   prerr_endline "  -both      produce versions with and without abstracts";
   prerr_endline "  -multiple  produce one file per entry";
@@ -287,6 +288,10 @@ let parse () =
     | ("-t" | "--title") :: s :: rem ->
 	Translate.title := s ; Translate.title_spec := true; parse_rec rem
     | ("-t" | "--title") :: [] ->
+	usage()
+    | ("-footer" | "--footer") :: s :: rem ->
+	Translate.user_footer := s; parse_rec rem
+    | ("-footer" | "--footer") :: [] ->
 	usage()
     | ("-s" | "--style") :: s :: rem ->
 	style := s ; parse_rec rem

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: biboutput.ml,v 1.1 1999-06-29 15:48:53 marche Exp $ *)
+(* $Id: biboutput.ml,v 1.2 1999-07-15 15:05:14 marche Exp $ *)
 
 open Bibtex;;
 
@@ -84,9 +84,9 @@ let print_command html ch keys = function
 	end
       else
 *)
-	output_string ch ("@COMMENT{\"" ^ s ^ "\"}\n\n")
+	output_string ch ("@COMMENT{{" ^ s ^ "}}\n\n")
   | Preamble s ->
-      output_string ch ("@PREAMBLE{\"" ^ s ^ "\"}\n\n")
+      output_string ch ("@PREAMBLE{{" ^ s ^ "}}\n\n")
   | Abbrev(s,l) ->
       if needs_output s keys then 
 	begin
