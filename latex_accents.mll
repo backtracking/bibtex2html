@@ -40,6 +40,7 @@ and quote_char = parse
 | ('U'|"{U}")                   { add_string "Ü" ; next_char lexbuf }
 | ('E'|"{E}")                   { add_string "Ë" ; next_char lexbuf }
 | ("\\i" space+|"{\\i}")        { add_string "ï" ; next_char lexbuf }
+| ('I'|"\\I" space+|"{\\I}")    { add_string "Ï" ; next_char lexbuf }
 | _                             { add_string "\\\"" ; add lexbuf }
 | eof                           { add_string "\\\"" }
 

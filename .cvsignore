@@ -9,10 +9,12 @@ condition_parser.ml
 condition_parser.mli
 latex_accents.ml
 bibtex2html
+bibtex2html.byte
 bbl_lexer.ml
 bibtex2html.tar
 bibtex2html.tar.gz
 export
 version.ml
 bib2bib
+bib2bib.byte
 tmpmanual.ps

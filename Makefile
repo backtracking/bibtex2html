@@ -44,9 +44,17 @@ bibtex2html: $(OBJS)
 	ocamlopt $(PROFILE) $(FLAGS) -o bibtex2html str.cmxa $(OBJS) $(STRLIB)
 	strip bibtex2html
 
+bibtex2html.byte: $(OBJS:.cmx=.cmo)
+	ocamlc -use-runtime ~demons/bin/$(OSTYPE)/ocamlcustomrun \
+		-o bibtex2html.byte str.cma $(OBJS:.cmx=.cmo)  
+
 bib2bib: $(BIB2BIBOBJS)
 	ocamlopt $(PROFILE) $(FLAGS) -o bib2bib str.cmxa $(BIB2BIBOBJS) $(STRLIB)
 	strip bib2bib
+
+bib2bib.byte: $(BIB2BIBOBJS:.cmx=.cmo)
+	ocamlc -use-runtime ~demons/bin/$(OSTYPE)/ocamlcustomrun \
+		-o bib2bib.byte str.cma $(BIB2BIBOBJS:.cmx=.cmo) 
 
 bibtex_parser.mli bibtex_parser.ml: bibtex_parser.mly
 	ocamlyacc bibtex_parser.mly
@@ -73,22 +81,14 @@ NAME=bibtex2html-$(MAJORVN).$(MINORVN)
 
 FTP = /users/demons/filliatr/ftp/ocaml/bibtex2html
 
-FILES = bibtex.mli bibtex.ml latexmacros.mli latexmacros.ml bibtex_lexer.mll \
-	translate.ml bbl_lexer.mll bibtex_parser.mly latexscan.mll \
-	expand.mli expand.ml html.ml main.ml \
-	Makefile .depend README COPYING GPL CHANGES \
-	readbib.mli readbib.ml condition.mli condition.ml \
-	condition_lexer.mli condition_lexer.mll condition_parser.mly \
-	parse_condition.mli parse_condition.ml bibfilter.mli bibfilter.ml \
-	biboutput.mli biboutput.ml bib2bib.ml copying.mli copying.ml \
-	manual.tex
+FILES = *.ml* Makefile .depend README COPYING GPL CHANGES manual.tex
 
 export: source doc linux solaris
 
 move-olds:
 	cp $(FTP)/bibtex2html* $(FTP)/olds
 
-source: $(FILES)
+source: clean 
 	mkdir -p export/$(NAME)
 	cp $(FILES) export/$(NAME)
 	(cd export ; tar cf $(NAME).tar $(NAME) ; \
@@ -98,8 +98,10 @@ source: $(FILES)
 BINARY = bibtex2html-$(MAJORVN).$(MINORVN)-$(OSTYPE)
 
 linux: clean binary
+
 solaris:
 	rmake sun-demons $(HOME)/soft/ocaml/bibtex clean binary
+
 sunos4:
 	rmake ??? $(HOME)/soft/ocaml/bibtex clean binary
 
