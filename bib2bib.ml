@@ -33,6 +33,8 @@ let add_condition c =
 
 let debug = ref false;;
 
+let expand_abbrevs = ref false;;
+
 let args_spec =
   [
     ("-ob", 
@@ -41,6 +43,7 @@ let args_spec =
      Arg.String(fun f -> cite_output_file_name := f),"citations output file name");
     ("-c", Arg.String(add_condition),"filter condition");
     ("-d", Arg.Unit(fun () -> debug := true), "debug flag");
+    ("--expand", Arg.Unit(fun () -> expand_abbrevs := true), "expand the abbreviations");
     ("--version", Arg.Unit(fun () -> exit 0), "print version and exit");
     ("--warranty", Arg.Unit(fun () -> Copying.copying(); exit 0), "display software warranty")
   ]
@@ -93,9 +96,12 @@ let main () =
     end;
   if !input_file_names = [] then 
     begin
+      input_file_names := [""]
+(*
       Printf.printf "No input file.\n";
-     Arg.usage args_spec usage;
+      Arg.usage args_spec usage;
       exit 1;
+*)
     end;
   if !debug then
     begin      
@@ -119,9 +125,8 @@ let main () =
 	exit 2;
       end;
     
-    let needed_keys =
-      Bibfilter.saturate all_entries matching_keys
-    in
+    let user_expanded = if !expand_abbrevs then expanded else all_entries in
+    let needed_keys = Bibfilter.saturate user_expanded matching_keys in
       (*
 	let needed_entries =
 	List.filter
@@ -131,7 +136,7 @@ let main () =
 	List.iter print_command needed_entries
       *)
       output_cite_file matching_keys;
-      output_bib_file all_entries (Some needed_keys)
+      output_bib_file user_expanded (Some needed_keys)
 ;;
 
 

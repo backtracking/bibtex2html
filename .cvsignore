@@ -1,4 +1,5 @@
 manual.toc
+manual.html
 latexscan.ml
 bibtex_lexer.ml
 bibtex_parser.ml
@@ -13,3 +14,4 @@ bibtex2html.tar.gz
 export
 version.ml
 bib2bib
+tmp
