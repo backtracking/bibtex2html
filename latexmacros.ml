@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.25 1999-07-19 08:55:27 marche Exp $ *)
+(* $Id: latexmacros.ml,v 1.26 1999-08-16 08:45:12 marche Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -128,8 +128,7 @@ def "\\'" [Raw_arg(function "e" -> print_c 'é'
 			  | "u" -> print_c 'ú'
 			  | "U" -> print_c 'Ú'
 			  | ""  -> print_c '\''
-                          | s   -> Printf.printf "coucou ! s = %s\n" s;
-			      print_s s)];
+                          | s   -> print_s s)];
 def "\\`" [Raw_arg(function "e" -> print_c 'è'
                           | "E" -> print_c 'È'
                           | "a" -> print_c 'à'
