@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.16 1998-10-19 11:54:23 filliatr Exp $ *)
+(* $Id: main.ml,v 1.17 1998-10-19 11:56:01 filliatr Exp $ *)
 
 (* options *)
 
@@ -243,7 +243,7 @@ let parse () =
 	reverse_sort := true ; parse_rec rem
     | "-i" :: rem ->
 	ignore_bibtex_errors := true ; parse_rec rem
-    | "-h" :: rem ->
+    | ("-h" | "-help" | "-?" | "--help") :: rem ->
 	usage ()
     | "-debug" :: rem ->
 	Translate.debug := true ; parse_rec rem
