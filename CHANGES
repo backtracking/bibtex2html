@@ -1,9 +1,8 @@
 
+Version 1.65, 3/10/2003
+========================
  o better handling of accented letters, in particular LaTeX commands
    for accents are taken into account in regular expressions.
-
-Version 1.64, 1/10/2003
-========================
  o fixed bug: keywords were duplicated with -single
  o web links automatically inserted for -f and -nf fields in the .bib file
  o new option -use-keys to use the original keys from the .bib file
