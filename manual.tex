@@ -530,7 +530,7 @@ for example, it will select a title containing
  
 \verb|bib2bib| as the effect of merging several bib files into a
 single one. This process may result in duplicate entries in the
-resulting files, which is considered is erroneous by \verb|bibtex|.  
+resulting files, which is considered as erroneous by \verb|bibtex|.  
 Of course, this is not really a bug of \verb|bib2bib| since it is of
 your own to take care not having entries with the same key. 
 
@@ -539,7 +539,7 @@ when two bib files share common abbreviations, or when they share
 common cross-references. 
 
 In order to make \verb|bib2bib| behaves correctly in such a case,
-we decided that: for repeated abbrevs, the first abbrev is kept and
+it is designed as follows: for repeated abbrevs, the first abbrev is kept and
 the others are ignored, and for repeated regular entries, the last entry
 is kept and the others are ignored.  With this behaviour, everything
 works well as soon as repeated abbrevs are really duplicate abbrevs of
