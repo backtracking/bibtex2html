@@ -27,8 +27,10 @@ let keep_combine combine l1 l2 =
 	[]
     | ((_,k,_) as x)::rem ->
 	if not (List.mem k !excluded) then
-	  let y = KeyMap.find k map in
-	  (combine x y) :: (keep_rec rem)
+	  try
+	    let y = KeyMap.find k map in
+	      (combine x y) :: (keep_rec rem)
+	  with Not_found -> keep_rec rem
 	else
 	  keep_rec rem
   in
@@ -71,12 +73,16 @@ let create_aux_file fbib tmp =
   output_string ch "}\n";
   close_out ch
 
+let rm f = try Sys.remove f with _ -> ()
+
 let clean tmp =
-  begin try Sys.remove (tmp ^ ".aux") with _ -> () end;
-  begin try Sys.remove (tmp ^ ".blg") with _ -> () end;
-  begin try Sys.remove (tmp ^ ".bbl") with _ -> () end;
-  begin try Sys.remove tmp            with _ -> () end
-  
+  if not !Translate.debug then begin
+    rm (tmp ^ ".aux");
+    rm (tmp ^ ".blg");
+    rm (tmp ^ ".bbl");
+    rm tmp
+  end
+
 let call_bibtex tmp =
   Printf.printf "calling BibTeX..."; flush stdout;
   match 
@@ -92,26 +98,47 @@ let call_bibtex tmp =
 	  exit n
 	end
 
-let read_bbl tmp =
+let read_one_biblio lb =
   let rec read_items acc lb =
     try
-      let item = Bbl_lexer.bibitem lb in
+      let (_,k,_) as item = Bbl_lexer.bibitem lb in
+	if !Translate.debug then begin
+	  Printf.printf "[%s]" k; flush stdout
+  	end;
       read_items (item::acc) lb
     with
-	End_of_file -> List.rev acc 
+	Bbl_lexer.End_of_biblio -> List.rev acc 
   in
+  let name = Bbl_lexer.biblio_header lb in
+  let items = read_items [] lb in
+    (name,items)
+
+let read_biblios lb =
+  let rec read acc lb =
+    try
+      let b = read_one_biblio lb in
+	read (b::acc) lb
+    with
+	End_of_file -> List.rev acc
+  in
+    read [] lb
+
+let read_bbl tmp =
   let fbbl = tmp ^ ".bbl" in
   Printf.printf "Reading %s..." fbbl; flush stdout;
   let ch = open_in fbbl in
   let lexbuf = Lexing.from_channel ch in
-  Bbl_lexer.skip_header lexbuf;
-  let items = read_items [] lexbuf in
+  let biblios = read_biblios lexbuf in
   close_in ch;
   clean tmp;
-  Printf.printf "ok (%d entries)\n" (List.length items); flush stdout;
-  items
+  Printf.printf "ok ";
+  List.iter (fun (_,items) ->
+	       Printf.printf "(%d entries)" (List.length items))
+    biblios;
+  Printf.printf "\n"; flush stdout;
+  biblios
 
-let get_bibitems fbib =
+let get_biblios fbib =
   let tmp = Filename.temp_file "bib2html" "" in
   try
     create_aux_file fbib tmp;
@@ -141,9 +168,11 @@ let get_bibtex_entries fbib =
 
 let translate fbib f =
   let entries = get_bibtex_entries fbib in
-  let bibitems = get_bibitems fbib in
-  let sl = sort_entries entries bibitems in
-  Translate.format_list f sl
+  let biblios = get_biblios fbib in
+  let sb = List.map 
+	     (fun (name,bibitems) -> (name,sort_entries entries bibitems))
+	     biblios in
+  Translate.format_list f sb
 
 
 (* command line parsing *)

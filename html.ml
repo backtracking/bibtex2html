@@ -52,3 +52,13 @@ let close_b ch =
 let paragraph ch =
   open_balise ch "p"
 
+let h_title ch n title =
+  let s = Printf.sprintf "H%d" n in
+  open_balise ch s;
+  output_string ch title;
+  close_balise ch s
+
+let h1_title ch s = h_title ch 1 s
+let h2_title ch s = h_title ch 2 s
+
+

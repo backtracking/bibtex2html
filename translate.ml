@@ -16,7 +16,7 @@ let (cite_tab : (string,string) Hashtbl.t) = Hashtbl.create 17
 
 let cpt = ref 0
 
-let first_pass l =
+let first_pass bl =
   let rec pass = function
       [] -> ()
     | (None,_,(_,k,_))::rem ->
@@ -29,7 +29,7 @@ let first_pass l =
   in
     cpt := 0;
     Hashtbl.clear cite_tab;
-    pass l
+    List.iter (fun (_,items) -> pass items) bl
 
 
 (* latex2html : to print LaTeX strings in HTML format *)
@@ -155,6 +155,7 @@ let one_entry_summary basen ch (_,b,((_,k,f) as e)) =
 
   output_string ch "\n";
   Html.open_balise ch "td";
+  print_string b; flush stdout;
   latex2html ch b;
   Html.open_balise ch "BR";
   output_string ch "\n";
@@ -167,23 +168,31 @@ let one_entry_summary basen ch (_,b,((_,k,f) as e)) =
   Html.paragraph ch;
   output_string ch "\n"
 
-let summary basen el =
+let summary basen bl =
   let filename = basen ^ !suffix in
   Printf.printf "Making HTML document (%s)..." filename; flush stdout;
   let ch = open_out filename in
     if not !nodoc then
       Html.open_document ch (fun () -> output_string ch !title);
-    if !title_spec then begin
-      Html.open_balise ch "H1";
-      output_string ch !title;
-      Html.close_balise ch "H1"
-    end;
+    if !title_spec then Html.h1_title ch !title;
     output_string ch "\n";
-    Html.open_balise ch "table";
+
     in_summary := true;
-    List.iter (one_entry_summary basen ch) el;
+    List.iter
+      (fun (name,el) ->
+	 begin match name with
+	     None -> ()
+	   | Some s ->
+	       Html.open_balise ch "H2";
+	       latex2html ch s;
+	       Html.close_balise ch "H2";
+	       output_string ch "\n"
+	 end;
+	 Html.open_balise ch "table";
+	 List.iter (one_entry_summary basen ch) el;
+	 Html.close_balise ch "table")
+      bl;
     in_summary := false;
-    Html.close_balise ch "table";
     if not !nodoc then begin
       footer ch;
       Html.close_document ch
@@ -195,7 +204,7 @@ let summary basen el =
 
 (* HTML file with BibTeX entries f-bib.html *)
 
-let bib_file f l =
+let bib_file f bl =
   let fn = f ^ "-bib.html" in
   Printf.printf "Making HTML list of BibTeX entries (%s)..." fn;
   flush stdout;
@@ -209,24 +218,29 @@ let bib_file f l =
   Html.close_balise ch "H1";
 
   Html.open_balise ch "PRE";
-  List.iter (fun (_,_,(t,k,fs)) ->
-    Html.anchor ch k;
-    output_string ch ("@" ^ t ^ "{" ^ k ^ ",\n");
-    List.iter
-      (fun (a,v) ->
-	 output_string ch "  ";
-	 output_string ch (String.lowercase a);
-	 output_string ch " = ";
-	 if a = "CROSSREF" then begin
-	   output_string ch "{";
-	   Html.open_href ch ("#" ^ v);
-	   output_string ch v;
-	   Html.close_href ch;
-	   output_string ch "},\n"
-	 end else
-	   output_string ch ("{" ^ v ^ "},\n")
-      ) fs;
-    output_string ch "}\n") l;
+
+  List.iter
+    (fun (_,l) ->
+       List.iter (fun (_,_,(t,k,fs)) ->
+		    Html.anchor ch k;
+		    output_string ch ("@" ^ t ^ "{" ^ k ^ ",\n");
+		    List.iter
+		      (fun (a,v) ->
+			 output_string ch "  ";
+			 output_string ch (String.lowercase a);
+			 output_string ch " = ";
+			 if a = "CROSSREF" then begin
+			   output_string ch "{";
+			   Html.open_href ch ("#" ^ v);
+			   output_string ch v;
+			   Html.close_href ch;
+			   output_string ch "},\n"
+			 end else
+			   output_string ch ("{" ^ v ^ "},\n")
+		      ) fs;
+		    output_string ch "}\n") l)
+    bl;
+
   Html.close_balise ch "PRE";
   
   footer ch;
@@ -238,9 +252,9 @@ let bib_file f l =
 
 (* main function *)
 
-let format_list f l =
-  first_pass l;
+let format_list f bl =
+  first_pass bl;
   directory := f;
-  summary f l;
-  bib_file f l
+  summary f bl;
+  bib_file f bl
 
