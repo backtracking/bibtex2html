@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.62 2003-09-30 07:57:30 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.63 2003-09-30 15:50:44 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -43,6 +43,7 @@ let output_file = ref ""
 let bibentries_file = ref ""
 let title_url = ref false
 let use_label_name = ref false
+let use_keys = ref false
 let table = ref true
 let note_fields = ref ([] : string list)
 let abstract_name = ref "Abstract"
@@ -105,9 +106,10 @@ let cite k =
       if !in_summary then 
 	sprintf "#%s" k
       else
-	sprintf "%s%s#%s" !output_file !link_suffix k in
-    let c = Hashtbl.find cite_tab k in
-      print_s (sprintf "<A HREF=\"%s\">[%s]</A>" url c)
+	sprintf "%s%s#%s" !output_file !link_suffix k 
+    in
+    let c = if !use_keys then k else Hashtbl.find cite_tab k in
+    print_s (sprintf "<A HREF=\"%s\">[%s]</A>" url c)
   with
       Not_found -> print_s "[?]"
 
@@ -365,7 +367,7 @@ let one_entry_summary ch biblio (_,b,((_,k,f) as e)) =
   if (not !nokeys) or !multiple then begin
     output_string ch "[";
     if !multiple then Html.open_href ch (k ^ !link_suffix);
-    latex2html ch (Hashtbl.find cite_tab k);
+    latex2html ch (if !use_keys then k else Hashtbl.find cite_tab k);
     if !multiple then Html.close_href ch;
     output_string ch "]"
   end;

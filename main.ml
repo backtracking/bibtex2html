@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: main.ml,v 1.52 2003-09-30 07:57:30 filliatr Exp $ i*)
+(*i $Id: main.ml,v 1.53 2003-09-30 15:50:44 filliatr Exp $ i*)
 
 (*s Main module of bibtex2html. *)
 
@@ -374,6 +374,8 @@ let parse () =
 	print_keywords := false; parse_rec rem
     | ("-nokeys" | "-no-keys" | "--no-keys") :: rem -> 
 	nokeys := true; parse_rec rem
+    | ("-usekeys" | "-use-keys" | "--use-keys") :: rem ->
+	use_keys := true; parse_rec rem
     | ("-rawurl" | "-raw-url" | "--raw-url") :: rem -> 
 	raw_url := true; parse_rec rem
 (*i

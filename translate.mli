@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.mli,v 1.6 2003-09-30 07:57:30 filliatr Exp $ i*)
+(*i $Id: translate.mli,v 1.7 2003-09-30 15:50:44 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -24,6 +24,7 @@ open Bibtex
 
 val nodoc : bool ref
 val nokeys : bool ref
+val use_keys : bool ref
 val file_suffix : string ref
 val link_suffix : string ref
 val raw_url : bool ref

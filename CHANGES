@@ -1,6 +1,7 @@
 
-Version 1.62, 30/10/2003
+Version 1.63, 30/10/2003
 ========================
+ o new option -use-keys to use the original keys from the .bib file
  o new option -single to put everything into a single page
  o HTML links inserted in the BibTeX entries page
 
