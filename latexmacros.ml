@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.27 1999-11-02 17:09:44 marche Exp $ *)
+(* $Id: latexmacros.ml,v 1.28 2000-01-14 18:35:40 marche Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -147,6 +147,7 @@ def "\\~" [Raw_arg(function "n" -> print_c 'ñ'
                           | s   -> print_s s)];
 def "\\c" [Raw_arg(function "c" -> print_c 'ç'
                           | s   -> print_s s)];
+def "\\u" [Raw_arg(function s   -> print_s s)];
 def "\\^" [Raw_arg(function "a" -> print_c 'â'
                           | "A" -> print_c 'Â'
                           | "e" -> print_c 'ê'

@@ -1,4 +1,5 @@
 
+ o macro \u (a romanian accent) recognized (but \u{s} simply outputs s) 
  o option --raw-url to print URL instaed of files's types.
  
 Version 1.1, 1999/11/05
