@@ -1,7 +1,7 @@
 
 BibTeX2HTML is a collection of tools for producing automatically HTML
 documents from bibliographies written in the BibTeX format. It
-consists in two command line tools:
+consists in three command line tools:
 
   - bib2bib is a filter tool that reads one or several bibliography
     files, filters the entries with respect to a given criterion, and
@@ -14,6 +14,9 @@ consists in two command line tools:
     augmented with several transparent HTML links to allow easy 
     navigation.
 
+  - aux2bib reads a .aux file as produced by LaTeX and writes
+    to standard output a bibtex file containing exactly the
+    BibTeX entries refereed in the .aux file.
 
 COPYRIGHT
 =========
@@ -29,7 +32,7 @@ INSTALLATION
  
   1. Configure with "./configure"
 
-  2. Compile with "make all".  
+  2. Compile with "make".  
      It creates two binary files, "bibtex2html" and "bib2bib" .
 
      If you want  to build the documentation, do  "make doc" (You need
