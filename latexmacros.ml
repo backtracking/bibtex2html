@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.28 2000-01-14 18:35:40 marche Exp $ *)
+(* $Id: latexmacros.ml,v 1.29 2000-01-21 18:58:17 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -71,14 +71,23 @@ def "\\begin{alltt}" [Print "<pre>"];
 def "\\end{alltt}" [Print "</pre>"];
 def "\\texttt" [Print "<tt>" ; Print_arg ; Print "</tt>"];
 def "\\textit" [Print "<i>" ; Print_arg ; Print "</i>"];
+def "\\mathit" [Print "<i>" ; Print_arg ; Print "</i>"];
 def "\\textsl" [Print "<i>" ; Print_arg ; Print "</i>"];
 def "\\textem" [Print "<em>" ; Print_arg ; Print "</em>"];
 def "\\textrm" [Print_arg];
+def "\\mathrm" [Print_arg];
 def "\\mathcal" [Print_arg];
+def "\\mathbb" [Print_arg];
+def "\\rm" [];
+def "\\cal" [];
 def "\\textbf" [Print "<b>" ; Print_arg ; Print "</b>"];
+def "\\mathbf" [Print "<b>" ; Print_arg ; Print "</b>"];
 def "\\emph" [Print "<em>" ; Print_arg ; Print "</em>"];
 def "\\mbox" [Print_arg];
 def "\\footnotesize" [];
+(* fonts without HTML equivalent *)
+def "\\textsf" [Print_arg];
+def "\\textsc" [Print_arg];
 
 (* environments *)
 def "\\begin{itemize}" [Print "<p><ul>"];
@@ -175,19 +184,57 @@ def "\\\"" [Raw_arg(function "e" -> print_c 'ë'
                           | s   -> print_s s)];
 
 (* math macros *)
+def "\\[" [Print "<blockquote>"];
+def "\\]" [Print "\n</blockquote>"];
+def "\\le" [Print "&lt;="];
 def "\\leq" [Print "&lt;="];
 def "\\log" [Print "log"];
+def "\\ge" [Print "&gt;="];
 def "\\geq" [Print "&gt;="];
 def "\\neq" [Print "&lt;&gt;"];
 def "\\circ" [Print "o"];
+def "\\bigcirc" [Print "O"];
 def "\\sim" [Print "~"];
 def "\\(" [Print "<I>"];
 def "\\)" [Print "</I>"];
 def "\\mapsto" [Print "<tt>|-&gt;</tt>"];
+def "\\times" [Print "&#215;"];
+def "\\neg" [Print "&#172;"];
+(* math symbols printed as texts (could we do better?) *)
+def "\\ne" [Print "=/="];
+def "\\in" [Print "in"];
+def "\\forall" [Print "for all"];
+def "\\exists" [Print "there exists"];
+def "\\vdash" [Print "|-"];
+def "\\ln" [Print "ln"];
+def "\\gcd" [Print "gcd"];
+def "\\min" [Print "min"];
+def "\\max" [Print "max"];
+def "\\exp" [Print "exp"];
+def "\\rightarrow" [Print "-&gt;"];
+def "\\to" [Print "-&gt;"];
+def "\\longrightarrow" [Print "--&gt;"];
+def "\\Rightarrow" [Print "=&gt;"];
+def "\\leftarrow" [Print "&lt;-"];
+def "\\longleftarrow" [Print "&lt;--"];
+def "\\Leftarrow" [Print "&lt;="];
+def "\\leftrightarrow" [Print "&lt;-&gt;"];
+def "\\sqrt" [Print "sqrt("; Print_arg; Print ")"];
+def "\\vee" [Print "V"];
+def "\\wedge" [Print "/\\"];
+def "\\parallel" [Print "||"];
+def "\\mid" [Print "|"];
+def "\\cup" [Print "U"];
+def "\\inf" [Print "inf"];
 
 (* misc. macros *)
+def "\\par" [Print "<br>"];
+def "\\@" [];
+def "\\#" [Print "#"];
 def "\\/" [];
 def "\\-" [];
+def "\\left" [];
+def "\\right" [];
 def "\\smallskip" [];
 def "\\medskip" [];
 def "\\bigskip" [];
@@ -195,6 +242,7 @@ def "\\hskip" [];
 def "\\markboth" [Skip_arg; Skip_arg];
 def "\\dots" [Print "..."];
 def "\\ldots" [Print "..."];
+def "\\cdot" [Print "&#183;"];
 def "\\cdots" [Print "..."];
 def "\\newpage" [];
 def "\\hbox" [Print_arg];
@@ -204,6 +252,9 @@ def "\\ref" [Print "<A href=\"#"; Print_arg; Print "\">(ref)</A>"];
 def "\\index" [Skip_arg];
 def "\\\\" [Print "<br>"];
 def "\\," [];
+def "\\;" [];
+def "\\!" [];
+def "\\hspace" [Skip_arg; Print " "];
 def "\\symbol" 
   [Raw_arg (function s -> 
 	      try let n = int_of_string s in print_c (Char.chr n) 
