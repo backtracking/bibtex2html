@@ -65,7 +65,9 @@ def "\\smallskip" [];
 def "\\medskip" [];
 def "\\bigskip" [];
 def "\\markboth" [Skip_arg; Skip_arg];
+def "\\dots" [Print "..."];
 def "\\ldots" [Print "..."];
+def "\\cdots" [Print "..."];
 def "\\ " [Print " "];
 def "\\{" [Print "{"];
 def "\\}" [Print "}"];
@@ -98,7 +100,6 @@ def "\\bibitem" [Raw_arg(function r ->
   print_s "<dt><A name=\""; print_s r; print_s "\">[";
   print_s r; print_s "]</A>\n";
   print_s "<dd>")];
-def "\\newblock" [Print "<br>"];
 def "\\'" [Raw_arg(function "e" -> print_c 'é'
                           | "E" -> print_c 'É'
                           | "\\i" -> print_c 'í'

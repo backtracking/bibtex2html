@@ -44,6 +44,8 @@ let combine_f (c,_,b) e = c,b,e
 
 let rev_combine_f x y = combine_f y x
 
+(* sort_entries est en n^2 ==> ameliorer cela *)
+
 let sort_entries entries bibitems =
   Printf.printf "Sorting..."; flush stdout;
   let el =
@@ -157,6 +159,7 @@ let usage () =
   prerr_endline "  -a         sort as BibTeX (usually by author)";
   prerr_endline "  -u         unsorted i.e. same order as in .bib file (default)";
   prerr_endline "  -r         reverse the sort";
+  prerr_endline "  -t         title of the HTML file (default is the filename)";
   prerr_endline "  -i         ignore BibTeX errors";
   prerr_endline "  -nodoc     only produces the body of the HTML documents";
   prerr_endline "  -suffix s  give an alternate suffix for HTML files";
@@ -182,6 +185,10 @@ let parse () =
     | "-suffix" :: s :: rem ->
 	Translate.suffix := s ; parse_rec rem
     | "-suffix" :: [] ->
+	usage()
+    | "-t" :: s :: rem ->
+	Translate.title := s ; Translate.title_spec := true; parse_rec rem
+    | "-t" :: [] ->
 	usage()
     | "-s" :: s :: rem ->
 	style := s ; parse_rec rem
@@ -209,10 +216,10 @@ let main () =
       prerr_endline "BibTeX file must have suffix .bib !";
       exit 1
     end
-      in
+  in
 
-  (* Creating directory for html and bib files *)
-  Sys.command ("mkdir " ^ f);
+  if not !Translate.title_spec then
+    Translate.title := f;
 
   (* producing the documents *)
   translate fbib f
