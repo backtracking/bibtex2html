@@ -1,4 +1,8 @@
 
+Version 0.9, 1999/02/12
+  o option -both to make both versions with and without abstracts
+  o suffix .zip added for compressed files
+
 Version 0.8, 1999/02/08
   o option -multiple (one file per entry)
   o bug fixed in syntax error line report

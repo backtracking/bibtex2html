@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.23 1999-02-08 20:52:47 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.24 1999-02-12 16:49:15 filliatr Exp $ *)
 
 (* options *)
 
@@ -26,6 +26,7 @@ let title_spec = ref false
 let print_abstract = ref true
 let print_footer = ref true
 let multiple = ref false
+let both = ref false
 
 let (fields : string list ref) = ref []
 let add_field s = fields := s :: !fields
@@ -59,7 +60,7 @@ let first_pass bl =
 open Latexmacros
 
 let in_summary = ref false
-let directory = ref ""
+let file_basename = ref ""
 
 let cite k =
   try
@@ -67,7 +68,7 @@ let cite k =
       if !in_summary then 
 	Printf.sprintf "#%s" k
       else
-	Printf.sprintf "%s%s#%s" !directory !suffix k in
+	Printf.sprintf "%s%s#%s" !file_basename !suffix k in
     let c = Hashtbl.find cite_tab k in
       print_s (Printf.sprintf "<A HREF=\"%s\">[%s]</A>" url c)
   with
@@ -118,7 +119,7 @@ let footer ch =
 
 (* links (other than BibTeX entry, when available) *)
 
-let compression_suffixes = [ ".gz"; ".Z" ]
+let compression_suffixes = [ ".gz"; ".Z"; ".zip" ]
 
 let decompressed f = 
   let rec test_comp = function
@@ -173,40 +174,48 @@ let make_links ch ((t,k,_) as e) =
        "DOCUMENTURL"; "URLPS"; "URLDVI"; "URLPDF" ])
 
 let make_abstract ch ((t,k,_) as e) =
-  if !print_abstract then begin
-    try
-      let a = Bibtex.get_field e "abstract" in
-	if is_url a then begin
-	  output_string ch ", ";
-	  Html.open_href ch (get_url a);
-	  output_string ch "Abstract";
-	  Html.close_href ch;
-	end else begin
-	  Html.paragraph ch; output_string ch "\n";
-	  if not !multiple then Html.open_balise ch "font size=-1";
-	  Html.open_balise ch "blockquote";
-	  output_string ch "\n";
-	  latex2html ch a;
-	  Html.close_balise ch "blockquote";
-	  if not !multiple then Html.close_balise ch "font";
-	  output_string ch "\n";
-	  Html.paragraph ch; output_string ch "\n"
-	end
-    with Not_found -> ()
-  end
+  try
+    let a = Bibtex.get_field e "abstract" in
+      if is_url a then begin
+	(* 1. it is an URL *)
+	output_string ch ", ";
+	Html.open_href ch (get_url a);
+	output_string ch "Abstract";
+	Html.close_href ch;
+      end else if !print_abstract then begin
+	(* 2. we have to print it right here *)
+	Html.paragraph ch; output_string ch "\n";
+	if not !multiple then Html.open_balise ch "font size=-1";
+	Html.open_balise ch "blockquote";
+	output_string ch "\n";
+	latex2html ch a;
+	Html.close_balise ch "blockquote";
+	if not !multiple then Html.close_balise ch "font";
+	output_string ch "\n";
+	Html.paragraph ch; output_string ch "\n"
+      end else if !both then begin
+	(* 3. we have to insert a link to the file f-abstracts *)
+	output_string ch ", ";
+	let url = 
+	  Printf.sprintf "%s-abstracts%s#%s" !file_basename !suffix k in
+	Html.open_href ch url;
+	output_string ch "Abstract";
+	Html.close_href ch;
+      end
+  with Not_found -> ()
 
 (* Printing of one entry *)  
 
 let bibtex_entry ch k =
-  Html.open_href ch (Printf.sprintf "%s-bib.html#%s" !directory k);
+  Html.open_href ch (Printf.sprintf "%s-bib.html#%s" !file_basename k);
   output_string ch "BibTeX entry";
   Html.close_href ch
 
-let separate_file basen (b,((_,k,f) as e)) =
+let separate_file (b,((_,k,f) as e)) =
   in_summary := false;
   let file = k ^ !suffix in
   let ch = open_out file in
-  let title = Printf.sprintf "%s : %s" basen k in
+  let title = Printf.sprintf "%s : %s" !file_basename k in
   Html.open_document ch (fun () -> output_string ch title);
   header ch;
   Html.open_balise ch "h2";
@@ -219,7 +228,7 @@ let separate_file basen (b,((_,k,f) as e)) =
   Html.paragraph ch;
   make_links ch e;
   Html.paragraph ch;
-  Html.open_href ch (!directory ^ !suffix);
+  Html.open_href ch (!file_basename ^ !suffix);
   output_string ch "Back";
   Html.close_href ch;
   if !print_footer then footer ch;
@@ -227,7 +236,7 @@ let separate_file basen (b,((_,k,f) as e)) =
   close_out ch;
   in_summary := true
 
-let one_entry_summary basen ch (_,b,((_,k,f) as e)) =
+let one_entry_summary ch (_,b,((_,k,f) as e)) =
   if !debug then begin
     Printf.printf "[%s]" k; flush stdout
   end;
@@ -252,7 +261,7 @@ let one_entry_summary basen ch (_,b,((_,k,f) as e)) =
   output_string ch "\n";
 
   if !multiple then
-    separate_file basen (b,e)
+    separate_file (b,e)
   else begin
     bibtex_entry ch k;
     output_string ch ", ";
@@ -265,8 +274,8 @@ let one_entry_summary basen ch (_,b,((_,k,f) as e)) =
 
 (* summary file f.html *)
 
-let summary basen bl =
-  let filename = basen ^ !suffix in
+let summary bl =
+  let filename = !file_basename ^ !suffix in
   Printf.printf "Making HTML document (%s)..." filename; flush stdout;
   let ch = open_out filename in
     if not !nodoc then
@@ -287,7 +296,7 @@ let summary basen bl =
 	       output_string ch "\n"
 	 end;
 	 Html.open_balise ch "table";
-	 List.iter (one_entry_summary basen ch) el;
+	 List.iter (one_entry_summary ch) el;
 	 Html.close_balise ch "table")
       bl;
     in_summary := false;
@@ -351,7 +360,18 @@ let bib_file f bl =
 
 let format_list basename bl =
   first_pass bl;
-  directory := basename;
-  summary basename bl;
+  file_basename := basename;
+  if !both then begin
+    (* short version *)
+    print_abstract := false;
+    summary bl;
+    (* long version with abstracts *)
+    print_abstract := true;
+    file_basename := basename ^ "-abstracts";
+    summary bl;
+    file_basename := basename
+  end else
+    summary bl;
+  (* BibTeX entries file *)
   bib_file basename bl
 

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.21 1999-02-08 20:52:45 filliatr Exp $ *)
+(* $Id: main.ml,v 1.22 1999-02-12 16:49:14 filliatr Exp $ *)
 
 (* options *)
 
@@ -211,6 +211,7 @@ let usage () =
   prerr_endline "  -r         reverse the sort";
   prerr_endline "  -t         title of the HTML file (default is the filename)";
   prerr_endline "  -i         ignore BibTeX errors";
+  prerr_endline "  -both      produce versions with and without abstracts";
   prerr_endline "  -multiple  produce one file per entry";
   prerr_endline "  -nodoc     only produces the body of the HTML documents";
   prerr_endline "  -nokeys    do not print the BibTeX keys";
@@ -270,6 +271,8 @@ let parse () =
 	usage()
     | ("-multiple" | "--multiple") :: rem ->
 	Translate.multiple := true; parse_rec rem
+    | ("-both" | "--both") :: rem ->
+	Translate.both := true; parse_rec rem
  
     (* Controlling the translation *)
     | ("-m" | "--macros-from") :: f :: rem ->
