@@ -1,3 +1,4 @@
+ o fixed bug in evaluation of <> operator in bib2bib conditions
 
 Version 1.52 15/01/2002
 =======================

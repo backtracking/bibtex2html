@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: condition.ml,v 1.9 2001-02-21 09:51:52 filliatr Exp $ i*)
+(*i $Id: condition.ml,v 1.10 2002-01-24 09:06:42 marche Exp $ i*)
 
 open Printf;;
 
@@ -57,7 +57,7 @@ let evaluate_constante entrytype key fields = function
 let eval_comp v1 op v2 = 
     match op with
 	"=" -> v1 = v2
-      | "<>" -> v2 <> v2
+      | "<>" -> v1 <> v2	    
       | _ ->
 	  let n1 = int_of_string v1
 	  and n2 = int_of_string v2 in
