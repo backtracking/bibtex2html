@@ -40,10 +40,10 @@ latexmacros.cmx: latexmacros.cmi
 latexscan.cmo: latexmacros.cmi options.cmi 
 latexscan.cmx: latexmacros.cmx options.cmx 
 main.cmo: bbl_lexer.cmo bibfilter.cmi biboutput.cmi bibtex.cmi copying.cmi \
-    expand.cmi html.cmo latexmacros.cmi latexscan.cmo options.cmi readbib.cmi \
+    expand.cmi latexmacros.cmi latexscan.cmo options.cmi readbib.cmi \
     translate.cmo 
 main.cmx: bbl_lexer.cmx bibfilter.cmx biboutput.cmx bibtex.cmx copying.cmx \
-    expand.cmx html.cmx latexmacros.cmx latexscan.cmx options.cmx readbib.cmx \
+    expand.cmx latexmacros.cmx latexscan.cmx options.cmx readbib.cmx \
     translate.cmx 
 options.cmo: options.cmi 
 options.cmx: options.cmi 
