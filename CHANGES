@@ -1,4 +1,6 @@
 
+ o arguments to macros read from a file (option -m) are discarded
+
 Version 1.71, 24/8/2004
 =======================
  o improved date sorting algorithm to handle days (e.g. month = "June 29")

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexscan.mll,v 1.27 2004-03-02 08:06:27 filliatr Exp $ i*)
+(*i $Id: latexscan.mll,v 1.28 2004-08-26 12:27:22 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -52,6 +52,10 @@
   let print_hevea_url u t = 
     let u = remove_whitespace u in
     print_s (sprintf "<A HREF=\"%s\">%s</A>" u t)
+
+  let rec skip_n_args = function
+    | 0 -> []
+    | n -> Skip_arg :: skip_n_args (pred n)
 
 }
 
@@ -270,23 +274,21 @@ and read_macros = parse
   | _   { read_macros lexbuf }
 
 and read_def = parse
-    '\\' ['a'-'z' 'A'-'Z']+
-      { let s = Lexing.lexeme lexbuf in
-	let b = raw_arg lexbuf in
+    '\\' (['a'-'z' 'A'-'Z']+ as s)
+      { let b = raw_arg lexbuf in
 	if not !Options.quiet then begin
 	  eprintf "macro: %s = %s\n" s b; 
 	  flush stderr
 	end;
 	def s [Recursive b] }
-  | "{\\" ['a'-'z' 'A'-'Z']+ "}"
-      { let l = Lexing.lexeme lexbuf in
-	let s = String.sub l 1 (String.length l - 2) in
-	let b = raw_arg lexbuf in
+  | "{" ("\\" ['a'-'z' 'A'-'Z']+ as s) "}" ("[" (['0'-'9']+ as n) "]")?
+      { let b = raw_arg lexbuf in
 	if not !Options.quiet then begin
 	  eprintf "macro: %s = %s\n" s b; 
 	  flush stderr
 	end;
-	def s [Recursive b] }
+	let n = match n with None -> 0 | Some n -> int_of_string n in
+	def s (skip_n_args n @ [Recursive b]) }
   | [' ' '\t' '\n']* 
       { read_def lexbuf }
   | _ { () }
