@@ -20,7 +20,7 @@ type command =
 
 val expand : command list -> entry list
 
-val sort : entry list -> entry list
+val date_order : entry -> entry -> bool
 
 
 (* access to the fields *)

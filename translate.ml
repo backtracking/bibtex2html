@@ -7,7 +7,44 @@
 let nodoc = ref false
 let suffix = ref ".html"
 
+
+(* first pass to get the crossrefs *)
+
+let (cite_tab : (string,string) Hashtbl.t) = Hashtbl.create 17
+
+let cpt = ref 0
+
+let first_pass l =
+  let rec pass = function
+      [] -> ()
+    | (None,_,(_,k,_))::rem ->
+	incr cpt;
+	Hashtbl.add cite_tab k (string_of_int !cpt);
+	pass rem
+    | (Some c,_,(_,k,_))::rem ->
+	Hashtbl.add cite_tab k c;
+	pass rem
+  in
+    cpt := 0;
+    Hashtbl.clear cite_tab;
+    pass l
+
+
 (* latex2html : to print LaTeX strings in HTML format *)
+
+open Latexmacros
+
+let in_summary = ref false
+let directory = ref ""
+
+let cite k =
+  let url = (if !in_summary then !directory ^ "/" else "") ^ k ^ !suffix in
+  let c = Hashtbl.find cite_tab k in
+  print_s ("<A HREF=\"" ^ url ^ "\">[" ^ c ^ "]</A>")
+;;
+
+def "\\cite" [ Raw_arg cite ];;
+def "\\etalchar" [ Print "<sup>" ; Raw_arg print_s ; Print "</sup>" ];;
 
 let latex2html ch s =
   Latexmacros.out_channel := ch;
@@ -16,109 +53,36 @@ let latex2html ch s =
 let safe_title e =
   try Bibtex.get_title e with Not_found -> "No title"
 
-let safe_author e =
-  try Bibtex.get_author e with Not_found -> "No author"
-
-let format_date ch e =
-  output_string ch
-    (try Bibtex.get_month e with Not_found -> "");
-  output_string ch " ";
-  output_string ch
-    (try Bibtex.get_year e with Not_found -> "");
-  flush ch
-
-type command = 
-    Comma
-  | Dot
-  | String of string * (out_channel -> string -> unit)
-  | Field  of string * (out_channel -> string -> unit) * bool
-
-let normal = latex2html
-
-let emphasize ch s =
-  Html.open_em ch;
-  latex2html ch s;
-  Html.close_em ch
-
-let date_dot = [ Field ("month",normal,false) ; 
-		 String (" ",output_string);
-		 Field ("year",normal,true) ; 
-		 Dot ]
-
-let get_fields = function
-    "BOOK"          -> 
-      [ Field ("publisher",normal,true) ; Comma ] @ date_dot
-	
-  | "INPROCEEDINGS" -> 
-      [ String ("In ",normal) ; Field ("booktitle",emphasize,true) ; Dot ]
-      @ date_dot
-
-  | "ARTICLE" -> 
-      [ Field ("journal",emphasize,true) ; Comma ]
-      @ date_dot
-
-  | "TECHREPORT" ->
-      [ Field ("institution",normal,true) ; Comma ]
-      @ date_dot
-
-  | "UNPUBLISHED" ->
-      [ String ("Unpublished",normal) ; Comma ]
-      @ date_dot
-
-  | "INCOLLECTION" ->
-      [ String ("In ",normal) ; Field ("booktitle",emphasize,true) ; Dot ]
-      @ date_dot
-
-  | "PHDTHESIS" ->
-      [ String ("Ph. D. Thesis",normal) ; Comma ;
-	Field ("school",normal,true) ; Comma ]
-      @ date_dot
-
-  | _               ->
-      date_dot
-
-let warning k name =
-  Printf.fprintf stderr "Warning: field %s is missing in entry %s\n" name k
-
-let print_commands ch ((_,k,f) as e) fi =
-  let rec print = function
-      [] -> ()
-    | Comma :: rem -> 
-	output_string ch ", " ; print rem 
-    | Dot :: rem -> 
-	output_string ch ". " ; print rem
-    | String (s,f) :: rem -> 
-	f ch s; print rem
-    | Field (n,f,nec) :: rem ->
-	begin
-	  try  let s = Bibtex.get_field e n in f ch s
-	  with Not_found -> if nec then warning k n
-	end;
-	print rem
-  in
-    print fi
-
-let format_type ch ((t,_,_) as e) =
-  print_commands ch e (get_fields t)
 
 (* summary file f.html *)
 
-let one_entry_summary basen ch ((_,k,f) as e) =
-  Html.open_balise ch "li"; output_string ch " ";
+let one_entry_summary basen ch (_,b,((_,k,f) as e)) =
   let url = Filename.concat basen (k ^ !suffix) in
+  Html.open_balise ch "tr valign=top";
+
+  Html.open_balise ch "td";
   Html.open_href ch url;
-  latex2html ch (Bibtex.get_field e "BIBITEM");
+  latex2html ch ("[" ^ (Hashtbl.find cite_tab k) ^ "]");
   Html.close_href ch;
+  Html.close_balise ch "td";
+
+  Html.open_balise ch "td";
+  latex2html ch b;
+  Html.close_balise ch "td";
+
   Html.paragraph ch;
+  Html.close_balise ch "tr";
   output_string ch "\n"
 
 let summary basen el =
   let ch = open_out (basen ^ !suffix) in
     if not !nodoc then
       Html.open_document ch (fun () -> output_string ch basen);
-    Html.open_balise ch "ul";
+    Html.open_balise ch "table";
+    in_summary := true;
     List.iter (one_entry_summary basen ch) el;
-    Html.close_balise ch "ul";
+    in_summary := false;
+    Html.close_balise ch "table";
     if not !nodoc then Html.close_document ch;
     close_out ch
 ;;
@@ -126,24 +90,23 @@ let summary basen el =
 
 (* BibTeX file for one entry f/key.bib *)
 
-let bib_file f (t,k,fs) =
+let bib_file f (_,_,(t,k,fs)) =
   let fn = Filename.concat f (k ^ ".bib") in
   let ch = open_out fn in
 
     output_string ch ("@" ^ t ^ "{" ^ k ^ ",\n");
     List.iter
       (fun (a,v) ->
-	 if a <> "BIBITEM" then begin
-	   output_string ch "  ";
-	   output_string ch (String.lowercase a);
-	   output_string ch " = ";
-	   output_string ch ("{" ^ v ^ "},\n")
-	 end
+	 output_string ch "  ";
+	 output_string ch (String.lowercase a);
+	 output_string ch " = ";
+	 output_string ch ("{" ^ v ^ "},\n")
       ) fs;
     output_string ch "}\n";
     
     flush ch;
     close_out ch
+
 
 (* HTML file for one entry f/key.html *)
 
@@ -157,7 +120,7 @@ let file_type f =
   else
     "Available here"
 
-let html_file f ((t,k,_) as e) =
+let html_file f (_,b,((t,k,_) as e)) =
   let fn = Filename.concat f (k ^ !suffix) in
   let ch = open_out fn in
   let title = safe_title e in
@@ -167,7 +130,7 @@ let html_file f ((t,k,_) as e) =
 
     Html.open_balise ch "font size=4";
     output_string ch "\n\n";
-    latex2html ch (Bibtex.get_field e "BIBITEM");
+    latex2html ch b;
     Html.paragraph ch;
     output_string ch "\n";
 
@@ -207,10 +170,13 @@ let html_file f ((t,k,_) as e) =
     flush ch;
     close_out ch
 
+
 (* main function *)
 
 let format_list f l =
-    summary f l;
-    List.iter (bib_file f) l;
-    List.iter (html_file f) l
+  first_pass l;
+  directory := f;
+  summary f l;
+  List.iter (bib_file f) l;
+  List.iter (html_file f) l
 

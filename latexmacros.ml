@@ -52,6 +52,7 @@ def "\\paragraph"
     [Print "<H5>"; Print_arg; Print "</H5>\n"];
 def "\\begin{alltt}" [Print "<pre>"];
 def "\\end{alltt}" [Print "</pre>"];
+def "\\texttt" [Print "<tt>" ; Print_arg ; Print "</tt>"];
 def "\\begin{itemize}" [Print "<p><ul>"];
 def "\\end{itemize}" [Print "</ul>"];
 def "\\begin{enumerate}" [Print "<p><ol>"];
@@ -99,6 +100,7 @@ def "\\bibitem" [Raw_arg(function r ->
 def "\\newblock" [Print "<br>"];
 def "\\'" [Raw_arg(function "e" -> print_c 'é'
                           | "E" -> print_c 'É'
+                          | "\\i" -> print_c 'í'
                           | s   -> print_s s)];
 def "\\`" [Raw_arg(function "e" -> print_c 'è'
                           | "E" -> print_c 'È'
@@ -108,6 +110,8 @@ def "\\`" [Raw_arg(function "e" -> print_c 'è'
                           | "U" -> print_c 'Ù'
                           | s   -> print_s s)];
 def "\\~" [Raw_arg(function "n" -> print_c 'ñ'
+                          | s   -> print_s s)];
+def "\\c" [Raw_arg(function "c" -> print_c 'ç'
                           | s   -> print_s s)];
 def "\\^" [Raw_arg(function "a" -> print_c 'â'
                           | "A" -> print_c 'Â'
@@ -140,30 +144,5 @@ List.iter (fun symbol -> def ("\\" ^ symbol) [Print ("<I>" ^ symbol ^ "</I>")])
    "Sigma";"Upsilon";"Phi";"Psi";"Omega"];
 def "\\," [];
 def "\\mapsto" [Print "<tt>|-&gt;</tt>"];
-();;
-
-(* My personal macros *)
-
-def "\\th" [Print "-th"];
-def "\\st" [Print "st"];
-def "\\nd" [Print "nd"];
-def "\\rd" [Print "rd"];
-def "\\ier" [Print "ier"];
-def "\\iere" [Print "ière"];
-def "\\ieme" [Print "ième"];
-def "\\eme" [Print "e"];
-def "\\eg" [Print "e.g. "];
-def "\\ie" [Print "i.e.. "];
-def "\\etal" [Print "<I>et al.</I> "];
-def "\\begin{prop}" [Print "<p><strong>Proposition.</strong> <I>"];
-def "\\end{prop}" [Print "</I><p>"];
-def "\\comment" [Print "<I>(*"; Print_arg; Print "*)</I>"];
-def "\\stringlit" [Print "\"<B>"; Print_arg; Print "</B>\""];
-def "\\becomes" [Print "<tt>&lt;-</tt>"];
-def "\\biling" [Print_arg; Skip_arg];
-def "\\triling" [Print_arg; Skip_arg; Skip_arg];
-def "\\abbrev" [Print_arg; Skip_arg];
-def "\\citeurl" [Print "<A href=\""; Raw_arg print_s; Print "\">(url)</A>"];
-def "\\Cplusplus" [Print "C++"];
 ();;
 

@@ -10,6 +10,8 @@ type action =
   | Skip_arg
   | Raw_arg of (string -> unit)
 
+val def : string -> action list -> unit
+
 val find_macro: string -> action list
 
 val out_channel : out_channel ref

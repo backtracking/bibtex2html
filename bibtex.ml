@@ -87,7 +87,7 @@ let int_of_month = function
   | "December" -> 11
   | _ -> 0 (* TODO *)
 
-let order (_,_,f1) (_,_,f2) =
+let date_order (_,_,f1) (_,_,f2) =
   try
     let a1 = int_of_string (List.assoc "YEAR" f1) in
     let a2 = int_of_string (List.assoc "YEAR" f2) in
@@ -98,9 +98,6 @@ let order (_,_,f1) (_,_,f2) =
       m1 < m2))
   with Not_found | Failure "int_of_string" -> 
     failwith "year not present or incorrect"
-
-let sort el =
-  Sort.list order el
 
 
 (* access to the fields *)

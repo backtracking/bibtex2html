@@ -7,9 +7,11 @@
 let excluded = ref ([] : string list)
 let add_exclude k = excluded := k :: !excluded
 let style = ref "plain"
+
 type sort = Unsorted | By_date | By_author
 let sort = ref Unsorted
 let reverse_sort = ref false
+
 
 (* sort of entries *)
 
@@ -37,7 +39,7 @@ let keep_f (_,k,_) = not (List.mem k !excluded)
 
 let find_f (_,k1,_) (_,k2,_) = k1=k2
 
-let combine_f (_,_,b) (t,k,f) = (t,k,("BIBITEM",b)::f)
+let combine_f (c,_,b) e = c,b,e
 
 let rev_combine_f x y = combine_f y x
 
@@ -48,7 +50,11 @@ let sort_entries entries bibitems =
     else
       keep_combine keep_f find_f rev_combine_f entries bibitems
   in
-  let sl = if !sort = By_date then Bibtex.sort el else el in
+  let sl = 
+    if !sort = By_date then
+      Sort.list (fun (_,_,e1) (_,_,e2) -> Bibtex.date_order e1 e2) el
+    else
+      el in
   if !reverse_sort then List.rev sl else sl
 
 
@@ -129,6 +135,9 @@ let translate fbib f =
   let sl = sort_entries entries bibitems in
   Translate.format_list f sl
 
+
+(* command line parsing *)
+
 let usage () =
   prerr_endline "Usage: bibtex2html <options> filename";
   prerr_endline "  -s style   BibTeX style (plain, alpha, ...)";
@@ -171,6 +180,9 @@ let parse () =
     | _ -> usage ()
   in 
     parse_rec (List.tl (Array.to_list Sys.argv))
+
+
+(* main *)
 
 let main () =
   let fbib = parse () in
