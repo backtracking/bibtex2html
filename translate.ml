@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.59 2003-06-16 08:28:47 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.60 2003-06-16 09:36:27 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -51,7 +51,7 @@ type field_info = string * (string option)
 
 let default_fields =
   List.map (fun x -> x, None) 
-    ["FTP"; "HTTP"; "URL"; "DVI"; "PS"; "PDF";
+    ["FTP"; "HTTP"; "URL"; "DVI"; "PS"; "POSTSCRIPT"; "PDF";
      "DOCUMENTURL"; "URLPS"; "URLDVI"; "URLPDF"]
 
 let (fields : field_info list ref) = ref default_fields

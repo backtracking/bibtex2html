@@ -1,6 +1,8 @@
 
 Version 1.58, 16/6/2003
 =======================
+ o LaTeX '~' translated into &nbsp;
+ o field "postscript" treated as "ps"
  o fixed links when -o used with a full path
  o fixed behavior with -nf abstract ...
  o macro \$
