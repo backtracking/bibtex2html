@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibfilter.ml,v 1.7 2000-06-30 02:36:40 filliatr Exp $ *)
+(* $Id: bibfilter.ml,v 1.8 2000-07-10 19:39:36 marche Exp $ *)
 
 open Printf;;
 open Bibtex;;
@@ -28,8 +28,9 @@ let filter biblio criterion =
   Bibtex.fold
     (fun entry keys ->
        match entry with
-	   Entry(entry_type,key,fields) when criterion key fields ->
-	     KeySet.add key keys
+	   Entry(entry_type,key,fields) 
+	     when criterion entry_type key fields ->
+	       KeySet.add key keys
 	 | _ -> keys)
     biblio
     KeySet.empty

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibfilter.mli,v 1.4 2000-06-02 19:37:30 filliatr Exp $ *)
+(* $Id: bibfilter.mli,v 1.5 2000-07-10 19:39:36 marche Exp $ *)
 
 open Bibtex
 
@@ -22,7 +22,9 @@ open Bibtex
    satisfy the filter criterion [f] *)
 
 val filter : 
-  biblio -> (key -> ((string * atom list) list) -> bool) -> KeySet.t
+  biblio -> 
+    (entry_type -> key -> ((string * atom list) list) -> bool) -> 
+      KeySet.t
 
 (* [saturate bib s] returns the smallest part of the bibliography
    [bib] containing all the keys in s together with all the necessary

@@ -13,15 +13,18 @@ rule token = parse
   | "and"                 { AND }
   | "or"                  { OR }
   | "not"                 { NOT }
+  | "exists"              { EXISTS }
   | ':'                   { COLON }
   | '('                   { LPAR }
   | ')'                   { RPAR }
-  | '$'                   { AT }
+  | '$'                   { DOLLAR }
+  | '#'                   { SHARP  }
   | (">" | "<" | ">=" | "<=" | "=" | "<>") 
                           { COMP(Lexing.lexeme lexbuf) }
   | ['0'-'9']+            { INT(Lexing.lexeme lexbuf) }
   | ['A'-'Z' 'a'-'z'] +   { IDENT(Lexing.lexeme lexbuf) }
   | '"'                   { Buffer.clear string_buf; STRING(string lexbuf) }
+  | '\''                  { Buffer.clear string_buf; STRING(string2 lexbuf) }
   | eof                   { EOF }
   | _                     { raise 
 			      (Lex_error 
@@ -34,3 +37,11 @@ and string = parse
   | [^ '"'] +             { Buffer.add_string 
 			      string_buf (Lexing.lexeme lexbuf);
 			    string lexbuf }
+
+and string2 = parse
+    '\''                  { Buffer.contents string_buf }
+  | eof                   { raise (Lex_error ("Unterminated string")) }
+  | [^ '\''] +            { Buffer.add_string 
+			      string_buf (Lexing.lexeme lexbuf);
+			    string2 lexbuf }
+

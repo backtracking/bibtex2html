@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bib2bib.ml,v 1.11 2000-06-30 02:36:40 filliatr Exp $ *)
+(* $Id: bib2bib.ml,v 1.12 2000-07-10 19:39:35 marche Exp $ *)
 
 open Printf
 open Bibtex
@@ -134,7 +134,7 @@ let main () =
   in
   let matching_keys =
     Bibfilter.filter expanded 
-      (fun k f -> Condition.evaluate_cond k f !condition) 
+      (fun e k f -> Condition.evaluate_cond e k f !condition) 
   in
   if KeySet.cardinal matching_keys = 0 then
     begin

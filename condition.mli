@@ -14,10 +14,11 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: condition.mli,v 1.3 2000-06-02 19:37:32 filliatr Exp $ *)
+(* $Id: condition.mli,v 1.4 2000-07-10 19:39:37 marche Exp $ *)
 
 type constante =
   | Key
+  | Entrytype
   | Field of string
   | Cte of string
 
@@ -29,9 +30,18 @@ type condition =
   | Not of condition
   | Comp of constante * string * constante
   | Match of constante * Str.regexp
+  | Exists of string
+
+(*
+
+  [(evaluate_cond e k fields cond)] returns the boolean value of
+  [cond] with respect to the entry of type [e], of key [k], and fileds
+  [fields].
+
+*)
 
 val evaluate_cond : 
-  string -> (string * Bibtex.atom list) list -> condition -> bool
+  string -> string -> (string * Bibtex.atom list) list -> condition -> bool
 
 val print : condition -> unit
 

@@ -14,12 +14,13 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: condition.ml,v 1.6 2000-06-30 02:36:41 filliatr Exp $ *)
+(* $Id: condition.ml,v 1.7 2000-07-10 19:39:37 marche Exp $ *)
 
 open Printf;;
 
 type constante =
   | Key
+  | Entrytype
   | Field of string
   | Cte of string
 ;;
@@ -32,12 +33,14 @@ type condition =
   | Not of condition
   | Comp of constante * string * constante
   | Match of constante * Str.regexp
+  | Exists of string
 ;;
 
 exception Unavailable;;
 
-let evaluate_constante key fields = function
+let evaluate_constante entrytype key fields = function
     Key -> key
+  | Entrytype -> entrytype
   | Field(f) ->
       begin
 	try
@@ -57,65 +60,80 @@ let evaluate_constante key fields = function
 ;;
 
 let eval_comp v1 op v2 = 
-  match op with
-      "=" -> v1 = v2
-    | "<>" -> v2 <> v2
-    | _ ->
-	let n1 = int_of_string v1
-	and n2 = int_of_string v2 in
-	  match op with
-	      ">" -> n1 > n2
-	    | "<" -> n1 < n2
-	    | ">=" -> n1 >= n2
-	    | "<=" -> n1 <= n2
-	    | _ -> assert false
+    match op with
+	"=" -> v1 = v2
+      | "<>" -> v2 <> v2
+      | _ ->
+	  let n1 = int_of_string v1
+	  and n2 = int_of_string v2 in
+	    match op with
+		">" -> n1 > n2
+	      | "<" -> n1 < n2
+	      | ">=" -> n1 >= n2
+	      | "<=" -> n1 <= n2
+	      | _ -> assert false
 ;;
 
-let rec evaluate_rec key fields = function
+let rec evaluate_rec entrytype key fields = function
   | True -> true
   | False -> false
   | And(c1,c2) ->
-      if evaluate_rec key fields c1
-      then evaluate_rec key fields c2
+      if evaluate_rec entrytype key fields c1
+      then evaluate_rec entrytype key fields c2
       else false
   | Or(c1,c2) ->
-      if evaluate_rec key fields c1
+      if evaluate_rec entrytype key fields c1
       then true
-      else evaluate_rec key fields c2
-  | Not(c) -> not (evaluate_rec key fields c)
+      else evaluate_rec entrytype key fields c2
+  | Not(c) -> not (evaluate_rec entrytype key fields c)
   | Comp(c1,op,c2) ->
-      let v1 = evaluate_constante key fields c1 
-      and v2 = evaluate_constante key fields c2 in
-	begin
-	  try 
-	    eval_comp v1 op v2
-	  with
-	      Failure "int_of_string" -> 
-		if not !Options.quiet then begin
-		  eprintf "Warning: cannot compare non-numeric values ";
-		  eprintf "%s and %s in entry %s\n" v1 v2 key
-		end;
-		raise Unavailable
-	end
+      begin
+	try
+	  let v1 = evaluate_constante entrytype key fields c1 
+	  and v2 = evaluate_constante entrytype key fields c2 in
+	    try
+	      eval_comp v1 op v2
+	    with
+		Failure "int_of_string" -> 
+		  if not !Options.quiet then begin
+		    eprintf "Warning: cannot compare non-numeric values ";
+		    eprintf "%s and %s in entry %s\n" v1 v2 key
+		  end;
+		  false
+	with
+	    Unavailable -> false
+      end
 
   | Match(c,r) ->
-      let v = evaluate_constante key fields c in
-      try
-	let _ = Str.search_forward r v 0 in true
-      with Not_found -> false
+      begin
+	try
+	  let v = evaluate_constante entrytype key fields c in
+	  let _ = Str.search_forward r v 0 in true
+	with
+	    Not_found -> false
+	  | Unavailable -> false
+      end
+
+  | Exists(f) ->
+      begin
+	try
+	  let _ = List.assoc f fields in true
+	with
+	    Not_found -> false
+      end
 
 ;;
 
-let evaluate_cond key fields c =
+let evaluate_cond entrytype key fields c =
   try
-    evaluate_rec key fields c
+    evaluate_rec entrytype key fields c
   with
-      Unavailable -> false
-    | Not_found -> assert false
+      Not_found -> assert false
 ;;
     
 let string_of_constante = function
     Key -> "(key)"
+  | Entrytype -> "(entrytype)"
   | Field(f) -> f
   | Cte(x) -> "\"" ^ x ^ "\""
 ;;
@@ -129,5 +147,6 @@ let rec print = function
   | Comp(c1,op,c2) -> 
       printf "%s %s %s" (string_of_constante c1) op (string_of_constante c2)
   | Match(c,s) -> printf "%s : (regexp)" (string_of_constante c)
+  | Exists(f) -> printf "exists %s" f
 ;;
 

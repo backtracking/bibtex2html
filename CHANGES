@@ -1,4 +1,9 @@
 
+ o bib2bib: predicate "exists" added in conditions to check existence
+   of a field
+ o bib2bib: new semantics for non-existent fields in conditions
+ o bib2bib: added # in conditions to refer to the entry type
+ o bib2bib: strings may now be written between single quotes
  o macros \mathsf, \mathtt, \mathnormal, \TeX, \LaTeXe
  o option -q, --quiet: do not write anything to stderr except errors
 

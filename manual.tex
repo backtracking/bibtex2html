@@ -406,27 +406,33 @@ condition is either:
 \item a disjunction of two conditions, written as $c_1 \verb| or |
   c_2$ ;
 \item a negation of a condition, written as $\verb|not | c$ ;
+\item a test of existence of a field, written as $\verb|exists | f$ where $f$
+  is a field name ;
 \end{itemize}
 where an expression is either:
 \begin{itemize}
-\item a string constant, written between double quotes ;
+\item a string constant, written either between double quotes or single 
+  quotes ; 
 \item a integer constant ;
 \item a field name ;
 \item the special character \verb|$| which corresponds to the key of
   an entry.
+\item the special character \verb|#| which corresponds to the type of
+  an entry (Article, InProceedings, etc.)
 \end{itemize} 
 
 Comparison operators are the usual ones: \texttt{=}, \texttt{<},
 \texttt{>}, \texttt{<=}, \texttt{>=} and \texttt{<>}. 
 
-The field names are any sequences of lowercase or uppercase letters.
+The field names are any sequences of lowercase or uppercase letters (but no
+distinction is made between lowercase and uppercase letters).
 
-Regular expressions must be put between double quotes, and must follow
-the GNU syntax of regular expressions, as for example in GNU
-Emacs. Any character other than \verb|$^.*+?[]| matches itself, see
-Table~\ref{table:regexp} for the meaning of the special characters. 
+Regular expressions must be put between single or double quotes, and must
+follow the GNU syntax of regular expressions, as for example in GNU Emacs. Any
+character other than \verb|$^.*+?[]| matches itself, see
+Table~\ref{table:regexp} for the meaning of the special characters.
 
-\begin{table}
+\begin{table}[t]
 \begin{center}
 \begin{tabular}{|l|p{100mm}|}
 \hline
@@ -466,22 +472,44 @@ is equivalent to
 
 Table~\ref{table:syntax} shows a formal grammar for conditions.
 
-\begin{table}
+\begin{table}[t]
 \begin{eqnarray*}
 Cond & \rightarrow & Cond \verb| and | Cond \mid Cond \verb| or | Cond
-\mid \verb|not | Cond \\
-&& \mid Expr ~ Comp ~ Expr \mid Id \verb|:| String \\
+\mid \verb|not | Cond \mid \verb|( | Cond \verb| )| \\
+&& \mid Expr ~ Comp ~ Expr \mid Expr \verb|:| String \mid \verb|exists | Id\\
 Comp & \rightarrow & \verb|=| \mid \verb|>| \mid \verb|<| \mid
 \verb|>=| \mid \verb|<=| \mid \verb|<>| \\
-Expr & \rightarrow & Id \mid String \mid Int \\
+Expr & \rightarrow & Id \mid String \mid Int \mid \verb|$| \mid \verb|#| \\
 Id & \rightarrow & [\verb|a|-\verb|z|\verb|A|-\verb|Z|]^+ \\
-String & \rightarrow & \verb|"| [\verb|^"|]^* \verb|"| \\
+String & \rightarrow & \verb|"| [\verb|^"|]^* \verb|"| \mid \verb|'| [\verb|^'|]^* \verb|'| \\
 Integer & \rightarrow & [\verb|0|-\verb|9|]^+
 \end{eqnarray*}
 \caption{Syntax of conditions}
 \label{table:syntax}
 \end{table}
 
+\subsubsection*{Remarks on evaluation of conditions}
+
+\begin{itemize}
+\item On entry types, keys and field names, no distinction is made between
+  uppercase and lowercase letters ; and the same in matching against regular
+  expressions.
+\item On the other hand, case matters when comparing strings. If you want for
+  example to check equality of the entry type and a string value, put the
+  value in uppercase, as for example \verb|# = "INPROCEEDINGS"|, otherwise the
+  condition would be always false. 
+\item When performing a comparison with an non-existent field, the result is
+  always false ; beware that this means that for example 
+  \verb|not (f = "value")| and \verb|f <> "value"| are not equivalent: for an
+  entry that does not have a field \verb|f|, the first condition is true
+  whereas the second is false. 
+\item As usual, \verb|not| has higher priority than \verb|and|, which itself
+  has higher priority than \verb|or|. \verb|and| and \verb|or| associate to
+  the left.
+\item Comparison using \verb|>|, \verb|<|, \verb|>=| and \verb|<=| may only be
+  used between integer values. In any other case, a warning is displayed and
+  the result is false.
+\end{itemize}
 
 \subsection{Examples}
 
