@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.68 2004-10-06 06:20:00 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.69 2004-10-22 15:12:41 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -117,9 +117,9 @@ let cite k =
 	sprintf "%s%s#%s" !output_file !link_suffix k 
     in
     let c = if !use_keys then k else Hashtbl.find cite_tab k in
-    print_s (sprintf "<A HREF=\"%s\">[" url);
+    print_s (sprintf "[<a href=\"%s\">" url);
     latex2html !out_channel c;
-    print_s "]</A>"
+    print_s "</a>]"
   with
       Not_found -> print_s "[?]"
 
@@ -187,10 +187,10 @@ let file_type f =
   try
     List.find (Filename.check_suffix f) file_suffixes
   with Not_found ->
-    if is_http f then "http" else if is_ftp f then "ftp" else "www"
+    if is_http f then "http" else if is_ftp f then "ftp" else "www:"
 
 let get_url s =
-  if (String.length s > 3 & String.lowercase (String.sub s 0 4) = "www:") then
+  if (String.length s > 3 & String.lowercase (String.sub s 0 3) = "www") then
     String.sub s 4 (String.length s - 4)
   else
     s
@@ -260,7 +260,7 @@ let make_abstract ((t,k,_) as e) =
       Atext a
     end else if !both then begin
       (* 3. we have to insert a link to the file f-abstracts *)
-      let url = sprintf "%s-abstracts%s#%s" !output_file !link_suffix k in
+      let url = sprintf "%s_abstracts%s#%s" !output_file !link_suffix k in
       Alink { l_url = url; l_name = !abstract_name }
     end else
       No_abstract
@@ -268,7 +268,7 @@ let make_abstract ((t,k,_) as e) =
     No_abstract
 
 let blockquote ch f =
-  Html.paragraph ch; output_string ch "\n";
+(* JK  Html.paragraph ch; output_string ch "\n"; *)
   Html.open_balise ch "blockquote";
   let font_size = not !multiple && !Html.css = None in
   if font_size then Html.open_balise ch "font size=\"-1\"";
@@ -286,7 +286,7 @@ let display_notes ch e =
        try 
 	 let a = Expand.get_uppercase_field e f in 
 	 display_abstract ch a;
-	 Html.paragraph ch
+	 (* JK Html.paragraph ch *)
        with Not_found -> ())
     !note_fields
 
@@ -316,7 +316,7 @@ let separate_file (b,((_,k,f) as e)) =
   Html.open_balise ch "h2";
   latex2html ch b;
   Html.close_balise ch "h2";
-  Html.paragraph ch;
+  (* JK Html.paragraph ch; *)
   let labs = match make_abstract e with 
     | Atext a -> display_abstract ch a; []
     | Alink l -> [l]
@@ -326,7 +326,7 @@ let separate_file (b,((_,k,f) as e)) =
   display_notes ch e;
   if !print_keywords then display_keywords ch e;
   display_links ch (labs @ bibtex_entry k :: make_links e);
-  Html.paragraph ch;
+  (* JK Html.paragraph ch; *)
   Html.open_href ch (!output_file ^ !link_suffix);
   output_string ch "Back";
   Html.close_href ch;
@@ -363,7 +363,7 @@ let close_row ch =
     Html.close_balise ch "td"; output_string ch "\n";
     Html.close_balise ch "tr"; output_string ch "\n"
   end else begin
-    Html.paragraph ch; output_string ch "\n";
+    (* JK Html.paragraph ch; output_string ch "\n"; *)
     Html.close_balise ch "dd"; output_string ch "\n"
   end
 
@@ -373,15 +373,19 @@ let one_entry_summary ch biblio (_,b,((_,k,f) as e)) =
   end;
   output_string ch "\n\n";
   open_row ch;
-  Html.open_anchor ch k; Html.close_anchor ch;
+  (* JK changes *)
+  if (not !nokeys) or !multiple then output_string ch "[";
+  Html.open_anchor ch k;
   if (not !nokeys) or !multiple then begin
-    output_string ch "[";
     if !multiple then Html.open_href ch (k ^ !link_suffix);
     latex2html ch (if !use_keys then k else Hashtbl.find cite_tab k);
     if !multiple then Html.close_href ch;
-    output_string ch "]"
-  end;
-  (*i Html.close_anchor ch; i*)
+  end
+  else
+    output_string ch "&nbsp;";
+  Html.close_anchor ch;
+  if (not !nokeys) or !multiple then output_string ch "]";
+  (* end of JK changes *)
   output_string ch "\n"; 
   new_column ch;
   latex2html ch b;
@@ -487,7 +491,7 @@ let bib_file bl keys =
 
 let format_list biblio sorted_bl keys =
   first_pass sorted_bl;
-  bibentries_file := !output_file ^ "-bib";
+  bibentries_file := !output_file ^ "_bib";
   if !both then begin
     (* short version *)
     print_abstract := false;
@@ -497,7 +501,7 @@ let format_list biblio sorted_bl keys =
     print_abstract := true;
     print_keywords := true;
     let old_output = !output_file in
-    output_file := !output_file ^ "-abstracts";
+    output_file := !output_file ^ "_abstracts";
     summary biblio sorted_bl;
     output_file := old_output
   end else

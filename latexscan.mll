@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexscan.mll,v 1.28 2004-08-26 12:27:22 filliatr Exp $ i*)
+(*i $Id: latexscan.mll,v 1.29 2004-10-22 15:12:41 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -47,11 +47,11 @@
 
   let print_latex_url u =
     let u = remove_whitespace u in
-    print_s (sprintf "<A HREF=\"%s\">%s</A>" u u)
+    print_s (sprintf "<a href=\"%s\">%s</a>" u u)
   
   let print_hevea_url u t = 
     let u = remove_whitespace u in
-    print_s (sprintf "<A HREF=\"%s\">%s</A>" u t)
+    print_s (sprintf "<a href=\"%s\">%s</a>" u t)
 
   let rec skip_n_args = function
     | 0 -> []
@@ -69,13 +69,16 @@ rule main = parse
     '%' [^ '\n'] * '\n' { main lexbuf }
 (* Paragraphs *)
   | "\n\n" '\n' *
-                { print_s "<P>\n"; main lexbuf }
+                { print_s "<p>\n"; main lexbuf }
 (* Font changes *)
-  | "{\\it" " "* | "{\\em" " "* | "{\\sl" " "*
-  | "{\\itshape" " "* | "{\\slshape" " "*
+  | "{\\it" " "* | "{\\itshape" " "*
                   { print_s "<i>";
                     save_state main lexbuf;
                     print_s "</i>"; main lexbuf }
+  | "{\\em" " "* | "{\\sl" " "* | "{\\slshape" " "*
+                  { print_s "<em>";
+                    save_state main lexbuf;
+                    print_s "</em>"; main lexbuf }
   | "{\\bf" " "* | "{\\sf" " "* | "{\\bfseries" " "* | "{\\sffamily" " "*
                   { print_s "<b>";
                     save_state main lexbuf;
@@ -184,9 +187,9 @@ rule main = parse
 (* Default rule for other characters *)
   | eof         { () }
   | ['A'-'Z' 'a'-'z']+
-                { if !math_mode then print_s "<EM>";
+                { if !math_mode then print_s "<em>";
                   print_s(Lexing.lexeme lexbuf);
-                  if !math_mode then print_s "</EM>";
+                  if !math_mode then print_s "</em>";
                   main lexbuf }
   | _           { print_c(Lexing.lexeme_char lexbuf 0); main lexbuf }
 
