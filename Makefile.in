@@ -49,19 +49,25 @@ opt: bibtex2html bib2bib
 
 byte: bibtex2html.byte bib2bib.byte
 
-install:
+install-indep:
 	mkdir -p $(BINDIR)
-	cp aux2bib $(BINDIR)
+	cp aux2bib $(BINDIR)/aux2bib
+	mkdir -p $(MANDIR)
+	cp bibtex2html.1 $(MANDIR)/man1/bibtex2html.1
+	cp bibtex2html.1 $(MANDIR)/man1/bib2bib.1
+	cp aux2bib.1 $(MANDIR)/man1/aux2bib.1
+
+install: install-indep
 	if test @OCAMLBEST@ = opt ; then \
 		cp bibtex2html bib2bib $(BINDIR) ; \
 	else \
 		cp bibtex2html.byte $(BINDIR)/bibtex2html ; \
 		cp bib2bib.byte $(BINDIR)/bib2bib ; \
 	fi
-	mkdir -p $(MANDIR)
-	cp bibtex2html.1 $(MANDIR)/man1/bibtex2html.1
-	cp bibtex2html.1 $(MANDIR)/man1/bib2bib.1
-	cp aux2bib.1 $(MANDIR)/man1/aux2bib.1
+
+install-byte: install-indep
+	cp bibtex2html.byte $(BINDIR)/bibtex2html
+	cp bib2bib.byte $(BINDIR)/bib2bib
 
 local: bibtex2html bib2bib
 	cp bibtex2html bib2bib aux2bib $$HOME/bin/$$OSTYPE
@@ -71,7 +77,7 @@ bibtex2html: $(OBJS)
 	strip bibtex2html
 
 bibtex2html.byte: $(OBJS:.cmx=.cmo)
-	ocamlc -custom $(PROFILE) $(FLAGS)-o bibtex2html.byte str.cma $(OBJS:.cmx=.cmo) $(STRLIB) 
+	ocamlc $(PROFILE) $(FLAGS)-o bibtex2html.byte str.cma $(OBJS:.cmx=.cmo) $(STRLIB) 
 
 bibtex2html.pbyte: $(OBJS:.cmx=.cmo)
 	ocamlc -use-runtime ~demons/bin/$(OSTYPE)/ocamlcustomrun \
@@ -86,7 +92,7 @@ bib2bib: $(BIB2BIBOBJS)
 	strip bib2bib
 
 bib2bib.byte: $(BIB2BIBOBJS:.cmx=.cmo)
-	ocamlc -custom $(PROFILE) $(FLAGS) -o bib2bib.byte str.cma $(BIB2BIBOBJS:.cmx=.cmo) $(STRLIB)
+	ocamlc  $(PROFILE) $(FLAGS) -o bib2bib.byte str.cma $(BIB2BIBOBJS:.cmx=.cmo) $(STRLIB)
 
 bib2bib.pbyte: $(BIB2BIBOBJS:.cmx=.cmo)
 	ocamlc -use-runtime ~demons/bin/$(OSTYPE)/ocamlcustomrun \
