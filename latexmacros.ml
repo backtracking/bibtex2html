@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.50 2004-04-05 07:49:58 filliatr Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.51 2004-04-21 08:29:10 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -320,6 +320,7 @@ def "\\bibitem" [Raw_arg (function r ->
   print_s "<dd>")];
 
 (* Greek letters *)
+(***
 List.iter 
   (fun symbol -> def ("\\" ^ symbol) [Print ("<EM>" ^ symbol ^ "</EM>")])
   ["alpha";"beta";"gamma";"delta";"epsilon";"varepsilon";"zeta";"eta";
@@ -327,6 +328,48 @@ List.iter
    "rho";"varrho";"sigma";"varsigma";"tau";"upsilon";"phi";"varphi";
    "chi";"psi";"omega";"Gamma";"Delta";"Theta";"Lambda";"Xi";"Pi";
    "Sigma";"Upsilon";"Phi";"Psi";"Omega"];
+***)
+def "\\alpha" [Print "&alpha;"];
+def "\\beta" [Print "&beta;"];
+def "\\gamma" [Print "&gamma;"];
+def "\\delta" [Print "&delta;"];
+def "\\epsilon" [Print "&epsilon;"];
+def "\\varepsilon" [Print "&epsilon;"];
+def "\\zeta" [Print "&zeta;"];
+def "\\eta" [Print "&eta;"];
+def "\\theta" [Print "&theta;"];
+def "\\vartheta" [Print "&theta;"];
+def "\\iota" [Print "&iota;"];
+def "\\kappa" [Print "&kappa;"];
+def "\\lambda" [Print "&lambda;"];
+def "\\mu" [Print "&mu;"];
+def "\\nu" [Print "&nu;"];
+def "\\xi" [Print "&xi;"];
+def "\\pi" [Print "&pi;"];
+def "\\varpi" [Print "&piv;"];
+def "\\rho" [Print "&rho;"];
+def "\\varrho" [Print "&rho;"];
+def "\\sigma" [Print "&sigma;"];
+def "\\varsigma" [Print "&sigmaf;"];
+def "\\tau" [Print "&tau;"];
+def "\\upsilon" [Print "&upsilon;"];
+def "\\phi" [Print "&phi;"];
+def "\\varphi" [Print "&phi;"];
+def "\\chi" [Print "&chi;"];
+def "\\psi" [Print "&psi;"];
+def "\\omega" [Print "&omega;"];
+def "\\Gamma" [Print "&Gamma;"];
+def "\\Delta" [Print "&Delta;"];
+def "\\Theta" [Print "&Theta;"];
+def "\\Lambda" [Print "&Lambda;"];
+def "\\Xi" [Print "&Xi;"];
+def "\\Pi" [Print "&Pi;"];
+def "\\Sigma" [Print "&Sigma;"];
+def "\\Upsilon" [Print "&Upsilon;"];
+def "\\Phi" [Print "&Phi;"];
+def "\\Psi" [Print "&Psi;"];
+def "\\Omega" [Print "&Omega;"];
+
 
 (* macros for the AMS styles *)
 

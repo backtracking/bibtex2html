@@ -1,4 +1,6 @@
 
+ o macros for Greek letters now translated to HTML entities
+
 Version 1.69, 6/4/2004
 ======================
  o macros \bysame, \MR and \MRhref for AMS* stylew
