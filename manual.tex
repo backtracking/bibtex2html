@@ -14,7 +14,7 @@
 
 \begin{document}
 
-\title{BibTeX2HTML: a translator of BibTeX bibliographies into HTML}
+\title{BibTeX2HTML \\ A translator of BibTeX bibliographies into HTML}
 \author{Jean-Christophe Filli\^{a}tre and Claude March\'e \\
         \normalsize\monurl{\url{http://www.lri.fr/~filliatr/bibtex2html}}}
 \date{}
@@ -27,7 +27,7 @@
 
 BibTeX2HTML is a collection of tools for producing automatically HTML
 documents from bibliographies written in the BibTeX format. It
-consists in two command line tools:
+consists in three command line tools:
 \begin{itemize}
 \item \texttt{bib2bib} is a filter tool that reads one or several
   bibliography files, filters the entries with respect to a given
@@ -38,7 +38,11 @@ consists in two command line tools:
   cited bibliography in a nice presentation, and the original BibTeX
   file augmented with several transparent HTML links to allow easy
   navigation. 
+\item \texttt{aux2bib} reads a \texttt{.aux} file as produced by
+  \LaTeX\ and writes to standard output a BibTeX file containing exactly the
+  BibTeX entries refereed in the \texttt{.aux} file.
 \end{itemize}
+
 
 \section{The \texttt{bibtex2html} command tool}
 
@@ -617,6 +621,18 @@ is kept and the others are ignored.  With this behaviour, everything
 works well as soon as repeated abbrevs are really duplicate abbrevs of
 the same sentence, and repeated keys are really duplicate
 entries. 
+
+
+\section{The \texttt{aux2bib} command line tool}
+
+\texttt{aux2bib} is a tool extracting the BibTeX references from a
+\texttt{.aux} file (as produced by \LaTeX) and building the
+corresponding BibTeX file. It is invocated as
+\begin{quote}
+\texttt{aux2bib} \textit{file.aux}
+\end{quote}
+The BibTeX file is written on the standard output.
+
 
 \section{Frequently Asked Questions}
 

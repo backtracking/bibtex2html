@@ -71,6 +71,7 @@ install-byte: install-indep
 
 local: bibtex2html bib2bib
 	cp bibtex2html bib2bib aux2bib $$HOME/bin/$$OSTYPE
+	cp *.1 $$HOME/man/man1
 
 bibtex2html: $(OBJS)
 	ocamlopt $(PROFILE) $(FLAGS) -o bibtex2html str.cmxa $(OBJS) $(STRLIB)

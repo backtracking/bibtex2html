@@ -15,7 +15,7 @@ consists in three command line tools:
     navigation.
 
   - aux2bib reads a .aux file as produced by LaTeX and writes
-    to standard output a bibtex file containing exactly the
+    to standard output a BibTeX file containing exactly the
     BibTeX entries refereed in the .aux file.
 
 COPYRIGHT
