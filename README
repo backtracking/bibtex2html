@@ -28,9 +28,10 @@ INSTALLATION
   You need Objective Caml to compile the sources.
  
   1. Compile with "make all". It creates two binary files, "bibtex2html" 
-     and "bib2bib" 
+     and "bib2bib" .
 
-  2. Copy those binary files where you want,
-     either by editing the Makefile and doing "make install"
-     or by copying the files "by hand".
+  2. Edit the Makefile to set the variables BINDIR and MANDIR (at the very
+     beginning) and do "make install". You may need superuser permissions.
 
+     (Note: you can also just move the two executables in any directory of
+     your choice) 
