@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.46 2001-01-11 11:52:21 filliatr Exp $ *)
+(*i $Id: translate.ml,v 1.47 2001-02-09 08:09:43 filliatr Exp $ i*)
 
 open Printf
 
@@ -39,8 +39,22 @@ let bibentries_file = ref ""
 let title_url = ref false
 let use_label_name = ref false
 
-let (fields : string list ref) = ref []
-let add_field s = fields := (String.uppercase s) :: !fields
+(* internal name, plus optional external name *)
+type field_info = string * (string option)
+
+let default_fields =
+  (List.map (fun x -> x, Some x) ["FTP"; "HTTP"; "URL"; "DVI"; "PS"; "PDF"]) @
+  (List.map (fun x -> x, None) ["DOCUMENTURL"; "URLPS"; "URLDVI"; "URLPDF"]) 
+
+let (fields : field_info list ref) = ref default_fields
+
+let add_field s = 
+  let u = String.uppercase s in 
+  fields := (u, None) :: (List.remove_assoc u !fields)
+
+let add_named_field s name = 
+  let u = String.uppercase s in 
+  fields := (u, Some name) :: (List.remove_assoc u !fields)
 
 (* first pass to get the crossrefs *)
 
@@ -138,7 +152,7 @@ let file_types = [ ".dvi","DVI"; ".DVI","DVI"; ".ps","PS"; ".PS","PS";
 let file_type f =
   let (comp,f) = decompressed f in
   let rec test_type = function
-      [] -> "Available here"
+    | [] -> "Available here"
     | (suff,name)::rem ->
 	if Filename.check_suffix f suff then
 	  (if comp then "Compressed " else "") ^ name
@@ -149,8 +163,8 @@ let file_type f =
 
 let rec is_url s =
   (String.length s > 3 & String.lowercase (String.sub s 0 4) = "http")
-  or  (String.length s > 2 & String.lowercase (String.sub s 0 3) = "ftp")
-  or  (String.length s > 3 & String.lowercase (String.sub s 0 4) = "www:")
+  or (String.length s > 2 & String.lowercase (String.sub s 0 3) = "ftp")
+  or (String.length s > 3 & String.lowercase (String.sub s 0 4) = "www:")
 
 let get_url s =
   if (String.length s > 3 & String.lowercase (String.sub s 0 4) = "www:") then
@@ -158,31 +172,33 @@ let get_url s =
   else
     s
 
-let link_name u url s =
-  if !raw_url then 
-    url 
-  else if !use_label_name then 
-    String.capitalize (String.lowercase u)
-  else
-    s
+let link_name (u, name) url s =
+  match name with
+  | Some name ->
+      name
+  | None ->
+      if !raw_url then 
+	url 
+      else if !use_label_name then 
+	String.capitalize (String.lowercase u)
+      else
+	s
 
 let make_links ch ((t,k,_) as e) startb =
   (* URL's *)
   let first = ref startb in
   List.iter 
-    (fun f -> 
+    (fun ((f, _) as info) -> 
        try
 	 let u = Expand.get_uppercase_field e f in
 	 let s = file_type u in
 	 if !first then first := false else output_string ch ",\n";
 	 let url = get_url u in
 	 Html.open_href ch url;
-	 output_string ch (link_name f url s);
+	 output_string ch (link_name info url s);
 	 Html.close_href ch
        with Not_found -> ())
-    (!fields @ 
-     [ "FTP"; "HTTP"; "URL"; "DVI"; "PS"; "PDF";
-       "DOCUMENTURL"; "URLPS"; "URLDVI"; "URLPDF" ])
+    !fields
 
 let make_abstract ch ((t,k,_) as e) =
   try
@@ -196,12 +212,12 @@ let make_abstract ch ((t,k,_) as e) =
       end else if !print_abstract then begin
 	(* 2. we have to print it right here *)
 	Html.paragraph ch; output_string ch "\n";
-	if not !multiple then Html.open_balise ch "font size=-1";
 	Html.open_balise ch "blockquote";
+	if not !multiple then Html.open_balise ch "font size=-1";
 	output_string ch "\n";
 	latex2html ch a;
-	Html.close_balise ch "blockquote";
 	if not !multiple then Html.close_balise ch "font";
+	Html.close_balise ch "blockquote";
 	output_string ch "\n";
 	Html.paragraph ch; output_string ch "\n"
       end else if !both then begin

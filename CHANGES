@@ -1,4 +1,11 @@
 
+ o fixed a minor HTML error (inversion of <blockquote> and <font>)
+
+Version 1.45 31/1/2001
+======================
+
+ o option -nf to specify how to display the link (patch by François Pottier)
+
 Version 1.44 11/1/2001
 ======================
 

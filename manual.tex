@@ -103,8 +103,8 @@ A link is inserted:
   file format.
 
   The file format is prefixed 
-  You can insert web link for other fields with the option
-  \texttt{-f} (see below).
+  You can insert web link for other fields with the options
+  \texttt{-f} and \texttt{-nf} (see below).
   
 \end{itemize}
 
@@ -190,6 +190,13 @@ Most of the command line options have a short version of one character
 \item[\texttt{-f} \textit{field}, \texttt{\mm{}field} \textit{field}] ~
   
   add a web link for that BibTeX field.
+
+  
+\item[\texttt{-f} \textit{field} \textit{string}, 
+      \texttt{\mm{}named-field} \textit{field} \textit{string}] ~
+  
+  similar to \texttt{-f} but specifies the way to display the link
+  (e.g. \texttt{-nf springer "At Springer's"}).
 
   
 \item[\texttt{-multiple}, \texttt{\mm{}multiple}] ~

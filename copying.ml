@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: copying.ml,v 1.4 2000-06-30 02:36:42 filliatr Exp $ *)
+(* $Id: copying.ml,v 1.5 2001-02-09 08:09:42 filliatr Exp $ *)
 
 open Printf
 
@@ -36,7 +36,7 @@ let banner softname =
   if not !Options.quiet then begin
     eprintf "This is %s version %s, compiled on %s\n"
       softname Version.version Version.date;
-    eprintf "Copyright (c) 1997,1998,1999 Jean-Christophe Filliâtre and Claude Marché\n";
+    eprintf "Copyright (c) 1997-2001 Jean-Christophe Filliâtre and Claude Marché\n";
     eprintf "This is free software with ABSOLUTELY NO WARRANTY (use option --warranty)\n\n";
     flush stderr
   end
