@@ -82,7 +82,7 @@ FILES = bibtex.mli bibtex.ml latexmacros.mli latexmacros.ml bibtex_lexer.mll \
 	biboutput.mli biboutput.ml bib2bib.ml \
 	manual.tex
 
-export: source linux solaris
+export: source doc linux solaris
 
 move-olds:
 	cp $(FTP)/bibtex2html* $(FTP)/olds
@@ -114,6 +114,22 @@ aix:
 	mkdir -p export/$(AIX)
 	cp README COPYING GPL bibtex2html bib2bib export/$(AIX)
 	(cd export; tar cf $(AIX).tar $(AIX); gzip --best $(AIX).tar)
+
+# documentation
+###############
+
+WWW=/users/demons/filliatr/WWW/bibtex2html
+
+doc: manual.ps manual.html
+	gzip -c manual.ps > $(WWW)/doc/manual.ps.gz
+	cp -f manual.html $(WWW)/doc
+
+manual.ps: manual.tex
+	latex manual && latex manual
+	dvips manual.dvi -o manual.ps
+
+manual.html: manual.tex
+	hevea manual.tex
 
 # generic rules :
 #################
