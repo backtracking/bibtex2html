@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.13 1998-05-28 07:21:04 filliatr Exp $ *)
+(* $Id: main.ml,v 1.14 1998-06-19 16:33:46 filliatr Exp $ *)
 
 (* options *)
 
@@ -215,7 +215,13 @@ let usage () =
   prerr_endline "  -e key     exclude an entry";
   prerr_endline "  -m file    read (La)TeX macros in file";
   prerr_endline "  -debug     verbose mode (to find incorrect BibTeX entries)";
+  prerr_endline "  -v         print version and exit";
   exit 1
+
+let banner () =
+  Printf.printf "This is bibtex2html version %s, compiled on %s\n"
+    Version.version Version.date;
+  flush stdout
 
 let parse () =
   let rec parse_rec = function
@@ -259,6 +265,8 @@ let parse () =
 	read_macros f; parse_rec rem
     | "-m" :: [] ->
 	usage()
+    | "-v" :: _ ->
+	exit 0
     | [f] -> f
     | _ -> usage ()
   in 
@@ -284,6 +292,7 @@ See the GNU General Public License version 2 for more details
   flush stdout
 
 let main () =
+  banner();
   let fbib = parse () in
   let f =
     let basename = Filename.basename fbib in

@@ -8,6 +8,9 @@ BINDIR = /users/demons/filliatr/bin/$(OSTYPE)
 # End of configuration part
 #########################################
 
+MAJORVN=0
+MINORVN=6
+
 CAMLC    = ocamlc
 CAMLCOPT = ocamlopt
 CAMLDEP  = ocamldep
@@ -19,7 +22,7 @@ STRLIB = -cclib -lstr
 
 OBJS = latexmacros.cmx latexscan.cmx bbl_lexer.cmx \
        bibtex.cmx bibtex_lexer.cmx bibtex_parser.cmx html.cmx \
-       translate.cmx main.cmx
+       translate.cmx version.cmx main.cmx
 
 all: bibtex2html
 
@@ -31,6 +34,10 @@ bibtex2html: $(OBJS)
 
 bibtex_parser.mli bibtex_parser.ml: bibtex_parser.mly
 	ocamlyacc bibtex_parser.mly
+
+version.ml::
+	echo "let version = \""$(MAJORVN).$(MINORVN)"\"" > version.ml
+	echo "let date = \""`date`"\"" >> version.ml
 
 latexscan.ml: latexscan.mll
 	ocamllex latexscan.mll
@@ -44,8 +51,6 @@ bbl_lexer.ml: bbl_lexer.mll
 # export
 ########
 
-MAJORVN=0
-MINORVN=6
 NAME=bibtex2html-$(MAJORVN).$(MINORVN)
 
 FTP = /users/demons/filliatr/ftp/ocaml/bibtex2html
