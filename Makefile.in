@@ -187,7 +187,7 @@ BINARY = bibtex2html-$(VERSION)-$(OSTYPE)
 linux: clean binary
 
 solaris:
-	rmake sun-demons $(HOME)/soft/ocaml/bibtex clean binary
+	ssh sun-graphe make -C $(HOME)/soft/ocaml/bibtex clean binary
 
 sunos4:
 	rmake ??? $(HOME)/soft/ocaml/bibtex clean binary
