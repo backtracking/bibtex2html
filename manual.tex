@@ -51,7 +51,8 @@ bibtex2html is a BibTeX to HTML translator. It is invocated as
 \end{quote}
 where the possible \url{#options}{options} are described below and
 where \textit{file.bib} is the name of the BibTeX file, which must
-have a \textit{.bib} suffix.
+have a \textit{.bib} suffix. If this file is not given, then entries
+are input from standard input.
 
 
 Then two HTML documents are created: 
@@ -266,10 +267,10 @@ or in conjonction with \verb|bib2bib|.
 
     
 \item[\texttt{-c} \textit{file}, \texttt{\mm{}command} \textit{file}] ~
-
+  
   specify the BibTeX command (default is \texttt{bibtex
-  -min-crossrefs=1000}).  Useful if \texttt{bibtex} is not in your
-path. 
+    -min-crossrefs=1000}). May be useful for example if
+  you want to specify to full path to the \texttt{bibtex} command. 
 
   
 \item[\texttt{-i}, \texttt{\mm{}ignore-errors}] ~
@@ -299,28 +300,34 @@ bibliography files. It is invocated as
 \end{quote}
 where the possible options are described below and where
 \textit{file1.bib} $\cdots$ \textit{filen.bib} are the names of the
-BibTeX files, which must have a \textit{.bib} suffix.
+BibTeX files, which must have a \textit{.bib} suffix. If no files at
+all are given on the command line, then input is taken from standard
+input. 
 
 The options allow to specify a filter condition to test against each
-references read from bib files. The result will be a file containing
-all the keys of entries that satisfy the condition. This file is
+references read from bib files. The result will be a new BibTeX file
+containing all the entries of the input files that satisfy the
+condition. Notice that this output file contains all the necessary
+informations: each string and each cross-reference needed will be also
+in that file.
+
+Additionally, \textit{bib2bib} may output a file containing all the
+keys of entries that satisfy the condition. This second file is
 suitable for input as option \verb|-citefile| to \verb|bibtex2html|.
 
 \subsection{Command line options}
 
 \begin{description}
   
-\item[\texttt{-oc} \textit{filename}] ~
-
-  specify the filename where the list of selected keys is output. This
-  option is mandatory.
-
 \item[\texttt{-ob} \textit{filename}] ~
 
   specify the filename where the selected entries are output. If not
-  given, no such file is created. Notice that this output file
-  contains all the necessary informations: each string and each
-  cross-reference needed will be also in that file.
+  given, it defaults to standard output. 
+
+\item[\texttt{-oc} \textit{filename}] ~
+
+  specify the filename where the list of selected keys is output. If
+  not given, this file is not created.
 
 \item[\texttt{-c} \textit{condition}] ~
 
@@ -348,9 +355,9 @@ the cross-references.
 
 \subsection{Filter conditions}
 
-A filter condition is a boolean expression that is evaluated against
-a BibTeX to decide whether this entry should be selected. A condition
-is either:
+A filter condition is a boolean expression that is evaluated against a
+BibTeX entry to decide whether this entry should be selected. A
+condition is either:
 \begin{itemize}
 \item a \emph{comparison} between two \emph{expressions}, written as
   $e_1~op~e_2$ ; 
@@ -366,7 +373,9 @@ where an expression is either:
 \begin{itemize}
 \item a string constant, written between double quotes ;
 \item a integer constant ;
-\item a field name.
+\item a field name ;
+\item the special character \verb|@| which corresponds to the key of
+  an entry.
 \end{itemize} 
 
 Comparison operators are the usual ones: \texttt{=}, \texttt{<},
@@ -495,6 +504,24 @@ bib2bib -oc lambda -c 'year >= 1995 and title : "lambda.*calculus"' biblio.bib
 for example, it will select a title containing
 \verb|$\lambda$-calculus|. 
  
+\section{Frequently Asked Questions}
+
+\begin{enumerate}
+
+\item \textbf{How may I tell bibtex2html to expand cross-references?} ~
+
+  By default, all entries of the input BibTeX file are translated into
+  HTML, including cross-references. Since the latter are there, bibtex
+  will never expand them. If you want them to be expanded, you have to
+  tell bibtex2html that crossref entries need not be in the resulting
+  file. To do that you have to use the option \verb|-citefile| to give
+  the exact list of entries you want to see. If a cross-reference is
+  not in that list, then its fields will be expanded into all entries
+  that cross-refers to it. (Technically, this work because bibtex2html
+  calls bibtex with option \verb|-min-crossrefs=1000| by default.)
+  
+\end{enumerate}
+
 \begin{rawhtml}
 <hr>
 <img src="http://www.lri.fr/~filliatr/icons/mail.gif" ALIGN=middle>

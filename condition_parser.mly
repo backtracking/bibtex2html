@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  */
 
-/* $Id: condition_parser.mly,v 1.1 1999-06-30 16:44:42 marche Exp $ */
+/* $Id: condition_parser.mly,v 1.2 1999-10-21 16:21:04 marche Exp $ */
 
 %{
 
@@ -24,7 +24,7 @@
 
 %token <string> IDENT STRING COMP
 %token <string> INT 
-%token COLON AND OR NOT LPAR RPAR EOF
+%token COLON AND OR NOT LPAR RPAR AT EOF
 
 %start condition_start
 %type <Condition.condition> condition_start
@@ -61,5 +61,6 @@ cte:
   IDENT                      { Field(String.uppercase $1) }
 | INT                        { Cte($1) }
 | STRING                     { Cte($1) }
+| AT                         { Key }
 ;
 

@@ -21,16 +21,17 @@ PROFILE  =
 
 STRLIB = -cclib -lstr 
 
-OBJS = latexmacros.cmx latexscan.cmx bbl_lexer.cmx \
+OBJS =  latexmacros.cmx latexscan.cmx bbl_lexer.cmx \
 	bibtex.cmx bibtex_lexer.cmx bibtex_parser.cmx \
 	readbib.cmx expand.cmx bibfilter.cmx \
-	html.cmx biboutput.cmx translate.cmx version.cmx main.cmx
+	html.cmx biboutput.cmx translate.cmx \
+	version.cmx copying.cmx main.cmx
 
 BIB2BIBOBJS = bibtex.cmx bibtex_lexer.cmx bibtex_parser.cmx readbib.cmx \
 	condition.cmx \
 	condition_parser.cmx condition_lexer.cmx parse_condition.cmx \
 	bibfilter.cmx \
-	html.cmx biboutput.cmx version.cmx bib2bib.cmx
+	html.cmx biboutput.cmx version.cmx copying.cmx bib2bib.cmx
 
 all: bibtex2html bib2bib
 
@@ -81,7 +82,7 @@ FILES = bibtex.mli bibtex.ml latexmacros.mli latexmacros.ml bibtex_lexer.mll \
 	readbib.mli readbib.ml condition.mli condition.ml \
 	condition_lexer.mli condition_lexer.mll condition_parser.mly \
 	parse_condition.mli parse_condition.ml bibfilter.mli bibfilter.ml \
-	biboutput.mli biboutput.ml bib2bib.ml \
+	biboutput.mli biboutput.ml bib2bib.ml copying.mli copying.ml \
 	manual.tex
 
 export: source doc linux solaris

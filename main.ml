@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.28 1999-07-15 16:54:29 marche Exp $ *)
+(* $Id: main.ml,v 1.29 1999-10-21 16:21:04 marche Exp $ *)
 
 (* options *)
 
@@ -260,27 +260,6 @@ let usage () =
   prerr_endline "  -v         print version and exit";
   exit 1
 
-let copying () =
-  print_endline "
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License version 2, as
-published by the Free Software Foundation.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-See the GNU General Public License version 2 for more details
-(enclosed in the file GPL).";
-  flush stdout
-
-let banner () =
-  Printf.printf "This is bibtex2html version %s, compiled on %s\n"
-    Version.version Version.date;
-  Printf.printf "Copyright (c) 1997,1998,1999 Jean-Christophe Filliâtre and Claude Marché\n";
-  Printf.printf "This is free software with ABSOLUTELY NO WARRANTY (use option -warranty)\n\n";
-  flush stdout
-
 let parse () =
   let rec parse_rec = function
 
@@ -362,7 +341,7 @@ let parse () =
     | ("-v" | "-version" | "--version") :: _ ->
 	exit 0
     | ("-warranty" | "--warranty") :: _ ->
-	copying(); exit 0
+	Copying.copying(); exit 0
 
     | ("-debug" | "--debug") :: rem ->
 	Translate.debug := true ; parse_rec rem
@@ -376,7 +355,7 @@ let parse () =
 (* main *)
 
 let main () =
-  banner();
+  Copying.banner "bibtex2html";
   let fbib = parse () in
   let f =
     let basename = Filename.basename fbib in

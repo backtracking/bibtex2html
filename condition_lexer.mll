@@ -16,6 +16,7 @@ rule token = parse
   | ':'                   { COLON }
   | '('                   { LPAR }
   | ')'                   { RPAR }
+  | '@'                   { AT }
   | (">" | "<" | ">=" | "<=" | "=" | "<>") 
                           { COMP(Lexing.lexeme lexbuf) }
   | ['0'-'9']+            { INT(Lexing.lexeme lexbuf) }

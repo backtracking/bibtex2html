@@ -40,7 +40,9 @@ let args_spec =
     ("-oc",
      Arg.String(fun f -> cite_output_file_name := f),"citations output file name");
     ("-c", Arg.String(add_condition),"filter condition");
-    ("-d", Arg.Unit(fun () -> debug := true), "debug flag")
+    ("-d", Arg.Unit(fun () -> debug := true), "debug flag");
+    ("--version", Arg.Unit(fun () -> exit 0), "print version and exit");
+    ("--warranty", Arg.Unit(fun () -> Copying.copying(); exit 0), "display software warranty")
   ]
 
 
@@ -80,11 +82,7 @@ let output_bib_file biblio keys =
 let usage = "Usage: bib2bib [options] <input file names>\nOptions are:";;
 
 let main () =
-  Printf.printf "This is bib2bib version %s, compiled on %s\n"
-    Version.version Version.date;
-  Printf.printf "Copyright (c) 1997,1998,1999 Jean-Christophe Filliâtre and Claude Marché\n";
-  Printf.printf "This is free software with ABSOLUTELY NO WARRANTY (use option -warranty)\n\n";
-
+  Copying.banner "bib2bib";
   Arg.parse args_spec get_input_file_name usage;
   if !debug then
     begin
