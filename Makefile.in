@@ -158,6 +158,8 @@ FTP = /users/demons/filliatr/ftp/ocaml/bibtex2html
 SOURCEFILES = *.ml* aux2bib.in Makefile.in configure.in configure .depend README COPYING GPL CHANGES manual.tex *.1
 
 export: source export-doc linux solaris
+	mail -s "nouvelle release de bibtex2html" treinen@debian.org < /dev/null
+	echo "*** prevenir Gerald Pfeifer <pfeifer@dbai.tuwien.ac.at> ***"
 
 move-olds:
 	cp $(FTP)/bibtex2html* $(FTP)/olds
