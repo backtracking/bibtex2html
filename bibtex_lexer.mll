@@ -46,7 +46,8 @@ rule token = parse
   | '=' { if !serious then Tequal else token lexbuf }
   | '#' { if !serious then Tsharp else token lexbuf }
   | ',' { if !serious then Tcomma else token lexbuf }
-  | '{' { if !serious then begin
+  | '{' | '('
+        { if !serious then begin
 	    incr brace_depth ; 
             if !brace_depth = 1 then
 	      Tlbrace 
@@ -57,18 +58,22 @@ rule token = parse
 	    end 
           end else
 	    token lexbuf }
-  | '}' { if !serious then begin
+  | '}' | ')'
+        { if !serious then begin
 	    if !brace_depth > 0 then decr brace_depth ;
 	    if !brace_depth = 0 then serious := false ;
 	    Trbrace
 	  end else
 	    token lexbuf }
-  | (['A'-'Z' 'a'-'z' '_' '\'' '0'-'9' ':' '-' '?'
+  | (['A'-'Z' 'a'-'z' '_' '\'' '0'-'9' ':' '-' '?' '.' '*'
       '\192'-'\214' '\216'-'\246' '\248'-'\255']) +
       { if !serious then
 	  let s = Lexing.lexeme lexbuf in 
-          let u = String.uppercase s in
-          if u = "STRING" then Tabbrev else Tident s 
+          match String.uppercase s with
+              "STRING" -> Tabbrev
+	    | "COMMENT" -> Tcomment
+	    | "PREAMBLE" -> Tpreamble
+	    | _ -> Tident s 
       	else
           token lexbuf }
   | "\""

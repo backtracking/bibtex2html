@@ -43,7 +43,7 @@ bbl_lexer.ml: bbl_lexer.mll
 ########
 
 MAJORVN=0
-MINORVN=5
+MINORVN=6
 NAME=bibtex2html-$(MAJORVN).$(MINORVN)
 
 FTP = /users/demons/filliatr/ftp/ocaml/bibtex2html

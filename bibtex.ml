@@ -15,7 +15,9 @@ type fields = (string * string) list
 type entry = entry_type * key * fields
 		
 type command = 
-    Abbrev of string * atom list
+    Comment
+  | Preamble of string
+  | Abbrev of string * atom list
   | Entry  of entry_type * key * (string * atom list) list
 
 
@@ -61,6 +63,11 @@ let rec expand_fields = function
   | (n,l) :: rem -> 
       (n,expand_list l) :: (expand_fields rem)
 
+let macros_in_preamble s =
+  try
+    let lb = Lexing.from_string s in Latexscan.read_macros lb
+  with _ -> ()
+
 let rec expand = function
     [] ->
       []
@@ -69,6 +76,11 @@ let rec expand = function
       add_abbrev (a,s) ; expand rem
   | (Entry (t,k,f)) :: rem ->
       (t,k,expand_fields f) :: (expand rem)
+  | (Preamble s) :: rem ->
+      macros_in_preamble s;
+      expand rem
+  | Comment :: rem ->
+      expand rem
 
 
 (* sort BibTeX entries by decreasing dates *)

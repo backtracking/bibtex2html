@@ -54,6 +54,8 @@ def "\\paragraph"
 def "\\begin{alltt}" [Print "<pre>"];
 def "\\end{alltt}" [Print "</pre>"];
 def "\\texttt" [Print "<tt>" ; Print_arg ; Print "</tt>"];
+def "\\textem" [Print "<em>" ; Print_arg ; Print "</em>"];
+def "\\emph" [Print "<em>" ; Print_arg ; Print "</em>"];
 def "\\begin{itemize}" [Print "<p><ul>"];
 def "\\end{itemize}" [Print "</ul>"];
 def "\\begin{enumerate}" [Print "<p><ol>"];
@@ -71,6 +73,7 @@ def "\\dots" [Print "..."];
 def "\\ldots" [Print "..."];
 def "\\cdots" [Print "..."];
 def "\\ " [Print " "];
+def "\\\n" [Print " "];
 def "\\{" [Print "{"];
 def "\\}" [Print "}"];
 def "\\/" [];
