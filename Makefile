@@ -156,7 +156,12 @@ manual.html: manual.tex
 ##################
 
 clean:
-	rm -f *~ *.cm[iox] *.o bibtex_lexer.ml bibtex_parser.ml bibtex_parser.mli latexscan.ml bibtex2html bbl_lexer.ml
+	rm -f *~ *.cm[iox] *.o 
+	rm -f bibtex_lexer.ml bibtex_parser.ml bibtex_parser.mli 
+	rm -f latexscan.ml bibtex2html bbl_lexer.ml
+	rm -f bib2bib condition_parser.mli condition_parser.ml
+	rm -f condition_lexer.ml manual.html
+
 
 depend: bibtex_lexer.ml bbl_lexer.ml latexscan.ml \
 	bibtex_parser.mli bibtex_parser.ml
