@@ -42,7 +42,7 @@ BIB2BIBOBJS = options.cmx bibtex.cmx bibtex_lexer.cmx \
 	html.cmx biboutput.cmx version.cmx copying.cmx bib2bib.cmx
 
 all: 
-	if test -n `which ocamlopt` ; then make -C . opt ; \
+	if `ocamlopt >/dev/null 2>&1` ; then make -C . opt ; \
 		else make -C . byte ; fi
 
 opt: bibtex2html bib2bib
@@ -51,7 +51,7 @@ byte: bibtex2html.byte bib2bib.byte
 
 install:
 	mkdir -p $(BINDIR)
-	if test -n `which ocamlopt` ; then \
+	if `ocamlopt >/dev/null 2>&1` ; then \
 		cp bibtex2html bib2bib $(BINDIR) ; \
 	else \
 		cp bibtex2html.byte $(BINDIR)/bibtex2html ; \
