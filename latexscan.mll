@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexscan.mll,v 1.22 2003-06-16 09:36:27 filliatr Exp $ i*)
+(*i $Id: latexscan.mll,v 1.23 2003-06-19 09:00:27 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -78,6 +78,14 @@ rule main = parse
                   { print_s "<tt>";
                     save_state main lexbuf;
                     print_s "</tt>"; main lexbuf }
+  | "{\\small" " "*
+                  { print_s "<font size=-1>";
+                    save_state main lexbuf;
+                    print_s "</font>"; main lexbuf }
+  | "{\\cal" " "*
+                  { save_state main lexbuf; main lexbuf }
+  | "\\cal" " "*  { main lexbuf }
+(* Double quotes *)
   | '"'           { print_s "<tt>"; indoublequote lexbuf;
                     print_s "</tt>"; main lexbuf }
 (* Verb, verbatim *)
