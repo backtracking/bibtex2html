@@ -8,8 +8,12 @@ let serious = ref false    (* if we are inside a command or not *)
 
 let brace_depth = ref 0
 
+let line = ref 0
+
+let reset () = line := 0
+
 (* To buffer string literals *)
- 
+
 let initial_string_buffer = String.create 256
 let string_buff = ref initial_string_buffer
 let string_index = ref 0
@@ -19,6 +23,7 @@ let reset_string_buffer () =
   string_index := 0
  
 let store_string_char c =
+  if c = '\n' then incr line;
   if !string_index >= String.length (!string_buff) then begin
     let new_buff = String.create (String.length (!string_buff) * 2) in
       String.blit (!string_buff) 0 new_buff 0 (String.length (!string_buff));
@@ -34,8 +39,9 @@ let get_stored_string () =
 
 }
 rule token = parse
-    [' ' '\010' '\013' '\009' '\012'] +
+    [' ' '\t'] +
       { token lexbuf }
+  | '\n' { incr line; token lexbuf }
   | '@' { serious := true ; token lexbuf }
   | '=' { if !serious then Tequal else token lexbuf }
   | '#' { if !serious then Tsharp else token lexbuf }
@@ -57,7 +63,7 @@ rule token = parse
 	    Trbrace
 	  end else
 	    token lexbuf }
-  | (['A'-'Z' 'a'-'z' '_' '\'' '0'-'9' ':' '-' 
+  | (['A'-'Z' 'a'-'z' '_' '\'' '0'-'9' ':' '-' '?'
       '\192'-'\214' '\216'-'\246' '\248'-'\255']) +
       { if !serious then
 	  let s = Lexing.lexeme lexbuf in 

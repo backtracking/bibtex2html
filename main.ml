@@ -12,6 +12,7 @@ type sort = Unsorted | By_date | By_author
 let sort = ref Unsorted
 let reverse_sort = ref false
 
+let ignore_bibtex_errors = ref false
 
 (* sort of entries *)
 
@@ -44,6 +45,7 @@ let combine_f (c,_,b) e = c,b,e
 let rev_combine_f x y = combine_f y x
 
 let sort_entries entries bibitems =
+  Printf.printf "Sorting..."; flush stdout;
   let el =
     if !sort = By_author then 
       keep_combine keep_f find_f combine_f bibitems entries
@@ -55,6 +57,7 @@ let sort_entries entries bibitems =
       Sort.list (fun (_,_,e1) (_,_,e2) -> Bibtex.date_order e1 e2) el
     else
       el in
+  Printf.printf "ok.\n"; flush stdout;
   if !reverse_sort then List.rev sl else sl
 
 
@@ -62,7 +65,7 @@ let sort_entries entries bibitems =
  *
  * 1. create an auxiliary file tmp.aux
  * 2. call bibtex on it
- * 3. read to resulting tmp.bbl file to get the formatted entries
+ * 3. read the resulting tmp.bbl file to get the formatted entries
  *)
 
 let create_aux_file fbib tmp =
@@ -81,11 +84,17 @@ let clean tmp =
   begin try Sys.remove tmp            with _ -> () end
   
 let call_bibtex tmp =
+  Printf.printf "calling BibTeX..."; flush stdout;
   match 
     Sys.command ("bibtex " ^ tmp)
   with
-      0 -> ()
-    | _ -> failwith "error while running bibtex"
+      0 -> Printf.printf "\n"; flush stdout
+    | n ->
+	if !ignore_bibtex_errors then begin
+	  Printf.printf "error %d (ignored)\n" n;
+	  flush stdout
+      	end else
+	  failwith "error while running bibtex"
 
 let read_bbl tmp =
   let rec read_items acc lb =
@@ -96,13 +105,14 @@ let read_bbl tmp =
 	End_of_file -> List.rev acc 
   in
   let fbbl = tmp ^ ".bbl" in
-  Printf.printf "Reading %s...\n" fbbl; flush stdout;
+  Printf.printf "Reading %s..." fbbl; flush stdout;
   let ch = open_in fbbl in
   let lexbuf = Lexing.from_channel ch in
   Bbl_lexer.skip_header lexbuf;
   let items = read_items [] lexbuf in
   close_in ch;
   clean tmp;
+  Printf.printf "ok (%d entries)\n" (List.length items); flush stdout;
   items
 
 let get_bibitems fbib =
@@ -115,7 +125,8 @@ let get_bibitems fbib =
     e -> clean tmp ; raise e
 
 let get_bibtex_entries fbib =
-  Printf.printf "Reading %s...\n" fbib; flush stdout;
+  Printf.printf "Reading %s..." fbib; flush stdout;
+  Bibtex_lexer.reset();
   let chan = open_in fbib in
   let el =
     try
@@ -123,10 +134,11 @@ let get_bibtex_entries fbib =
     with
 	Parsing.Parse_error ->
 	  close_in chan;
-	  print_string "Parse error.\n";
+	  Printf.printf "Parse error line %d.\n" !Bibtex_lexer.line;
 	  flush stdout;
 	  exit 1 in
   close_in chan;
+  Printf.printf "ok (%d entries).\n" (List.length el); flush stdout;
   el
 
 let translate fbib f =
@@ -145,6 +157,7 @@ let usage () =
   prerr_endline "  -a         sort as BibTeX (usually by author)";
   prerr_endline "  -u         unsorted i.e. same order as in .bib file (default)";
   prerr_endline "  -r         reverse the sort";
+  prerr_endline "  -i         ignore BibTeX errors";
   prerr_endline "  -nodoc     only produces the body of the HTML documents";
   prerr_endline "  -suffix s  give an alternate suffix for HTML files";
   prerr_endline "  -e key     exclude an entry";
@@ -162,6 +175,8 @@ let parse () =
 	sort := Unsorted ; parse_rec rem
     | "-r" :: rem ->
 	reverse_sort := true ; parse_rec rem
+    | "-i" :: rem ->
+	ignore_bibtex_errors := true ; parse_rec rem
     | "-h" :: rem ->
 	usage ()
     | "-suffix" :: s :: rem ->
