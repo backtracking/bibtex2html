@@ -59,7 +59,7 @@ FILES = bibtex.mli latexmacros.ml Makefile bibtex_lexer.mll latexmacros.mli \
 	translate.ml bbl_lexer.mll bibtex_parser.mly latexscan.mll \
 	bibtex.ml html.ml main.ml .depend README COPYING GPL
 
-export: move-olds source binary
+export: move-olds source linux solaris
 
 move-olds:
 	cp $(FTP)/bibtex2html* $(FTP)/olds
@@ -72,6 +72,12 @@ source: $(FILES)
 	cp README COPYING GPL export/$(NAME).tar.gz $(FTP)
 
 BINARY = bibtex2html-$(MAJORVN).$(MINORVN)-$(OSTYPE)
+
+linux: clean binary
+solaris:
+	rmake sun-demons $(HOME)/soft/ocaml/bibtex clean binary
+sunos4:
+	rmake ??? $(HOME)/soft/ocaml/bibtex clean binary
 
 binary: bibtex2html
 	mkdir -p export/$(BINARY)
