@@ -25,6 +25,22 @@
 
 \section{Introduction}
 
+BibTeX2HTML is a collection of tools for producing automatically HTML
+documents from bibliographies written in the BibTeX format. It
+consists in two command line tools:
+\begin{itemize}
+\item \texttt{bib2bib} is a filter tool that reads one or several
+  bibliography files, filters the entries with respect to a given
+  criterion, and outputs the list of selected keys together with a new
+  bibliography file containing only the selected entries;
+\item \texttt{bibtex2html} is a translator that reads a bibliography
+  file and outputs two HTML documents that contains respectively the
+  cited bibliography in a nice presentation, and the original BibTeX
+  file augmented with several transparent HTML links to allow easy
+  navigation. 
+\end{itemize}
+
+\section{The \texttt{bibtex2html} command tool}
 
 bibtex2html is a BibTeX to HTML translator. It is invocated as 
 \begin{quote}
@@ -37,6 +53,7 @@ options
 are described below and where
 \textit{file.bib} is the name of the BibTeX file, which must have a
 \textit{.bib} suffix.
+
 
 Then two HTML documents are created: 
 \begin{itemize}
@@ -54,6 +71,7 @@ order to collect additional fields (abstract, url, ps, http, etc.)
 that will be used in the translation.
 
 %HEVEA <a name=fields>
+
 \subsection{Additional fields and automatic web links}
 
 The main interest of \texttt{bibtex2html} with respect to a
@@ -107,6 +125,7 @@ inserted from the page without abstracts to the page with abstracts,
 %HEVEA like <a href=examples/publis.html>this</a>.
 
 %HEVEA <a name=options>
+
 \subsection{Command line options}
 
 Most of the command line options have a short version of one character
@@ -218,6 +237,115 @@ Most of the command line options have a short version of one character
 
 
 \end{description}
+
+
+\section{The \texttt{bib2bib} command line tool}
+
+\texttt{bib2bib} is a tool for extracting some entries from a list of
+bibliography files. It is invocated as 
+\begin{quote}
+\texttt{bib2bib} [options] \textit{file1.bib} $\cdots$ \textit{filen.bib}
+\end{quote}
+where the possible 
+%HEVEA <a href="#options">
+options
+%HEVEA </a>
+are described below and where
+\textit{file1.bib} $\cdots$ \textit{filen.bib} are the names of the
+BibTeX files, which must have a \textit{.bib} suffix.
+
+\subsection{Command line options}
+
+\begin{description}
+  
+\item[\texttt{-oc} \textit{filename}]
+  specify the filename where the list of selected keys is output. This
+  option is mandatory.
+
+\item[\texttt{-ob} \textit{filename}]
+  specify the filename where the selected entries are output. If not
+  given, no such file is created. Notice that this output file
+  contains all the necessary informations: each string and each
+  cross-reference needed will be also in that file.
+
+\item[\texttt{-c} \textit{condition}]
+  specify a condition for selecting the entries. The output will
+  retain only the entries that satisfy this condition. If several such
+  condition are given, then only the entries that satisky all the
+  conditions are selected. The syntax of conditions is given below,
+  notice that it is better to escape shell expansions in that
+  conditions, in other words, you should write conditions between
+  quotes. 
+
+\end{description}
+
+Notice that the two output files are suitable for use with
+bibtex2html.  A typical use would be
+\begin{quote}
+\texttt{bib2bib -oc $citefile$ -ob $bibfile.bib$ -c $condition$
+  file1.bib file2.bib ... } \\
+\texttt{bibtex2html -citefile $citefile$ bibfile.bib}
+\end{quote}
+which will produce exactly the HTML file for the selected
+references. Notice finally that bibtex2html will expand the strings
+(by default, unless you specify the \verb|-noexpand| option) but not
+the cross-references.
+
+\subsection{Filter conditions}
+
+A filter condition is a boolean expression that is evaluated against
+a BibTeX to decide whether this entry should be selected. A condition
+is either:
+\begin{itemize}
+\item a \emph{comparison} between two \emph{expressions}, written as
+  $e_1~op~e_2$ ; 
+\item a matching of a field name with respect to a \emph{regular
+    expression} ; 
+\item a conjunction of two conditions, written as $c_1 \verb| and |
+  c_2$ ;
+\item a disjunction of two conditions, written as $c_1 \verb| or |
+  c_2$ ;
+\item a negation of a condition, written as $\verb|not | c$ ;
+\end{itemize}
+where an expression is either:
+\begin{itemize}
+\item a string constant, written between double quotes ;
+\item a integer constant ;
+\item a field name.
+\end{itemize} 
+Comparison operators are the usual ones: \texttt{=}, \texttt{<},
+\texttt{>}, \texttt{<=}, \texttt{>=} and \texttt{<>}. The field names
+are any sequences of lowercase or uppercase letters. 
+
+Notice that if several conditions are given with option \verb|-c| on
+the command line, then they are understood as the conjunction of them,
+in other words
+\begin{quote}
+\texttt{bib2bib -c '$c_1$' $\cdots$ -c '$c_n$'}
+\end{quote} 
+is equivalent to
+\begin{quote}
+\texttt{bib2bib -c '$c_1$ and $\cdots$ and $c_n$'}
+\end{quote} 
+
+\subsection{Examples}
+
+Here are some examples to help you writing the filter conditions you
+are interested in.
+
+\subsection{Selecting entries of a given year}
+
+The following command reads input files \verb|bilbio1.bib| and
+\verb|biblio2.bib|, and select only entries that appeared in 1999 :
+\begin{verbatim}
+bib2bib -oc cite1999 -ob 1999.bib -c 'year=1999' biblio1.bib
+biblio2.bib 
+\end{verbatim}
+The resulting file \verb|cite1999| contains the list of keys
+selected. You can then produce the HTML file by
+\begin{verbatim}
+bibtex2html -citefile cite1999 1999.bib
+\end{verbatim}
 
 
 %HEVEA <hr>
