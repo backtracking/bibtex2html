@@ -14,9 +14,9 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: biboutput.ml,v 1.6 2000-06-05 21:50:22 filliatr Exp $ *)
+(* $Id: biboutput.ml,v 1.7 2000-06-09 17:33:30 filliatr Exp $ *)
 
-open Bibtex;;
+open Bibtex
 
 (* [output_bib html ch bib keys] outputs to the channel [ch] the
    fields of the bibliography [bib] whose key belong to [keys]. [html]
@@ -25,21 +25,16 @@ open Bibtex;;
    anchors are added on crossrefs, abbreviations, and URLs in
    fields. Notice that to guarantee that the generated part of the
    bibliography is coherent, that is all needed abbreviations and
-   cross-references are included, one as to call Bibfilter.saturate
+   cross-references are included, one has to call [Bibfilter.saturate]
    before. Notice finally that the channel [ch] is NOT closed by this
    function *)
 
-
 let needs_output k = function
-    None -> true
+  | None -> true
   | Some s -> KeySet.mem k s
-;;
-
-    
-
 
 let print_atom html ch keys = function
-    Id s -> 
+  | Id s -> 
       if html & not (abbrev_is_implicit s) then 
 	begin
 	  Html.open_href ch ("#" ^ s);
@@ -50,20 +45,17 @@ let print_atom html ch keys = function
 	output_string ch s
   | String s -> 
       output_string ch ("{"^s^"}")
-;;
-
 
 let print_atom_list html ch keys = function 
-    [] -> ()
+  | [] -> ()
   | a::l ->
       print_atom html ch keys a;
       List.iter
 	(fun a -> output_string ch " # "; print_atom html ch keys a)
 	l
-;;
 
 let print_crossref html ch keys = function
-    [String(s)] -> 
+  | [String s] -> 
       output_string ch "{";
       if html then Html.open_href ch ("#" ^ s);
       output_string ch s;
@@ -74,7 +66,7 @@ let print_crossref html ch keys = function
       print_atom_list html ch keys l
 
 let print_command html ch keys = function 
-    Comment s -> 
+  | Comment s -> 
 (*
       if html then 
 	begin

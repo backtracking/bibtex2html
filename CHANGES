@@ -1,4 +1,7 @@
 
+ o fixed bug: abbreviations were not correctly expansed in the -bib file
+ o relative URL now prefixed by ./ (otherwise Internet Explorer can't resolve
+   them correctly)
  o arguments to option -f are now turned into uppercase
  o added options -fsuffix / -lsuffix to specify different suffixes for
    HTML files and links (-suffix s is equivalent to -fsuffix s -lsuffix s)

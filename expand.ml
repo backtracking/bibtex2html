@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: expand.ml,v 1.5 2000-06-05 21:50:23 filliatr Exp $ *)
+(* $Id: expand.ml,v 1.6 2000-06-09 17:33:31 filliatr Exp $ *)
 
 open Format
 open Bibtex
@@ -24,13 +24,11 @@ type fields = (string * string) list
 type entry = entry_type * key * fields
 		
 
-let abbrev_table  = ref ([] : (string * string) list)
+let abbrev_table = Hashtbl.create 97
 
-let add_abbrev a =
-  abbrev_table := a :: !abbrev_table
+let add_abbrev a s = Hashtbl.add abbrev_table a s
 
-let find_abbrev s =
-  List.assoc s !abbrev_table
+let find_abbrev s = Hashtbl.find abbrev_table s
 
 let assoc_months = 
   [ "JAN", "January" ;
@@ -77,7 +75,7 @@ let rec expand biblio =
        match command with
 	 | Abbrev (a,l) ->
 	     let s = expand_list l in
-	     add_abbrev (a,s); 
+	     add_abbrev a s; 
 	     accu
 	 | Entry (t,k,f) ->
 	     (t,k,expand_fields f) :: accu

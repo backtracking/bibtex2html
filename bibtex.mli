@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibtex.mli,v 1.12 2000-06-05 21:50:22 filliatr Exp $ *)
+(* $Id: bibtex.mli,v 1.13 2000-06-09 17:33:31 filliatr Exp $ *)
 
 type entry_type = string
 		    
@@ -23,11 +23,11 @@ type key = string
 module KeySet : Set.S with type elt = key
 
 type atom =
-    Id     of string
+  | Id     of string
   | String of string
 
 type command = 
-    Comment of string
+  | Comment of string
   | Preamble of string
   | Abbrev of string * atom list
   | Entry  of entry_type * key * (string * atom list) list
@@ -83,3 +83,4 @@ val abbrev_exists : key -> biblio -> bool
    bibliography where all strings have been expanded *)
 
 val expand_abbrevs : biblio -> biblio
+

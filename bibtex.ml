@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibtex.ml,v 1.12 2000-06-02 19:37:31 filliatr Exp $ *)
+(* $Id: bibtex.ml,v 1.13 2000-06-09 17:33:30 filliatr Exp $ *)
 
 type entry_type = string
 		    
@@ -23,11 +23,11 @@ type key = string
 module KeySet = Set.Make(struct type t = key let compare = compare end)
 	     
 type atom =
-    Id of string
+  | Id of string
   | String of string
 
 type command = 
-    Comment of string
+  | Comment of string
   | Preamble of string
   | Abbrev of string * atom list
   | Entry  of entry_type * key * (string * atom list) list
@@ -131,48 +131,50 @@ let abbrev_is_implicit key =
 let rec abbrev_exists key biblio =
   match biblio with
     | [] -> false
-    | (Abbrev (s,_))::b -> s = key || abbrev_exists key b
+    | (Abbrev (s,_)) :: b -> s = key || abbrev_exists key b
     | _ :: b -> abbrev_exists key b
 
 let concat_atom_lists a1 a2 = 
   match (a1,a2) with
-    | ([String s1],[String s2]) -> [String (s1 ^ s2)]
+    | ([String s1], [String s2]) -> [String (s1 ^ s2)]
     | _ -> a1 @ a2
 
-let find_abbrev id env =
-  try
-    let _ = int_of_string id in [String id]
-  with Failure "int_of_string" ->
-    List.assoc id env
+let abbrev_table = Hashtbl.create 97
 
-let rec expand_list env = function
+let add_abbrev a l = Hashtbl.add abbrev_table a l
+
+let _ = List.iter (fun (a,l) -> add_abbrev a l) month_env
+
+let find_abbrev a = Hashtbl.find abbrev_table a
+
+let rec expand_list = function
   | [] -> []
   | ((Id s) as a) :: rem ->
       begin
 	try 
-	  let v = List.assoc s env in
-	  concat_atom_lists v (expand_list env rem)
+	  let v = find_abbrev s in
+	  concat_atom_lists v (expand_list rem)
 	with Not_found -> 
-	  concat_atom_lists [a] (expand_list env rem)
+	  concat_atom_lists [a] (expand_list rem)
       end
   | ((String _) as a) :: rem ->
-      concat_atom_lists [a] (expand_list env rem)
+      concat_atom_lists [a] (expand_list rem)
 
-let rec expand_fields env = function
+let rec expand_fields = function
   | [] ->  []
-  | (n,l) :: rem -> 
-      (n,expand_list env l) :: (expand_fields env rem)
+  | (n,l) :: rem -> (n, expand_list l) :: (expand_fields rem)
 
-let rec expand env = function
-  | [] ->
-      []
-  | (Abbrev (a,l)) :: rem ->
-      let s = expand_list env l in
-      expand ((a,s) :: env) rem
-  | (Entry (t,k,f)) :: rem ->
-      Entry (t,k,expand_fields env f) :: (expand env rem)
-  | e :: rem ->
-      e :: (expand env rem)
-
-let expand_abbrevs bib = expand month_env bib
-
+let rec expand_abbrevs biblio = 
+  fold 
+    (fun command accu ->
+       match command with
+	 | Abbrev (a,l) ->
+	     let s = expand_list l in
+	     add_abbrev a s; 
+	     accu
+	 | Entry (t,k,f) ->
+	     Entry (t,k,expand_fields f) :: accu
+	 | e ->
+	     e :: accu)
+    biblio
+    []

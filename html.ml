@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: html.ml,v 1.10 2000-06-02 19:37:34 filliatr Exp $ *)
+(* $Id: html.ml,v 1.11 2000-06-09 17:33:31 filliatr Exp $ *)
 
 let open_document ch ftitle =
   output_string ch "<html>\n\n<head>\n";
@@ -44,8 +44,18 @@ let close_anchor ch =
   close_balise ch "A";
   output_string ch "\n"
 
+let absolute_url_regexp = Str.regexp "\\(.+://\\)\\|#"
+
+let is_absolute_url u =
+  try Str.search_forward absolute_url_regexp u 0 = 0 with Not_found -> false
+  
+let is_relative_url u = not (is_absolute_url u)
+
 let open_href ch s =
-  open_balise ch ("A HREF=\"" ^ s ^ "\"")
+  if is_relative_url s && Filename.is_implicit s then
+    open_balise ch ("A HREF=\"./" ^ s ^ "\"")
+  else
+    open_balise ch ("A HREF=\"" ^ s ^ "\"")
 
 let close_href ch =
   close_balise ch "A"
