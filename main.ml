@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.18 1998-11-03 19:53:18 filliatr Exp $ *)
+(* $Id: main.ml,v 1.19 1998-11-18 09:59:38 filliatr Exp $ *)
 
 (* options *)
 
@@ -219,6 +219,7 @@ let usage () =
   prerr_endline "  -suffix s  give an alternate suffix for HTML files";
   prerr_endline "  -e key     exclude an entry";
   prerr_endline "  -m file    read (La)TeX macros in file";
+  prerr_endline "  -f field   add a web link for that BibTeX field";
   prerr_endline "  -debug     verbose mode (to find incorrect BibTeX entries)";
   prerr_endline "  -v         print version and exit";
   exit 1
@@ -232,54 +233,70 @@ let banner () =
 
 let parse () =
   let rec parse_rec = function
-      ("-nodoc" | "--no-doc") :: rem -> 
-	Translate.nodoc := true ; parse_rec rem
+
+    (* General aspect of the web page *)
+    | ("-t" | "--title") :: s :: rem ->
+	Translate.title := s ; Translate.title_spec := true; parse_rec rem
+    | ("-t" | "--title") :: [] ->
+	usage()
+    | ("-s" | "--style") :: s :: rem ->
+	style := s ; parse_rec rem
+    | ("-s" | "--style") :: [] ->
+	usage()
     | ("-noabstract" | "--no-abstract") :: rem ->
 	Translate.print_abstract := false; parse_rec rem
-    | ("-nofooter" | "--no-footer") :: rem ->
-	Translate.print_footer := false; parse_rec rem
     | ("-nokeys" | "--no-keys") :: rem -> 
 	Translate.nokeys := true ; parse_rec rem
-    | "-d" :: rem ->
-	sort := By_date ; parse_rec rem
-    | "-a" :: rem ->
-	sort := By_author ; parse_rec rem
-    | "-u" :: rem ->
-	sort := Unsorted ; parse_rec rem
-    | "-r" :: rem ->
-	reverse_sort := true ; parse_rec rem
-    | "-i" :: rem ->
-	ignore_bibtex_errors := true ; parse_rec rem
-    | ("-h" | "-help" | "-?" | "--help") :: rem ->
-	usage ()
-    | "-debug" :: rem ->
-	Translate.debug := true ; parse_rec rem
-    | "-suffix" :: s :: rem ->
-	Translate.suffix := s ; parse_rec rem
-    | "-suffix" :: [] ->
+    | ("-nofooter" | "--no-footer") :: rem ->
+	Translate.print_footer := false; parse_rec rem
+    | ("-f" | "--field") :: s :: rem ->
+	Translate.add_field s; parse_rec rem
+    | ("-f" | "--field") :: [] ->
 	usage()
-    | "-t" :: s :: rem ->
-	Translate.title := s ; Translate.title_spec := true; parse_rec rem
-    | "-t" :: [] ->
-	usage()
-    | "-s" :: s :: rem ->
-	style := s ; parse_rec rem
-    | "-s" :: [] ->
-	usage()
-    | "-c" :: s :: rem ->
-	command := s ; parse_rec rem
-    | "-c" :: [] ->
-	usage()
-    | "-e" :: k :: rem ->
-	add_exclude k ; parse_rec rem
-    | "-e" :: [] ->
-	usage()
-    | "-m" :: f :: rem ->
+ 
+    (* Controlling the translation *)
+    | ("-m" | "--macros-from") :: f :: rem ->
 	read_macros f; parse_rec rem
-    | "-m" :: [] ->
+    | ("-m" | "--macros-from") :: [] ->
 	usage()
+ 
+    (* Sorting the entries *)
+    | ("-d" | "--sort-by-date") :: rem ->
+	sort := By_date ; parse_rec rem
+    | ("-a" | "--sort-as-bibtex") :: rem ->
+	sort := By_author ; parse_rec rem
+    | ("-u" | "--unsorted") :: rem ->
+	sort := Unsorted ; parse_rec rem
+    | ("-r" | "--reverse-sort") :: rem ->
+	reverse_sort := true ; parse_rec rem
+    | ("-e" | "--exclude") :: k :: rem ->
+	add_exclude k ; parse_rec rem
+    | ("-e" | "--exclude") :: [] ->
+	usage()
+ 
+    (* Miscellaneous options *)
+    | ("-nodoc" | "--no-doc") :: rem -> 
+	Translate.nodoc := true ; parse_rec rem
+    | ("-i" | "--ignore-errors") :: rem ->
+	ignore_bibtex_errors := true ; parse_rec rem
+    | ("-suffix" | "--suffix") :: s :: rem ->
+	Translate.suffix := s ; parse_rec rem
+    | ("-suffix" | "--suffix") :: [] ->
+	usage()
+    | ("-c" | "--command") :: s :: rem ->
+	command := s ; parse_rec rem
+    | ("-c" | "--command") :: [] ->
+	usage()
+    | ("-h" | "-help" | "-?" | "--help") :: rem ->
+	Printf.printf
+     "\nOn-line documentation at http://www.lri.fr/~filliatr/bibtex2html/\n\n";
+	usage ()
     | ("-v" | "-version" | "--version") :: _ ->
 	exit 0
+
+    | ("-debug" | "--debug") :: rem ->
+	Translate.debug := true ; parse_rec rem
+
     | [f] -> f
     | _ -> usage ()
   in 

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.19 1998-11-16 13:27:53 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.20 1998-11-18 09:59:41 filliatr Exp $ *)
 
 (* options *)
 
@@ -25,6 +25,9 @@ let title = ref ""
 let title_spec = ref false
 let print_abstract = ref true
 let print_footer = ref true
+
+let (fields : string list ref) = ref []
+let add_field s = fields := s :: !fields
 
 let debug = ref false
 
@@ -146,9 +149,9 @@ let make_links ch ((t,k,_) as e) =
 		   output_string ch s;
 		   Html.close_href ch
 	       with Not_found -> ())
-    [ "FTP"; "HTTP"; 
-      "URL" ; "URL0" ; "URL1" ; "URL2" ; "URL3"; "URL4" ; "URL5" ;
-      "DVI" ; "PS" ; "DOCUMENTURL" ; "URLPS" ; "URLDVI" ];
+    (!fields @ 
+     [ "FTP"; "HTTP"; "URL" ; "DVI" ; "PS" ; 
+       "DOCUMENTURL" ; "URLPS" ; "URLDVI" ]);
 
   (* abstract *)
   if !print_abstract then begin
