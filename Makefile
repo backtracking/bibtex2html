@@ -8,8 +8,8 @@ BINDIR = $(HOME)/bin/$(OSTYPE)
 # End of configuration part
 #########################################
 
-MAJORVN=0
-MINORVN=95
+MAJORVN=1
+MINORVN=0
 
 CAMLC    = ocamlc
 CAMLCOPT = ocamlopt 
@@ -72,9 +72,15 @@ NAME=bibtex2html-$(MAJORVN).$(MINORVN)
 
 FTP = /users/demons/filliatr/ftp/ocaml/bibtex2html
 
-FILES = bibtex.mli latexmacros.ml Makefile bibtex_lexer.mll latexmacros.mli \
+FILES = bibtex.mli bibtex.ml latexmacros.mli latexmacros.ml bibtex_lexer.mll \
 	translate.ml bbl_lexer.mll bibtex_parser.mly latexscan.mll \
-	bibtex.ml html.ml main.ml .depend README COPYING GPL CHANGES
+	expand.mli expand.ml html.ml main.ml \
+	Makefile .depend README COPYING GPL CHANGES \
+	readbib.mli readbib.ml condition.mli condition.ml \
+	condition_lexer.mli condition_lexer.mll condition_parser.mly \
+	parse_condition.mli parse_condition.ml bibfilter.mli bibfilter.ml \
+	biboutput.mli biboutput.ml bib2bib.ml \
+	manual.tex
 
 export: source linux solaris
 
@@ -82,9 +88,9 @@ move-olds:
 	cp $(FTP)/bibtex2html* $(FTP)/olds
 
 source: $(FILES)
-	mkdir -p export/bibtex2html
-	cp $(FILES) export/bibtex2html
-	(cd export ; tar cf $(NAME).tar bibtex2html ; \
+	mkdir -p export/$(NAME)
+	cp $(FILES) export/$(NAME)
+	(cd export ; tar cf $(NAME).tar $(NAME) ; \
 	gzip -f --best $(NAME).tar)
 	cp README COPYING GPL CHANGES export/$(NAME).tar.gz $(FTP)
 
@@ -96,9 +102,9 @@ solaris:
 sunos4:
 	rmake ??? $(HOME)/soft/ocaml/bibtex clean binary
 
-binary: bibtex2html
+binary: bibtex2html bib2bib
 	mkdir -p export/$(BINARY)
-	cp README COPYING GPL bibtex2html export/$(BINARY)
+	cp README COPYING GPL bibtex2html bib2bib export/$(BINARY)
 	(cd export; tar czf $(BINARY).tar.gz $(BINARY))
 	cp export/$(BINARY).tar.gz $(FTP)
 
@@ -106,7 +112,7 @@ AIX=bibtex2html-$(MAJORVN).$(MINORVN)-AIX
 
 aix:
 	mkdir -p export/$(AIX)
-	cp README COPYING GPL bibtex2html export/$(AIX)
+	cp README COPYING GPL bibtex2html bib2bib export/$(AIX)
 	(cd export; tar cf $(AIX).tar $(AIX); gzip --best $(AIX).tar)
 
 # generic rules :

@@ -8,9 +8,9 @@ expand.cmi: bibtex.cmi
 parse_condition.cmi: condition.cmi 
 readbib.cmi: bibtex.cmi 
 bib2bib.cmo: bibfilter.cmi biboutput.cmi bibtex.cmi condition.cmi \
-    parse_condition.cmi readbib.cmi 
+    condition_lexer.cmi parse_condition.cmi readbib.cmi 
 bib2bib.cmx: bibfilter.cmx biboutput.cmx bibtex.cmx condition.cmx \
-    parse_condition.cmx readbib.cmx 
+    condition_lexer.cmx parse_condition.cmx readbib.cmx 
 bibfilter.cmo: bibtex.cmi bibfilter.cmi 
 bibfilter.cmx: bibtex.cmx bibfilter.cmi 
 biboutput.cmo: bibtex.cmi html.cmo biboutput.cmi 
