@@ -1,4 +1,6 @@
 
+Version 1.4, 19/6/2000
+======================
  o fixed 2 bugs in bib2bib: it is now allowed to have the same key for
    an abbrev and for a regular entry. An abbrev that refer itself to
    other abbrevs is now correctly handled.
