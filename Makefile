@@ -9,7 +9,7 @@ BINDIR = /users/demons/filliatr/bin/$(OSTYPE)
 #########################################
 
 MAJORVN=0
-MINORVN=7
+MINORVN=71
 
 CAMLC    = ocamlc
 CAMLCOPT = ocamlopt
@@ -69,7 +69,7 @@ source: $(FILES)
 	cp $(FILES) export/bibtex2html
 	(cd export ; tar cf $(NAME).tar bibtex2html ; \
 	gzip -f --best $(NAME).tar)
-	cp README COPYING GPL export/$(NAME).tar.gz $(FTP)
+	cp README COPYING GPL CHANGES export/$(NAME).tar.gz $(FTP)
 
 BINARY = bibtex2html-$(MAJORVN).$(MINORVN)-$(OSTYPE)
 

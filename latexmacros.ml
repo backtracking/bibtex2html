@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.14 1998-11-10 09:32:23 filliatr Exp $ *)
+(* $Id: latexmacros.ml,v 1.15 1999-01-11 14:15:19 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -45,6 +45,7 @@ let find_macro name =
 
 (* General LaTeX macros *)
 
+(* sectioning *)
 def "\\part"
     [Print "<H0>"; Print_arg; Print "</H0>\n"];
 def "\\chapter"
@@ -65,6 +66,8 @@ def "\\subsubsection*"
     [Print "<H4>"; Print_arg; Print "</H4>\n"];
 def "\\paragraph"
     [Print "<H5>"; Print_arg; Print "</H5>\n"];
+
+(* text formatting *)
 def "\\begin{alltt}" [Print "<pre>"];
 def "\\end{alltt}" [Print "</pre>"];
 def "\\texttt" [Print "<tt>" ; Print_arg ; Print "</tt>"];
@@ -72,6 +75,9 @@ def "\\textem" [Print "<em>" ; Print_arg ; Print "</em>"];
 def "\\textbf" [Print "<b>" ; Print_arg ; Print "</b>"];
 def "\\emph" [Print "<em>" ; Print_arg ; Print "</em>"];
 def "\\mbox" [Print_arg];
+def "\\footnotesize" [];
+
+(* environments *)
 def "\\begin{itemize}" [Print "<p><ul>"];
 def "\\end{itemize}" [Print "</ul>"];
 def "\\begin{enumerate}" [Print "<p><ol>"];
@@ -80,49 +86,27 @@ def "\\begin{description}" [Print "<p><dl>"];
 def "\\end{description}" [Print "</dl>"];
 def "\\begin{center}" [Print "<blockquote>"];
 def "\\end{center}" [Print "</blockquote>"];
-def "\\smallskip" [];
-def "\\medskip" [];
-def "\\bigskip" [];
-def "\\hskip" [];
-def "\\footnotesize" [];
-def "\\markboth" [Skip_arg; Skip_arg];
-def "\\dots" [Print "..."];
-def "\\ldots" [Print "..."];
-def "\\cdots" [Print "..."];
+def "\\begin{htmlonly}" [];
+def "\\end{htmlonly}" [];
+def "\\begin{flushleft}" [Print "<blockquote>"];
+def "\\end{flushleft}" [Print "</blockquote>"];
+
+(* special characters *)
 def "\\ " [Print " "];
 def "\\\n" [Print " "];
 def "\\{" [Print "{"];
 def "\\}" [Print "}"];
-def "\\/" [];
-def "\\-" [];
 def "\\l" [Print "l"];
-def "\\newpage" [];
-def "\\label" [Print "<A name=\""; Print_arg; Print "\"></A>"];
-def "\\ref" [Print "<A href=\"#"; Print_arg; Print "\">(ref)</A>"];
-def "\\index" [Skip_arg];
-def "\\oe" [Print "oe"];
+def "\\oe" [Print "oe"];       (* Il n'y a pas de oe liés en HTML *)
+def "\\o" [Print "&oslash;"];
+def "\\O" [Print "&Oslash;"];
+def "\\ae" [Print "&aelig;"];
+def "\\AE" [Print "&AElig;"];
+def "\\aa" [Print "&aring;"];
+def "\\AA" [Print "&Aring;"];
 def "\\&" [Print "&amp;"];
 def "\\_" [Print "_"];
-def "\\leq" [Print "&lt;="];
-def "\\log" [Print "log"];
-def "\\geq" [Print "&gt;="];
-def "\\circ" [Print "o"];
-def "\\hbox" [Print_arg];
 def "\\copyright" [Print "(c)"];
-def "\\noindent" [];
-def "\\begin{flushleft}" [Print "<blockquote>"];
-def "\\end{flushleft}" [Print "</blockquote>"];
-def "\\\\" [Print "<br>"];
-def "\\(" [Print "<I>"];
-def "\\)" [Print "</I>"];
-def "\\begin{htmlonly}" [];
-def "\\end{htmlonly}" [];
-def "\\begin{thebibliography}" [Print "<H2>References</H2>\n<dl>\n"; Skip_arg];
-def "\\end{thebibliography}" [Print "</dl>"];
-def "\\bibitem" [Raw_arg (function r ->
-  print_s "<dt><A name=\""; print_s r; print_s "\">[";
-  print_s r; print_s "]</A>\n";
-  print_s "<dd>")];
 def "\\TH" [Print "\222"];
 def "\\dh" [Print "\240"];
 def "\\'" [Raw_arg(function "e" -> print_c 'é'
@@ -160,18 +144,53 @@ def "\\\"" [Raw_arg(function "e" -> print_c 'ë'
                           | "o" -> print_c 'ü'
                           | "O" -> print_c 'Ü'
                           | s   -> print_s s)];
+
+(* math macros *)
+def "\\leq" [Print "&lt;="];
+def "\\log" [Print "log"];
+def "\\geq" [Print "&gt;="];
+def "\\circ" [Print "o"];
+def "\\(" [Print "<I>"];
+def "\\)" [Print "</I>"];
+def "\\mapsto" [Print "<tt>|-&gt;</tt>"];
+
+(* misc. macros *)
+def "\\/" [];
+def "\\-" [];
+def "\\smallskip" [];
+def "\\medskip" [];
+def "\\bigskip" [];
+def "\\hskip" [];
+def "\\markboth" [Skip_arg; Skip_arg];
+def "\\dots" [Print "..."];
+def "\\ldots" [Print "..."];
+def "\\cdots" [Print "..."];
+def "\\newpage" [];
+def "\\hbox" [Print_arg];
+def "\\noindent" [];
+def "\\label" [Print "<A name=\""; Print_arg; Print "\"></A>"];
+def "\\ref" [Print "<A href=\"#"; Print_arg; Print "\">(ref)</A>"];
+def "\\index" [Skip_arg];
+def "\\\\" [Print "<br>"];
+def "\\," [];
+
+(* Bibliography *)
+def "\\begin{thebibliography}" [Print "<H2>References</H2>\n<dl>\n"; Skip_arg];
+def "\\end{thebibliography}" [Print "</dl>"];
+def "\\bibitem" [Raw_arg (function r ->
+  print_s "<dt><A name=\""; print_s r; print_s "\">[";
+  print_s r; print_s "]</A>\n";
+  print_s "<dd>")];
+
 ();;
 
-(* Pseudo-math mode *)
-
+(* greek letters *)
 List.iter (fun symbol -> def ("\\" ^ symbol) [Print ("<I>" ^ symbol ^ "</I>")])
   ["alpha";"beta";"gamma";"delta";"epsilon";"varepsilon";"zeta";"eta";
    "theta";"vartheta";"iota";"kappa";"lambda";"mu";"nu";"xi";"pi";"varpi";
    "rho";"varrho";"sigma";"varsigma";"tau";"upsilon";"phi";"varphi";
    "chi";"psi";"omega";"Gamma";"Delta";"Theta";"Lambda";"Xi";"Pi";
    "Sigma";"Upsilon";"Phi";"Psi";"Omega"];
-def "\\," [];
-def "\\mapsto" [Print "<tt>|-&gt;</tt>"];
 ();;
 
 
