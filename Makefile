@@ -15,6 +15,8 @@ ZLIBS    =
 DEBUG    =
 FLAGS    = $(ZLIBS) $(DEBUG)
 
+STRLIB = -cclib -lstr 
+
 OBJS = latexmacros.cmx latexscan.cmx bbl_lexer.cmx \
        bibtex.cmx bibtex_lexer.cmx bibtex_parser.cmx html.cmx \
        translate.cmx main.cmx
@@ -25,7 +27,7 @@ install:
 	cp bibtex2html $(BINDIR)
 
 bibtex2html: $(OBJS)
-	ocamlopt $(FLAGS) -o bibtex2html $(OBJS)
+	ocamlopt $(FLAGS) str.cmxa -o bibtex2html $(OBJS) $(STRLIB)
 
 bibtex_parser.mli bibtex_parser.ml: bibtex_parser.mly
 	ocamlyacc bibtex_parser.mly
