@@ -1,33 +1,18 @@
 
-bibtex2html is a BibTeX to HTML converter.
+BibTeX2HTML is a collection of tools for producing automatically HTML
+documents from bibliographies written in the BibTeX format. It
+consists in two command line tools:
 
-The invocation is
+  - bib2bib is a filter tool that reads one or several bibliography
+    files, filters the entries with respect to a given criterion, and
+    outputs the list of selected keys together with a new bibliography
+    file containing only the selected entries; 
 
-	bibtex2html <options> foo.bib
-
-Options are:
-  -s style   BibTeX style (plain, alpha, ...)
-  -c command BibTeX command (otherwise bibtex is searched in your path)
-  -d         sort by date
-  -a         sort as BibTeX (usually by author)
-  -u         unsorted i.e. same order as in .bib file (default)
-  -r         reverse the sort
-  -t         title of the HTML file (default is the filename)
-  -i         ignore BibTeX errors
-  -nodoc     only produces the body of the HTML documents
-  -nokeys    do not print the BibTeX keys
-  -noabstract
-             do not print the abstracts (if any)
-  -nofooter  do not print the footer (bibtex2html web link)
-  -suffix s  give an alternate suffix for HTML files
-  -e key     exclude an entry
-  -m file    read (La)TeX macros in file
-
-It will create a file foo.html  with the list of  the references and a
-file foo-bib.html with  the BibTeX entries (in  ASCII format) The file
-foo.html  contains links if fields of  the kind  "ftp", "http", "url",
-etc. are present and gives the astract if there is a field "abstract".
-Crossrefs are correctly handled.
+  - bibtex2html is a translator that reads a bibliography file and
+    outputs two HTML documents that respectively the cited
+    bibliography in a nice presentation, and the original BibTeX file
+    augmented with several transparent HTML links to allow easy 
+    navigation.
 
 
 COPYRIGHT
