@@ -5,7 +5,6 @@
 (* options *)
 
 let nodoc = ref false
-let sort_by_date = ref false
 let suffix = ref ".html"
 
 (* latex2html : to print LaTeX strings in HTML format *)
@@ -210,8 +209,7 @@ let html_file f ((t,k,_) as e) =
 
 (* main function *)
 
-let format_list f el =
-  let l = if !sort_by_date then Bibtex.sort el else el in
+let format_list f l =
     summary f l;
     List.iter (bib_file f) l;
     List.iter (html_file f) l

@@ -100,7 +100,7 @@ let order (_,_,f1) (_,_,f2) =
     failwith "year not present or incorrect"
 
 let sort el =
-  Sort.list (fun x y -> not (order x y)) el
+  Sort.list order el
 
 
 (* access to the fields *)

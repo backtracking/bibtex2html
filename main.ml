@@ -7,25 +7,50 @@
 let excluded = ref ([] : string list)
 let add_exclude k = excluded := k :: !excluded
 let style = ref "plain"
+type sort = Unsorted | By_date | By_author
+let sort = ref Unsorted
+let reverse_sort = ref false
 
-let combine_and_keep entries bibitems = 
-  let findbibitem k = 
-    let rec find = function
-	[] -> 
-	  failwith (Printf.sprintf "entry %s not found after BibTeX call !" k)
-      | (_,k',b) :: rem ->
-	  if k=k' then b else find rem
-    in find bibitems 
+(* sort of entries *)
+
+let first p l =
+  let rec first_rec = function
+      [] -> raise Not_found
+    | x::rem -> if p x then x else first_rec rem
   in
-  let rec keep = function
-    [] ->
-      []
-  | ((t,k,f) as e)::rem ->
-      if List.mem k !excluded then 
-	keep rem 
-      else (t,k,("BIBITEM",findbibitem k)::f)::(keep rem)
+    first_rec l
+
+let keep_combine keep find combine l1 l2 =
+  let rec keep_rec = function
+      [] ->
+	[]
+    | x::rem ->
+	if keep x then
+	  let y = first (find x) l2 in
+	  (combine x y) :: (keep_rec rem)
+	else
+	  keep_rec rem
   in
-    keep entries
+    keep_rec l1
+
+let keep_f (_,k,_) = not (List.mem k !excluded)
+
+let find_f (_,k1,_) (_,k2,_) = k1=k2
+
+let combine_f (_,_,b) (t,k,f) = (t,k,("BIBITEM",b)::f)
+
+let rev_combine_f x y = combine_f y x
+
+let sort_entries entries bibitems =
+  let el =
+    if !sort = By_author then 
+      keep_combine keep_f find_f combine_f bibitems entries
+    else
+      keep_combine keep_f find_f rev_combine_f entries bibitems
+  in
+  let sl = if !sort = By_date then Bibtex.sort el else el in
+  if !reverse_sort then List.rev sl else sl
+
 
 (* we use BibTeX itself to format the entries. Operations:
  *
@@ -101,13 +126,16 @@ let get_bibtex_entries fbib =
 let translate fbib f =
   let entries = get_bibtex_entries fbib in
   let bibitems = get_bibitems fbib in
-  let kel = combine_and_keep entries bibitems in
-  Translate.format_list f kel
+  let sl = sort_entries entries bibitems in
+  Translate.format_list f sl
 
 let usage () =
   prerr_endline "Usage: bibtex2html <options> filename";
   prerr_endline "  -s style   BibTeX style (plain, alpha, ...)";
   prerr_endline "  -d         sort by date";
+  prerr_endline "  -a         sort as BibTeX (usually by author)";
+  prerr_endline "  -u         unsorted i.e. same order as in .bib file (default)";
+  prerr_endline "  -r         reverse the sort";
   prerr_endline "  -nodoc     only produces the body of the HTML documents";
   prerr_endline "  -suffix s  give an alternate suffix for HTML files";
   prerr_endline "  -e key     exclude an entry";
@@ -118,7 +146,15 @@ let parse () =
       "-nodoc" :: rem -> 
 	Translate.nodoc := true ; parse_rec rem
     | "-d" :: rem ->
-	Translate.sort_by_date := true ; parse_rec rem
+	sort := By_date ; parse_rec rem
+    | "-a" :: rem ->
+	sort := By_author ; parse_rec rem
+    | "-u" :: rem ->
+	sort := Unsorted ; parse_rec rem
+    | "-r" :: rem ->
+	reverse_sort := true ; parse_rec rem
+    | "-h" :: rem ->
+	usage ()
     | "-suffix" :: s :: rem ->
 	Translate.suffix := s ; parse_rec rem
     | "-suffix" :: [] ->
@@ -142,8 +178,11 @@ let main () =
     let basename = Filename.basename fbib in
     if Filename.check_suffix basename ".bib" then
       Filename.chop_suffix basename ".bib"
-    else
-      basename in
+    else begin
+      prerr_endline "BibTeX file must have suffix .bib !";
+      exit 1
+    end
+      in
 
   (* Creating directory for html and bib files *)
   Sys.command ("mkdir " ^ f);
