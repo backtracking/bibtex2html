@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  */
 
-/*i $Id: condition_parser.mly,v 1.5 2001-02-21 09:51:52 filliatr Exp $ i*/
+/*i $Id: condition_parser.mly,v 1.6 2003-10-03 15:37:30 marche Exp $ i*/
 
 %{
 
@@ -48,14 +48,16 @@ condition:
 ;
 
 atom:
-  cte COLON STRING           { (*
-				Printf.printf 
-				   "field = %s regexp = %s\n" $1 $3;
-			       *)
-                               Match($1,
-				     Str.regexp_case_fold $3) }
-| cte COMP cte               { Comp($1,$2,$3) }
-| EXISTS IDENT               { Exists(String.uppercase $2) }
+| cte COLON STRING           
+    { let s = Latex_accents.normalize true $3 in
+    (*i
+      Printf.printf "regexp = %s\n" s;
+      i*)
+    Match($1, Str.regexp_case_fold s) }
+| cte COMP cte               
+    { Comp($1,$2,$3) }
+| EXISTS IDENT               
+    { Exists(String.uppercase $2) }
 ;
 
 cte:

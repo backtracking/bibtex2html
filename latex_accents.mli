@@ -14,9 +14,12 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latex_accents.mli,v 1.3 2001-02-21 09:51:53 filliatr Exp $ i*)
+(*i $Id: latex_accents.mli,v 1.4 2003-10-03 15:37:30 marche Exp $ i*)
 
-(* replace LaTeX control sequences for special characters. *)
+(* replace LaTeX control sequences for special characters. 
+   first arg is a boolean to tell if result should be a regexp, i.e
+   escaping some characters
+*)
 
-val normalize : string -> string
+val normalize : bool-> string -> string
 

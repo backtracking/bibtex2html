@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latex_accents.mll,v 1.6 2001-02-21 09:51:53 filliatr Exp $ i*)
+(*i $Id: latex_accents.mll,v 1.7 2003-10-03 15:37:30 marche Exp $ i*)
 
 {
 
@@ -23,6 +23,8 @@
   let add_string s = Buffer.add_string string_buf s
 
   let add lexbuf = Buffer.add_string string_buf (Lexing.lexeme lexbuf)
+
+  let produce_regexp = ref false
 
 }
 
@@ -44,6 +46,9 @@ and control = parse
 | '`'                { left_accent lexbuf }
 | '^'                { hat lexbuf }
 | "c{c}"             { add_string "ç" ; next_char lexbuf }
+| 'v'                
+    { add_string (if !produce_regexp then "\\\\v" else "\\v"); 
+      next_char lexbuf }
 | ("~n"|"~{n}")      { add_string "ñ"; next_char lexbuf  }
 |  _                 { add_string "\\" ; add lexbuf ; next_char lexbuf  }
 | eof                { add_string "\\" }
@@ -109,8 +114,9 @@ and hat = parse
 
 {
 
-let normalize s = 
+let normalize to_regexp s = 
   Buffer.clear string_buf;
+  produce_regexp := to_regexp;
   next_char (Lexing.from_string s);
   Buffer.contents string_buf
 ;;

@@ -13,6 +13,7 @@
 \newcommand{\mm}{\symbol{45}\symbol{45}}
 
 \begin{document}
+\sloppy
 
 \title{BibTeX2HTML \\ A translator of BibTeX bibliographies into HTML}
 \author{Jean-Christophe Filli\^{a}tre and Claude March\'e \\
@@ -597,6 +598,15 @@ Integer & \rightarrow & [\verb|0|-\verb|9|]^+
 \item Comparison using \verb|>|, \verb|<|, \verb|>=| and \verb|<=| may only be
   used between integer values. In any other case, a warning is displayed and
   the result is false.
+\item There is a special handling for strings containing LaTeX accented
+  letters: each variant of writing such letters are considered
+  the same, and equivalent to their ISO-Latin1 form (if it exists),
+  for example strings \verb|"Filli\^atre"|, \verb|"Filli{\^a}tre"|, 
+  \verb|"Filli\^{a}tre"| and \verb|"Filliâtre"| are considered
+  identical. Note that when using such a string as a regular expression,
+  there is no need to escape the backslash, since interpretation of
+  LaTeX accenting commands is made before interpretation into a
+  regexp. 
 \end{itemize}
 
 \subsection{Examples}
