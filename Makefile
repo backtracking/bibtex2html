@@ -39,9 +39,11 @@ install:
 
 bibtex2html: $(OBJS)
 	ocamlopt $(PROFILE) $(FLAGS) -o bibtex2html str.cmxa $(OBJS) $(STRLIB)
+	strip bibtex2html
 
 bib2bib: $(BIB2BIBOBJS)
 	ocamlopt $(PROFILE) $(FLAGS) -o bib2bib str.cmxa $(BIB2BIBOBJS) $(STRLIB)
+	strip bib2bib
 
 bibtex_parser.mli bibtex_parser.ml: bibtex_parser.mly
 	ocamlyacc bibtex_parser.mly
