@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.14 1998-06-19 16:33:46 filliatr Exp $ *)
+(* $Id: main.ml,v 1.15 1998-06-22 15:22:57 filliatr Exp $ *)
 
 (* options *)
 
@@ -201,6 +201,7 @@ let read_macros f =
 (* command line parsing *)
 
 let usage () =
+  prerr_endline "";
   prerr_endline "Usage: bibtex2html <options> filename";
   prerr_endline "  -s style   BibTeX style (plain, alpha, ...)";
   prerr_endline "  -c command BibTeX command (otherwise bibtex is searched in your path)";
@@ -221,6 +222,8 @@ let usage () =
 let banner () =
   Printf.printf "This is bibtex2html version %s, compiled on %s\n"
     Version.version Version.date;
+  Printf.printf "Copyright (c) 1997-1998 Jean-Christophe Filliâtre\n";
+  Printf.printf "This program is distributed under the terms of the GPL\n";
   flush stdout
 
 let parse () =
