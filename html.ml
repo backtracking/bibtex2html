@@ -2,7 +2,7 @@
 let open_document ch ftitle =
   output_string ch "<html>\n\n<head>\n";
   output_string ch "<title>"; ftitle(); output_string ch "</title>\n";
-  output_string ch "</head>\n<body>\n";
+  output_string ch "</head>\n\n<body>\n";
   flush ch
   
 

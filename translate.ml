@@ -65,19 +65,23 @@ let safe_title e =
 
 let one_entry_summary basen ch (_,b,((_,k,f) as e)) =
   let url = Filename.concat basen (k ^ !suffix) in
+  output_string ch "\n\n";
   Html.anchor ch k;
   Html.open_balise ch "tr valign=top";
 
+  output_string ch "\n";
   Html.open_balise ch "td";
   Html.open_href ch url;
   latex2html ch ("[" ^ (Hashtbl.find cite_tab k) ^ "]");
   Html.close_href ch;
   Html.close_balise ch "td";
 
+  output_string ch "\n";
   Html.open_balise ch "td";
   latex2html ch b;
   Html.close_balise ch "td";
 
+  output_string ch "\n";
   Html.paragraph ch;
   Html.close_balise ch "tr";
   output_string ch "\n"
@@ -86,6 +90,7 @@ let summary basen el =
   let ch = open_out (basen ^ !suffix) in
     if not !nodoc then
       Html.open_document ch (fun () -> output_string ch basen);
+    output_string ch "\n";
     Html.open_balise ch "table";
     in_summary := true;
     List.iter (one_entry_summary basen ch) el;
