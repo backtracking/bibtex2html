@@ -35,7 +35,9 @@ sub dofile {
 			next;
 		}
 		if (/\\citation\{(.*)\}/) {
-			$keys{$1} = 0;
+		        foreach $subkey (split(/,/,$1)) {
+				$keys{$subkey} = 0;
+			}
 			next;
 		}
 		if (/\\bibdata\{(.*)\}/) {

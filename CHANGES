@@ -1,4 +1,7 @@
 
+ o aux2bib now handles multiple citations (\citation{foo,bar,gee})
+   (patch by Jose Ramon Alvarez Sanchez)
+
 Version 1.52 15/01/2002
 =======================
  o fixed bug in evaluation of <> operator in bib2bib conditions
