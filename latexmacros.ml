@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.15 1999-01-11 14:15:19 filliatr Exp $ *)
+(* $Id: latexmacros.ml,v 1.16 1999-01-21 15:10:12 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -111,12 +111,25 @@ def "\\TH" [Print "\222"];
 def "\\dh" [Print "\240"];
 def "\\'" [Raw_arg(function "e" -> print_c 'é'
                           | "E" -> print_c 'É'
+			  | "a" -> print_c 'á'
+			  | "A" -> print_c 'Á'
+			  | "o" -> print_c 'ó'
+			  | "O" -> print_c 'Ó'
+			  | "i" -> print_c 'í'
                           | "\\i" -> print_c 'í'
+			  | "I" -> print_c 'Í'
+			  | "u" -> print_c 'ú'
+			  | "U" -> print_c 'Ú'
                           | s   -> print_s s)];
 def "\\`" [Raw_arg(function "e" -> print_c 'è'
                           | "E" -> print_c 'È'
                           | "a" -> print_c 'à'
                           | "A" -> print_c 'À'
+			  | "o" -> print_c 'ò'
+			  | "O" -> print_c 'Ò'
+			  | "i" -> print_c 'ì'
+                          | "\\i" -> print_c 'ì'
+			  | "I" -> print_c 'Ì'
                           | "u" -> print_c 'ù'
                           | "U" -> print_c 'Ù'
                           | s   -> print_s s)];
@@ -138,11 +151,15 @@ def "\\^" [Raw_arg(function "a" -> print_c 'â'
                           | s   -> print_s s)];
 def "\\\"" [Raw_arg(function "e" -> print_c 'ë'
                           | "E" -> print_c 'Ë'
+                          | "a" -> print_c 'ä'
+                          | "A" -> print_c 'Ä'
                           | "\\i" -> print_c 'ï'
                           | "i" -> print_c 'ï'
                           | "I" -> print_c 'Ï'
-                          | "o" -> print_c 'ü'
-                          | "O" -> print_c 'Ü'
+                          | "o" -> print_c 'ö'
+                          | "O" -> print_c 'Ö'
+                          | "u" -> print_c 'ü'
+                          | "U" -> print_c 'Ü'
                           | s   -> print_s s)];
 
 (* math macros *)
