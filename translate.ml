@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.63 2003-09-30 15:50:44 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.64 2003-10-01 15:23:24 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -60,10 +60,12 @@ let (fields : field_info list ref) = ref default_fields
 
 let add_field s = 
   let u = String.uppercase s in 
+  Biboutput.add_link_field u;
   fields := (u, None) :: (List.remove_assoc u !fields)
 
 let add_named_field s name = 
   let u = String.uppercase s in 
+  Biboutput.add_link_field u;
   if u = "ABSTRACT" then abstract_name := name; 
   if not !both || u <> "ABSTRACT" then
     fields := (u, Some name) :: (List.remove_assoc u !fields)

@@ -1,4 +1,7 @@
 
+ o fixed bug: keywords were duplicated with -single
+ o web links automatically inserted for -f and -nf fields in the .bib file
+
 Version 1.63, 30/10/2003
 ========================
  o new option -use-keys to use the original keys from the .bib file

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: main.ml,v 1.53 2003-09-30 15:50:44 filliatr Exp $ i*)
+(*i $Id: main.ml,v 1.54 2003-10-01 15:23:24 filliatr Exp $ i*)
 
 (*s Main module of bibtex2html. *)
 
@@ -405,7 +405,7 @@ i*)
     | ("-multiple" | "--multiple") :: rem ->
 	multiple := true; parse_rec rem
     | ("-single" | "--single") :: rem ->
-	multiple := false; both := false; 
+	multiple := false; both := false; print_keywords := false;
 	bib_entries := false; single := true; parse_rec rem
     | ("-both" | "--both") :: rem ->
 	both := true; parse_rec rem
