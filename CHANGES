@@ -1,8 +1,11 @@
 
-  o macros \DH, \th
+Version 0.8, 1999/02/08
+  o option -multiple (one file per entry)
+  o bug fixed in syntax error line report
+  o translation for macros \DH, \th
   o file types prefixed by "Compressed" when it is the case
   o file suffixes PDF and RTF recognized
-  o abstracts printed in smaller font (<font size=-1>)
+  o abstracts printed in a smaller font (<font size=-1>)
 
 Version 0.72, 1999/01/21
   o option -warranty to get the warranty conditions

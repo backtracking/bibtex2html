@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.20 1999-01-21 09:38:45 filliatr Exp $ *)
+(* $Id: main.ml,v 1.21 1999-02-08 20:52:45 filliatr Exp $ *)
 
 (* options *)
 
@@ -180,13 +180,13 @@ let get_bibtex_entries fbib =
   Printf.printf "ok (%d entries).\n" (List.length el); flush stdout;
   el
 
-let translate fbib f =
-  let entries = get_bibtex_entries fbib in
-  let biblios = get_biblios fbib in
+let translate fullname basename =
+  let entries = get_bibtex_entries fullname in
+  let biblios = get_biblios fullname in
   let sb = List.map 
 	     (fun (name,bibitems) -> (name,sort_entries entries bibitems))
 	     biblios in
-  Translate.format_list f sb
+  Translate.format_list basename sb
 
 
 (* reading macros in a file *)
@@ -211,6 +211,7 @@ let usage () =
   prerr_endline "  -r         reverse the sort";
   prerr_endline "  -t         title of the HTML file (default is the filename)";
   prerr_endline "  -i         ignore BibTeX errors";
+  prerr_endline "  -multiple  produce one file per entry";
   prerr_endline "  -nodoc     only produces the body of the HTML documents";
   prerr_endline "  -nokeys    do not print the BibTeX keys";
   prerr_endline "  -noabstract";
@@ -267,6 +268,8 @@ let parse () =
 	Translate.add_field s; parse_rec rem
     | ("-f" | "--field") :: [] ->
 	usage()
+    | ("-multiple" | "--multiple") :: rem ->
+	Translate.multiple := true; parse_rec rem
  
     (* Controlling the translation *)
     | ("-m" | "--macros-from") :: f :: rem ->
@@ -334,8 +337,7 @@ let main () =
     end
   in
 
-  if not !Translate.title_spec then
-    Translate.title := f;
+  if not !Translate.title_spec then Translate.title := f;
 
   (* producing the documents *)
   translate fbib f

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.22 1999-02-08 10:15:13 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.23 1999-02-08 20:52:47 filliatr Exp $ *)
 
 (* options *)
 
@@ -25,6 +25,7 @@ let title = ref ""
 let title_spec = ref false
 let print_abstract = ref true
 let print_footer = ref true
+let multiple = ref false
 
 let (fields : string list ref) = ref []
 let add_field s = fields := s :: !fields
@@ -157,20 +158,21 @@ let get_url s =
 
 let make_links ch ((t,k,_) as e) =
   (* URL's *)
+  let first = ref true in
   List.iter (fun u -> 
 	       try
 		 let u = Bibtex.get_field e u in
 		 let s = file_type u in
-		   output_string ch ", ";
+		   if !first then first := false else output_string ch ", ";
 		   Html.open_href ch (get_url u);
 		   output_string ch s;
 		   Html.close_href ch
 	       with Not_found -> ())
     (!fields @ 
      [ "FTP"; "HTTP"; "URL"; "DVI"; "PS"; "PDF";
-       "DOCUMENTURL"; "URLPS"; "URLDVI"; "URLPDF" ]);
+       "DOCUMENTURL"; "URLPS"; "URLDVI"; "URLPDF" ])
 
-  (* abstract *)
+let make_abstract ch ((t,k,_) as e) =
   if !print_abstract then begin
     try
       let a = Bibtex.get_field e "abstract" in
@@ -181,18 +183,49 @@ let make_links ch ((t,k,_) as e) =
 	  Html.close_href ch;
 	end else begin
 	  Html.paragraph ch; output_string ch "\n";
-	  Html.open_balise ch "font size=-1"; Html.open_balise ch "blockquote";
+	  if not !multiple then Html.open_balise ch "font size=-1";
+	  Html.open_balise ch "blockquote";
 	  output_string ch "\n";
 	  latex2html ch a;
-	  Html.close_balise ch "blockquote"; Html.close_balise ch "font";
+	  Html.close_balise ch "blockquote";
+	  if not !multiple then Html.close_balise ch "font";
 	  output_string ch "\n";
 	  Html.paragraph ch; output_string ch "\n"
 	end
     with Not_found -> ()
   end
-  
 
-(* summary file f.html *)
+(* Printing of one entry *)  
+
+let bibtex_entry ch k =
+  Html.open_href ch (Printf.sprintf "%s-bib.html#%s" !directory k);
+  output_string ch "BibTeX entry";
+  Html.close_href ch
+
+let separate_file basen (b,((_,k,f) as e)) =
+  in_summary := false;
+  let file = k ^ !suffix in
+  let ch = open_out file in
+  let title = Printf.sprintf "%s : %s" basen k in
+  Html.open_document ch (fun () -> output_string ch title);
+  header ch;
+  Html.open_balise ch "h2";
+  latex2html ch b;
+  Html.close_balise ch "h2";
+  Html.paragraph ch;
+  make_abstract ch e;
+  Html.paragraph ch;
+  bibtex_entry ch k;
+  Html.paragraph ch;
+  make_links ch e;
+  Html.paragraph ch;
+  Html.open_href ch (!directory ^ !suffix);
+  output_string ch "Back";
+  Html.close_href ch;
+  if !print_footer then footer ch;
+  Html.close_document ch;
+  close_out ch;
+  in_summary := true
 
 let one_entry_summary basen ch (_,b,((_,k,f) as e)) =
   if !debug then begin
@@ -202,10 +235,15 @@ let one_entry_summary basen ch (_,b,((_,k,f) as e)) =
   Html.open_balise ch "tr valign=top";
 
   output_string ch "\n";
-  Html.open_balise ch "td";
+  Html.open_balise ch "td align=right";
   Html.anchor ch k;
-  if not !nokeys then
-    latex2html ch ("[" ^ (Hashtbl.find cite_tab k) ^ "]");
+  if (not !nokeys) or !multiple then begin
+    output_string ch "[";
+    if !multiple then Html.open_href ch (k ^ !suffix);
+    latex2html ch (Hashtbl.find cite_tab k);
+    if !multiple then Html.close_href ch;
+    output_string ch "]"
+  end;
 
   output_string ch "\n";
   Html.open_balise ch "td";
@@ -213,13 +251,19 @@ let one_entry_summary basen ch (_,b,((_,k,f) as e)) =
   Html.open_balise ch "BR";
   output_string ch "\n";
 
-  Html.open_href ch (Printf.sprintf "%s-bib.html#%s" !directory k);
-  output_string ch "BibTeX entry";
-  Html.close_href ch;
-  make_links ch e;
+  if !multiple then
+    separate_file basen (b,e)
+  else begin
+    bibtex_entry ch k;
+    output_string ch ", ";
+    make_links ch e;
+    make_abstract ch e
+  end;
 
   Html.paragraph ch;
   output_string ch "\n"
+
+(* summary file f.html *)
 
 let summary basen bl =
   let filename = basen ^ !suffix in
@@ -305,9 +349,9 @@ let bib_file f bl =
 
 (* main function *)
 
-let format_list f bl =
+let format_list basename bl =
   first_pass bl;
-  directory := f;
-  summary f bl;
-  bib_file f bl
+  directory := basename;
+  summary basename bl;
+  bib_file basename bl
 
