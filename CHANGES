@@ -1,4 +1,5 @@
 
+ o removed <font size> when option -css is used
  o added macro \frac
  o added .txt and .html as recognized file extensions
 

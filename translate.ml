@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.52 2001-10-17 12:51:42 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.53 2001-11-02 07:18:13 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -217,10 +217,11 @@ let make_abstract ch ((t,k,_) as e) =
 	(* 2. we have to print it right here *)
 	Html.paragraph ch; output_string ch "\n";
 	Html.open_balise ch "blockquote";
-	if not !multiple then Html.open_balise ch "font size=-1";
+	let font_size = not !multiple && !Html.css = None in
+	if font_size then Html.open_balise ch "font size=-1";
 	output_string ch "\n";
 	latex2html ch a;
-	if not !multiple then Html.close_balise ch "font";
+	if font_size then Html.close_balise ch "font";
 	Html.close_balise ch "blockquote";
 	output_string ch "\n";
 	Html.paragraph ch; output_string ch "\n"
