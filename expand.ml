@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: expand.ml,v 1.12 2004-07-21 13:40:59 filliatr Exp $ i*)
+(*i $Id: expand.ml,v 1.13 2004-08-24 09:27:36 filliatr Exp $ i*)
 
 (*s Expansion of abbreviations in BibTeX databases. *)
 
@@ -32,7 +32,9 @@ let add_abbrev a s = Hashtbl.add abbrev_table a s
 
 let find_abbrev s = Hashtbl.find abbrev_table s
 
-let assoc_months = 
+(* months are predefined abbreviations *)
+let () = 
+  List.iter (fun (id,m) -> add_abbrev id m)
   [ "JAN", "January" ;
     "FEB", "February" ;
     "MAR", "March" ;
@@ -51,18 +53,12 @@ let rec expand_list = function
       ""
   | (Id s) :: rem ->
       (try find_abbrev s with Not_found -> s) ^ (expand_list rem)
-
   | (String s) :: rem ->
       s ^ (expand_list rem)
 
 let rec expand_fields = function
   | [] -> 
       []
-  | ("MONTH" as n,l) :: rem ->
-      let s = expand_list l in
-      	(n,try List.assoc (String.uppercase s) assoc_months 
-	   with Not_found -> s) 
-      	:: (expand_fields rem)
   | (n,l) :: rem -> 
       (n,expand_list l) :: (expand_fields rem)
 
@@ -92,27 +88,26 @@ let rec expand biblio =
 (*s Sort BibTeX entries by decreasing dates. *)
 
 let int_of_month = function
-  | "January" -> 0
-  | "February" -> 1
-  | "March" -> 2
-  | "April" -> 3
-  | "May" -> 4
-  | "June" -> 5
-  | "July" -> 6
-  | "August" -> 7
-  | "September" -> 8
-  | "October" -> 9
-  | "November" -> 10 
-  | "December" -> 11
+  | "Janvier" | "January" -> 0
+  | "Février" | "February" -> 1
+  | "Mars" | "March" -> 2
+  | "Avril" | "April" -> 3
+  | "Mai" | "May" -> 4
+  | "Juin" | "June" -> 5
+  | "Juillet" | "July" -> 6
+  | "Août" | "August" -> 7
+  | "Septembre" | "September" -> 8
+  | "Octobre" | "October" -> 9
+  | "Novembre" | "November" -> 10 
+  | "Décembre" | "December" -> 11
   | _ -> invalid_arg "int_of_month"
 
+let month_day_re = Str.regexp "\\([a-zA-Z]+\\)\\( \\|~\\)\\([0-9]+\\)"
+
 let parse_month m =
-  try
-    Scanf.sscanf m "%s %d" (fun m d -> int_of_month m, d)
-  with _ ->
-  try
-    Scanf.sscanf m "%s~%d" (fun m d -> int_of_month m, d)
-  with _ ->
+  if Str.string_match month_day_re m 0 then
+    int_of_month (Str.matched_group 1 m), int_of_string (Str.matched_group 3 m)
+  else
     int_of_month m, 1
 
 type date = { year : int; month : int; day : int }
@@ -132,6 +127,8 @@ let extract_month k f =
   try
     parse_month (List.assoc "MONTH" f)
   with 
+    | Not_found ->
+	0,1
     | _ ->
 	if not !Options.quiet then
 	  eprintf "Warning: incorrect month in entry %s\n" k; 

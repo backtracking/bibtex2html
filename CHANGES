@@ -1,4 +1,6 @@
 
+Version 1.71, 24/8/2004
+=======================
  o improved date sorting algorithm to handle days (e.g. month = "June 29")
  o bib2bib: crossrefs are expanded before conditions are checked 
  o bib2bib: '_' allowed in field identifiers 
