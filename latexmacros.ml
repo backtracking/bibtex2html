@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latexmacros.ml,v 1.18 1999-02-08 20:52:44 filliatr Exp $ *)
+(* $Id: latexmacros.ml,v 1.19 1999-05-31 07:31:11 filliatr Exp $ *)
 
 (* This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -71,6 +71,7 @@ def "\\paragraph"
 def "\\begin{alltt}" [Print "<pre>"];
 def "\\end{alltt}" [Print "</pre>"];
 def "\\texttt" [Print "<tt>" ; Print_arg ; Print "</tt>"];
+def "\\textit" [Print "<i>" ; Print_arg ; Print "</i>"];
 def "\\textem" [Print "<em>" ; Print_arg ; Print "</em>"];
 def "\\textbf" [Print "<b>" ; Print_arg ; Print "</b>"];
 def "\\emph" [Print "<em>" ; Print_arg ; Print "</em>"];

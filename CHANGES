@@ -1,4 +1,7 @@
 
+ o macro \textit
+ o comma after "BibTeX entry" suppressed when not needed
+
 Version 0.91, 1999/04/19
  o bug fix in links to BibTeX entries in the page with abstracts
  o code optimization
