@@ -27,7 +27,7 @@ install:
 	cp bibtex2html $(BINDIR)
 
 bibtex2html: $(OBJS)
-	ocamlopt $(FLAGS) str.cmxa -o bibtex2html $(OBJS) $(STRLIB)
+	ocamlopt $(FLAGS) -o bibtex2html str.cmxa $(OBJS) $(STRLIB)
 
 bibtex_parser.mli bibtex_parser.ml: bibtex_parser.mly
 	ocamlyacc bibtex_parser.mly
