@@ -70,6 +70,7 @@ def "\\ " [Print " "];
 def "\\{" [Print "{"];
 def "\\}" [Print "}"];
 def "\\/" [];
+def "\\-" [];
 def "\\newpage" [];
 def "\\label" [Print "<A name=\""; Print_arg; Print "\"></A>"];
 def "\\ref" [Print "<A href=\"#"; Print_arg; Print "\">(ref)</A>"];
