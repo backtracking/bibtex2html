@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.18 1998-11-03 19:53:20 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.19 1998-11-16 13:27:53 filliatr Exp $ *)
 
 (* options *)
 
@@ -93,12 +93,12 @@ let safe_title e =
 
 (* header and footer of HTML files *)
 
-let own_address = "http://www.lri.fr/~filliatr/bibtex2html.en.html"
+let own_address = "http://www.lri.fr/~filliatr/bibtex2html/"
 
 let header ch =
   Printf.fprintf ch "
 <!-- This document was automatically generated with bibtex2html
-     (see http://www.lri.fr/~filliatr/bibtex2html.en.html),
+     (see http://www.lri.fr/~filliatr/bibtex2html/),
      with the following command:
      ";
   Array.iter (Printf.fprintf ch "%s ") Sys.argv;
