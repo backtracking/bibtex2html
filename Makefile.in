@@ -16,7 +16,7 @@ DOCDIR = /usr/doc/bibtex2html
 #########################################
 
 MAJORVN=1
-MINORVN=42
+MINORVN=43
 
 CAMLC    = @OCAMLC@
 CAMLCOPT = @OCAMLOPT@ 
@@ -122,7 +122,7 @@ NAME=bibtex2html-$(MAJORVN).$(MINORVN)
 
 FTP = /users/demons/filliatr/ftp/ocaml/bibtex2html
 
-SOURCEFILES = *.ml* Makefile .depend README COPYING GPL CHANGES manual.tex *.1
+SOURCEFILES = *.ml* Makefile.in configure .depend README COPYING GPL CHANGES manual.tex *.1
 
 export: source doc linux solaris
 

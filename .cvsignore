@@ -21,3 +21,6 @@ tmpmanual.ps
 manual.ps
 bibtex2html.static
 bib2bib.static
+config.cache
+config.status
+Makefile

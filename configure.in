@@ -1,0 +1,32 @@
+dnl bibtex2html autoconf input
+
+AC_INIT(bibtex.mli)
+
+AC_PREFIX_DEFAULT(/usr)
+
+dnl Check for programs
+
+# Check for OCaml programs
+AC_CHECK_PROG(OCAMLC,ocamlc,ocamlc,no)
+if test "$OCAMLC" = no ; then
+	AC_MSG_ERROR(Cannot find ocamlc.)
+fi
+AC_CHECK_PROG(OCAMLOPT,ocamlopt,ocamlopt,no)
+if test "$OCAMLOPT" = no ; then
+	AC_MSG_WARN(Cannot find ocamlopt.)
+	BEST=byte
+else
+	BEST=opt
+fi
+AC_CHECK_PROG(OCAMLDEP,ocamldep,ocamldep,no)
+if test "$OCAMLC" = no ; then
+	AC_MSG_ERROR(Cannot find ocamldep.)
+fi
+
+AC_SUBST(OCAMLC)
+AC_SUBST(OCAMLOPT)
+AC_SUBST(OCAMLDEP)
+AC_SUBST(BEST)
+
+# Finally create all the generated files
+AC_OUTPUT(Makefile)
