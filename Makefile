@@ -12,6 +12,8 @@ CAMLC    = ocamlc
 CAMLCOPT = ocamlopt
 CAMLDEP  = ocamldep
 ZLIBS    =
+DEBUG    = -g
+FLAGS    = $(ZLIBS) $(DEBUG)
 
 OBJS = latexmacros.cmo latexscan.cmo bbl_lexer.cmo \
        bibtex.cmo bibtex_lexer.cmo bibtex_parser.cmo html.cmo \
@@ -23,7 +25,7 @@ install:
 	cp bibtex2html $(BINDIR)
 
 bibtex2html: $(OBJS)
-	ocamlc -o bibtex2html $(OBJS)
+	ocamlc $(FLAGS) -o bibtex2html $(OBJS)
 
 bibtex_parser.mli bibtex_parser.ml: bibtex_parser.mly
 	ocamlyacc bibtex_parser.mly
@@ -63,16 +65,16 @@ export: $(FILES)
 .SUFFIXES: .mli .ml .cmi .cmo .cmx
  
 .mli.cmi:
-	$(CAMLC) -c $(ZLIBS) $<
+	$(CAMLC) -c $(FLAGS) $<
  
 .ml.cmo:
-	$(CAMLC) -c $(ZLIBS) $<
+	$(CAMLC) -c $(FLAGS) $<
 
 .ml.o:
-	$(CAMLCOPT) -c $(ZLIBS) $<
+	$(CAMLCOPT) -c $(FLAGS) $<
 
 .ml.cmx:
-	$(CAMLCOPT) -c $(ZLIBS) $<
+	$(CAMLCOPT) -c $(FLAGS) $<
 
 
 # clean and depend
