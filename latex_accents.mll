@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: latex_accents.mll,v 1.3 2000-06-13 01:25:18 filliatr Exp $ *)
+(* $Id: latex_accents.mll,v 1.4 2000-07-25 15:25:01 marche Exp $ *)
 
 {
 
@@ -29,9 +29,11 @@
 let space = [ '\t']
 
 rule next_char = parse
-  '\\'                          { control lexbuf }
-| _                             { add lexbuf ; next_char lexbuf }
-| eof                           { () }
+    '\\'                          { control lexbuf }
+  | '{'                           { next_char lexbuf }
+  | '}'                           { next_char lexbuf }
+  | _                             { add lexbuf ; next_char lexbuf }
+  | eof                           { () }
 
 
 (* called when we have seen  "\\"  *)
