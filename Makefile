@@ -17,6 +17,7 @@ CAMLDEP  = ocamldep
 ZLIBS    =
 DEBUG    =
 FLAGS    = $(ZLIBS) $(DEBUG)
+PROFILE  = -p
 
 STRLIB = -cclib -lstr 
 
@@ -30,7 +31,7 @@ install:
 	cp bibtex2html $(BINDIR)
 
 bibtex2html: $(OBJS)
-	ocamlopt $(FLAGS) -o bibtex2html str.cmxa $(OBJS) $(STRLIB)
+	ocamlopt $(PROFILE) $(FLAGS) -o bibtex2html str.cmxa $(OBJS) $(STRLIB)
 
 bibtex_parser.mli bibtex_parser.ml: bibtex_parser.mly
 	ocamlyacc bibtex_parser.mly
@@ -107,7 +108,7 @@ aix:
 	$(CAMLCOPT) -c $(FLAGS) $<
 
 .ml.cmx:
-	$(CAMLCOPT) -c $(FLAGS) $<
+	$(CAMLCOPT) -c $(PROFILE) $(FLAGS) $<
 
 
 # clean and depend

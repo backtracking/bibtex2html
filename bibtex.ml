@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibtex.ml,v 1.6 1998-05-28 07:21:00 filliatr Exp $ *)
+(* $Id: bibtex.ml,v 1.7 1999-03-01 22:17:54 filliatr Exp $ *)
 
 type entry_type = string
 		    
@@ -130,12 +130,13 @@ let date_order (_,_,f1) (_,_,f2) =
 (* access to the fields *)
 
 let get_field (_,_,f) s = List.assoc (String.uppercase s) f
+let get_uppercase_field (_,_,f) s = List.assoc s f
 
-let get_title e = get_field e "TITLE"
+let get_title e = get_uppercase_field e "TITLE"
 
-let get_year e = get_field e "YEAR"
+let get_year e = get_uppercase_field e "YEAR"
 
-let get_month e = get_field e "MONTH"
+let get_month e = get_uppercase_field e "MONTH"
 
-let get_author e = get_field e "AUTHOR"
+let get_author e = get_uppercase_field e "AUTHOR"
 

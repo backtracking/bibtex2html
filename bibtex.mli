@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: bibtex.mli,v 1.5 1998-05-28 07:21:01 filliatr Exp $ *)
+(* $Id: bibtex.mli,v 1.6 1999-03-01 22:17:55 filliatr Exp $ *)
 
 type entry_type = string
 		    
@@ -42,6 +42,7 @@ val date_order : entry -> entry -> bool
 (* access to the fields *)
 
 val get_field : entry -> string -> string
+val get_uppercase_field : entry -> string -> string
 
 val get_title : entry -> string
 val get_year  : entry -> string

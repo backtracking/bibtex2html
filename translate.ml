@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: translate.ml,v 1.24 1999-02-12 16:49:15 filliatr Exp $ *)
+(* $Id: translate.ml,v 1.25 1999-03-01 22:17:56 filliatr Exp $ *)
 
 (* options *)
 
@@ -162,7 +162,7 @@ let make_links ch ((t,k,_) as e) =
   let first = ref true in
   List.iter (fun u -> 
 	       try
-		 let u = Bibtex.get_field e u in
+		 let u = Bibtex.get_uppercase_field e u in
 		 let s = file_type u in
 		   if !first then first := false else output_string ch ", ";
 		   Html.open_href ch (get_url u);
@@ -175,7 +175,7 @@ let make_links ch ((t,k,_) as e) =
 
 let make_abstract ch ((t,k,_) as e) =
   try
-    let a = Bibtex.get_field e "abstract" in
+    let a = Bibtex.get_uppercase_field e "ABSTRACT" in
       if is_url a then begin
 	(* 1. it is an URL *)
 	output_string ch ", ";
