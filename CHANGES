@@ -1,4 +1,9 @@
 
+Version 1.3, 2/6/2000
+=====================
+ o sorting according to dates: bibtex2html no more fails on incorrect
+   dates but issues a warning; if no date is present, the date of the
+   crossref is used, if any.
  o macros: \LaTeX, \v, \tm, \sl
  o character / in keys
  o option --hevea-url to translate macro \url as HeVeA's instead of LaTeX's

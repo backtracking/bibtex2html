@@ -14,9 +14,9 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: expand.ml,v 1.3 2000-06-02 19:37:34 filliatr Exp $ *)
+(* $Id: expand.ml,v 1.4 2000-06-02 19:59:43 filliatr Exp $ *)
 
-
+open Format
 open Bibtex
 
 type fields = (string * string) list
@@ -47,7 +47,7 @@ let assoc_months =
     "DEC", "December" ]
 
 let rec expand_list = function
-    [] -> 
+  | [] -> 
       ""
   | (Id s)::rem ->
       (try find_abbrev s with Not_found -> s) ^ (expand_list rem)
@@ -56,7 +56,7 @@ let rec expand_list = function
       s ^ (expand_list rem)
 
 let rec expand_fields = function
-    [] -> 
+  | [] -> 
       []
   | ("MONTH" as n,l) :: rem ->
       let s = expand_list l in
@@ -105,18 +105,42 @@ let int_of_month = function
   | "December" -> 11
   | _ -> 0 (* TODO *)
 
-let date_order (_,_,f1) (_,_,f2) =
-  try
-    let a1 = int_of_string (List.assoc "YEAR" f1) in
-    let a2 = int_of_string (List.assoc "YEAR" f2) in
-    (a1 < a2) or
-    ((a1 = a2) & 
-     (let m1 = try int_of_month (List.assoc "MONTH" f1) with Not_found -> 0 in
-      let m2 = try int_of_month (List.assoc "MONTH" f2) with Not_found -> 0 in
-      m1 < m2))
-  with Not_found | Failure "int_of_string" -> 
-    failwith "year not present or incorrect"
+type date = { year : int; month : int }
 
+let dummy_date = { year = 0; month = 0 }
+
+let extract_year k f =
+  try
+    int_of_string (List.assoc "YEAR" f)
+  with Failure "int_of_string" ->
+    eprintf "Warning: incorrect year in entry %s\n" k;
+    0
+
+let extract_month k f =
+  try
+    int_of_month (List.assoc "MONTH" f)
+  with 
+    | Failure "int_of_string" ->
+	eprintf "Warning: incorrect month in entry %s\n" k; 0
+    | Not_found -> 0
+
+let rec find_entry k = function
+  | [] -> raise Not_found
+  | (_,k',_) as e :: r -> if k = k' then e else find_entry k r
+
+let rec extract_date el (_,k,f) =
+  try
+    let y = extract_year k f in
+    let m = extract_month k f in
+    { year = y; month = m }
+  with Not_found ->
+    try extract_date el (find_entry (List.assoc "CROSSREF" f) el)
+    with Not_found -> dummy_date
+
+let date_order el e1 e2 =
+  let d1 = extract_date el e1 in
+  let d2 = extract_date el e2 in
+  (d1.year < d2.year) or (d1.year == d2.year & d1.month < d2.month)
 
 (* access to the fields *)
 

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: main.ml,v 1.34 2000-06-02 19:37:36 filliatr Exp $ *)
+(* $Id: main.ml,v 1.35 2000-06-02 19:59:43 filliatr Exp $ *)
 
 open Translate
 
@@ -89,7 +89,7 @@ let sort_entries entries bibitems =
   in
   let sl = 
     if !sort = By_date then
-      Sort.list (fun (_,_,e1) (_,_,e2) -> Expand.date_order e1 e2) el
+      Sort.list (fun (_,_,e1) (_,_,e2) -> Expand.date_order entries e1 e2) el
     else
       el in
   Printf.eprintf "ok.\n"; flush stderr;

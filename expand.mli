@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(* $Id: expand.mli,v 1.2 2000-06-02 19:37:34 filliatr Exp $ *)
+(* $Id: expand.mli,v 1.3 2000-06-02 19:59:43 filliatr Exp $ *)
 
 
 (* expansion *)
@@ -25,7 +25,7 @@ type entry = Bibtex.entry_type * Bibtex.key * fields
 		
 val expand : Bibtex.biblio -> entry list (* expand the abbreviations *)
 
-val date_order : entry -> entry -> bool
+val date_order : entry list -> entry -> entry -> bool
 
 (* access to the fields *)
 
