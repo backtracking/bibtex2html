@@ -231,7 +231,7 @@ export-doc: manual.ps manual.html
 	cp -f manual.html $(WWW)/doc
 
 manual.ps: manual.tex
-	latex manual && latex manual
+	latex manual && latex manual && latex manual
 	dvips manual.dvi -o manual.ps
 
 manual.html: manual.tex
