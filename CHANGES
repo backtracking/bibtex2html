@@ -1,4 +1,7 @@
 
+ o replaced ISO latin 1 characters with their entity codes; support
+   for Czech characters (both contributed by Danny Chrastina)
+
 Version 1.75, 2/2/2005
 ======================
  o updated manual (the manual was not reflecting the change of f-bib

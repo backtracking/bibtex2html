@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.52 2004-06-30 07:05:35 filliatr Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.53 2005-04-18 10:50:13 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -160,64 +160,73 @@ def "\\TH" [Print "&THORN;"];
 def "\\dh" [Print "&eth;"];
 def "\\DH" [Print "&ETH;"];
 def "\\ss" [Print "&szlig;"];
-def "\\'" [Raw_arg(function "e" -> print_c 'é'
-                          | "E" -> print_c 'É'
-			  | "a" -> print_c 'á'
-			  | "A" -> print_c 'Á'
-			  | "o" -> print_c 'ó'
-			  | "O" -> print_c 'Ó'
-			  | "i" -> print_c 'í'
-                          | "\\i" -> print_c 'í'
-			  | "I" -> print_c 'Í'
-			  | "u" -> print_c 'ú'
-			  | "U" -> print_c 'Ú'
+def "\\'" [Raw_arg(function "e" -> print_s "&eacute;"
+                          | "E" -> print_s "&Eacute;"
+			  | "a" -> print_s "&aacute;"
+			  | "A" -> print_s "&Aacute;"
+			  | "o" -> print_s "&oacute;"
+			  | "O" -> print_s "&Oacute;"
+			  | "i" -> print_s "&iacute;"
+                          | "\\i" -> print_s "&iacute;"
+			  | "I" -> print_s "&Iacute;"
+			  | "u" -> print_s "&uacute;"
+			  | "U" -> print_s "&Uacute;"
+			  | "'"  -> print_s "&rdquo;"
 			  | ""  -> print_c '\''
                           | s   -> print_s s)];
-def "\\`" [Raw_arg(function "e" -> print_c 'è'
-                          | "E" -> print_c 'È'
-                          | "a" -> print_c 'à'
-                          | "A" -> print_c 'À'
-			  | "o" -> print_c 'ò'
-			  | "O" -> print_c 'Ò'
-			  | "i" -> print_c 'ì'
-                          | "\\i" -> print_c 'ì'
-			  | "I" -> print_c 'Ì'
-                          | "u" -> print_c 'ù'
-                          | "U" -> print_c 'Ù'
-			  | ""  -> print_c '`'
+def "\\`" [Raw_arg(function "e" -> print_s "&egrave;"
+                          | "E" -> print_s "&Egrave;"
+                          | "a" -> print_s "&agrave;"
+                          | "A" -> print_s "&Agrave;"
+			  | "o" -> print_s "&ograve;"
+			  | "O" -> print_s "&Ograve;"
+			  | "i" -> print_s "&igrave;"
+                          | "\\i" -> print_s "&igrave;"
+			  | "I" -> print_s "&Igrave;"
+                          | "u" -> print_s "&ugrave;"
+                          | "U" -> print_s "&Ugrave;"
+			  | "`"  -> print_s "&ldquo;"
+			  | ""  -> print_s "&lsquo;"
                           | s   -> print_s s)];
-def "\\~" [Raw_arg(function "n" -> print_c 'ñ'
-		          | ""  -> print_c '~'
+def "\\~" [Raw_arg(function "n" -> print_s "&ntilde;"
+		          | ""  -> print_s "&tilde;"
                           | s   -> print_s s)];
-def "\\c" [Raw_arg(function "c" -> print_c 'ç'
+def "\\c" [Raw_arg(function "c" -> print_s "&ccedil;"
                           | s   -> print_s s)];
-def "\\^" [Raw_arg(function "a" -> print_c 'â'
-                          | "A" -> print_c 'Â'
-                          | "e" -> print_c 'ê'
-                          | "E" -> print_c 'Ê'
-                          | "i" -> print_c 'î'
-                          | "\\i" -> print_c 'î'
-                          | "I" -> print_c 'Î'
-                          | "o" -> print_c 'ô'
-                          | "O" -> print_c 'Ô'
-                          | "u" -> print_c 'û'
-                          | "U" -> print_c 'Û'
+def "\\^" [Raw_arg(function "a" -> print_s "&acirc;"
+                          | "A" -> print_s "&Acirc;"
+                          | "e" -> print_s "&ecirc;"
+                          | "E" -> print_s "&Ecirc;"
+                          | "i" -> print_s "&icirc;"
+                          | "\\i" -> print_s "&icirc;"
+                          | "I" -> print_s "&Icirc;"
+                          | "o" -> print_s "&ocirc;"
+                          | "O" -> print_s "&Ocirc;"
+                          | "u" -> print_s "&ucirc;"
+                          | "U" -> print_s "&Ucirc;"
 			  | ""  -> print_c '^'
                           | s   -> print_s s)];
-def "\\\"" [Raw_arg(function "e" -> print_c 'ë'
-                          | "E" -> print_c 'Ë'
-                          | "a" -> print_c 'ä'
-                          | "A" -> print_c 'Ä'
-                          | "\\i" -> print_c 'ï'
-                          | "i" -> print_c 'ï'
-                          | "I" -> print_c 'Ï'
-                          | "o" -> print_c 'ö'
-                          | "O" -> print_c 'Ö'
-                          | "u" -> print_c 'ü'
-                          | "U" -> print_c 'Ü'
+def "\\\"" [Raw_arg(function "e" -> print_s "&euml;"
+                          | "E" -> print_s "&Euml;"
+                          | "a" -> print_s "&auml;"
+                          | "A" -> print_s "&Auml;"
+                          | "\\i" -> print_s "&iuml;"
+                          | "i" -> print_s "&iuml;"
+                          | "I" -> print_s "&Iuml;"
+                          | "o" -> print_s "&ouml;"
+                          | "O" -> print_s "&Ouml;"
+                          | "u" -> print_s "&uuml;"
+                          | "U" -> print_s "&Uuml;"
                           | s   -> print_s s)];
 def "\\u" [Raw_arg print_s ];
-def "\\v" [Raw_arg print_s ];
+def "\\v" [Raw_arg(function "r" -> print_s "&#X0159;"
+                          | "R" -> print_s "&#X0158;"
+                          | "s" -> print_s "&#X0161;"
+                          | "S" -> print_s "&#X0160;"
+                          | "\\i" -> print_s "&#X012D;"
+                          | "i" -> print_s "&#X012D;"
+                          | "I" -> print_s "&#X012C;"
+			  | s   -> print_s s)];
 
 (* Math macros *)
 def "\\[" [Print "<blockquote>"];
@@ -286,6 +295,10 @@ def "\\bigskip" [];
 def "\\relax" [];
 def "\\markboth" [Skip_arg; Skip_arg];
 def "\\dots" [Print "..."];
+def "\\dot" [Print "."];
+def "\\simeq" [Print "&tilde;="];
+def "\\approx" [Print "&tilde;"];
+def "\\^circ" [Print "&deg;"];
 def "\\ldots" [Print "..."];
 def "\\cdot" [Print "&#183;"];
 def "\\cdots" [Print "..."];
@@ -479,4 +492,3 @@ let init_style_macros st =
 	"\\Btxinshort", "In:";
       ]
   end
-
