@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.53 2005-04-18 10:50:13 filliatr Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.54 2005-09-22 08:44:23 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -172,6 +172,7 @@ def "\\'" [Raw_arg(function "e" -> print_s "&eacute;"
 			  | "u" -> print_s "&uacute;"
 			  | "U" -> print_s "&Uacute;"
 			  | "'"  -> print_s "&rdquo;"
+			  | "c" -> print_s "&#263;"
 			  | ""  -> print_c '\''
                           | s   -> print_s s)];
 def "\\`" [Raw_arg(function "e" -> print_s "&egrave;"
