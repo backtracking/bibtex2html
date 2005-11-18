@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: biboutput.ml,v 1.17 2004-10-06 06:20:00 filliatr Exp $ i*)
+(*i $Id: biboutput.ml,v 1.18 2005-11-18 13:58:58 filliatr Exp $ i*)
 
 (*s Output a BibTeX bibliography. *)
 
@@ -86,18 +86,11 @@ let print_link_field ch = function
       print_atom_list true ch l
 
 let print_command html ch keys = function 
-  | Comment s -> 
-(*i
-      if html then 
-	begin
-	  Html.open_balise ch "i";
-	  output_string ch s;
-	  Html.close_balise ch "i"
-	end
-      else
-i*)
+  | Comment l -> 
       if html then output_string ch "<pre>\n";
-      output_string ch ("@COMMENT{{" ^ s ^ "}}\n");
+      output_string ch "@COMMENT{";
+      print_atom_list html ch l;
+      output_string ch "}\n";
       if html then output_string ch "</pre>\n";
       output_string ch "\n"
   | Preamble l ->

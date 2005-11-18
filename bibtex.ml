@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibtex.ml,v 1.21 2004-10-06 08:44:20 marche Exp $ i*)
+(*i $Id: bibtex.ml,v 1.22 2005-11-18 13:58:58 filliatr Exp $ i*)
 
 (*s Datatype for BibTeX bibliographies. *)
 
@@ -29,7 +29,7 @@ type atom =
   | String of string
 
 type command = 
-  | Comment of string
+  | Comment of atom list
   | Preamble of atom list
   | Abbrev of string * atom list
   | Entry  of entry_type * key * (string * atom list) list

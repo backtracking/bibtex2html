@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibtex_lexer.mll,v 1.13 2004-03-16 10:06:26 filliatr Exp $ i*)
+(*i $Id: bibtex_lexer.mll,v 1.14 2005-11-18 13:58:58 filliatr Exp $ i*)
 
 (*s Lexer for BibTeX files. *)
 
@@ -64,10 +64,7 @@ rule token = parse
 	   | "STRING" -> 
 	       Tabbrev
 	   | "COMMENT" -> 
-	       reset_string_buffer ();
-	       comment lexbuf;
-	       serious := false;
-	       Tcomment (get_stored_string ())
+	       Tcomment
 	   | "PREAMBLE" -> 
 	       Tpreamble
 	   |  et -> 

@@ -1,4 +1,8 @@
 
+Version 1.77, 18/11/2005
+========================
+ o fixed bug with unbalanced brackets in bib2bib/bibtex2html output
+
 Version 1.76, 22/9/2005
 =======================
  o translation of \'c
