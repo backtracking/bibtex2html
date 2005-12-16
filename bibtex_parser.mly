@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  */
 
-/*i $Id: bibtex_parser.mly,v 1.11 2005-11-18 13:58:58 filliatr Exp $ i*/
+/*i $Id: bibtex_parser.mly,v 1.12 2005-12-16 08:39:35 filliatr Exp $ i*/
 
 /*s Parser for BibTeX files. */
 
@@ -24,9 +24,9 @@
 
 %}
 
-%token <string> Tident Tstring 
+%token <string> Tident Tstring Tcomment 
 %token <string * string> Tentry
-%token Tcomment Tabbrev Tpreamble Tlbrace Trbrace Tcomma Tequal EOF Tsharp
+%token Tabbrev Tpreamble Tlbrace Trbrace Tcomma Tequal EOF Tsharp
 
 %start command_list
 %type <Bibtex.biblio> command_list
@@ -46,8 +46,8 @@ commands:
      { empty_biblio }
 ;
 command:
-   Tcomment sharp_string_list Trbrace
-     { Comment $2 }
+   Tcomment
+     { Comment $1 }
  | Tpreamble sharp_string_list Trbrace
      { Preamble $2 }
  | Tabbrev Tident Tequal sharp_string_list Trbrace

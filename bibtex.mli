@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibtex.mli,v 1.21 2005-11-18 13:58:58 filliatr Exp $ i*)
+(*i $Id: bibtex.mli,v 1.22 2005-12-16 08:39:35 filliatr Exp $ i*)
 
 (*s A datatype for BibTeX bibliographies. *)
 
@@ -29,7 +29,7 @@ type atom =
   | String of string
 
 type command = 
-  | Comment of atom list
+  | Comment of string
   | Preamble of atom list
   | Abbrev of string * atom list
   | Entry  of entry_type * key * (string * atom list) list
