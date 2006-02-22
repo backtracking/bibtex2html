@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibfilter.ml,v 1.10 2004-07-06 15:22:32 marche Exp $ i*)
+(*i $Id: bibfilter.ml,v 1.11 2006-02-22 10:32:29 marche Exp $ i*)
 
 (*s Filtering and saturating BibTeX files. *)
 
@@ -75,19 +75,21 @@ let rec needed_keys_for_field biblio field value keys abbrevs =
 	       let id = String.uppercase id in		 
 	       if not (KeySet.mem id abbrevs) 
 	       then
-		 if abbrev_is_implicit id then (keys,abbrevs)
-		 else 
-		   try
-		     let e = find_abbrev id biblio in
-		     if debug then begin
-		       eprintf "We need additional abbrev %s\n" id
-		     end;
-		     needed_keys_for_entry biblio keys (KeySet.add id abbrevs) e
-		   with Not_found ->
-		     if not !Options.quiet then
-		       eprintf "Warning: string \"%s\" not found.\n" id;
-		     if !Options.warn_error then exit 2;
-		     (keys,abbrevs)
+		 try
+		   let e = find_abbrev id biblio in
+		   if debug then begin
+		     eprintf "We need additional abbrev %s\n" id
+		   end;
+		   needed_keys_for_entry biblio keys (KeySet.add id abbrevs) e
+		 with Not_found ->
+		   if abbrev_is_implicit id then (keys,abbrevs)
+		   else 
+		     begin
+		       if not !Options.quiet then
+			 eprintf "Warning: string \"%s\" not found.\n" id;
+		       if !Options.warn_error then exit 2;
+		       (keys,abbrevs)
+		     end
 	       else (keys,abbrevs)
 	   | _ -> (keys,abbrevs))
       value
