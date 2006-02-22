@@ -14,7 +14,9 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latex_accents.mll,v 1.8 2005-04-18 10:50:13 filliatr Exp $ i*)
+(*i $Id: latex_accents.mll,v 1.9 2006-02-22 10:05:44 filliatr Exp $ i*)
+
+(* Normalize both ISO-latin characters and LaTeX accents to HTML entities *)
 
 {
 
@@ -34,6 +36,48 @@ rule next_char = parse
     '\\'                          { control lexbuf }
   | '{'                           { next_char lexbuf }
   | '}'                           { next_char lexbuf }
+  | 'ç' { add_string "&ccedil;" ; next_char lexbuf }
+  | 'ñ' { add_string "&ntilde;"; next_char lexbuf }
+  | 'ä' { add_string "&auml;"; next_char lexbuf }
+  | 'ö' { add_string "&ouml;"; next_char lexbuf }
+  | 'ü' { add_string "&uuml;"; next_char lexbuf }
+  | 'ë' { add_string "&euml;"; next_char lexbuf }
+  | 'Ä' { add_string "&Auml;"; next_char lexbuf }
+  | 'Ö' { add_string "&Ouml;"; next_char lexbuf }
+  | 'Ü' { add_string "&Uuml;"; next_char lexbuf }
+  | 'Ë' { add_string "&Euml;"; next_char lexbuf }
+  | 'ï' { add_string "&iuml;"; next_char lexbuf }
+  | 'Ï' { add_string "&Iuml;"; next_char lexbuf }
+  | 'á' { add_string "&aacute;"; next_char lexbuf }
+  | 'ó' { add_string "&oacute;"; next_char lexbuf }
+  | 'ú' { add_string "&uacute;"; next_char lexbuf }
+  | 'é' { add_string "&eacute;"; next_char lexbuf }
+  | 'Á' { add_string "&Aacute;"; next_char lexbuf }
+  | 'Ó' { add_string "&Oacute;"; next_char lexbuf }
+  | 'Ú' { add_string "&Uacute;"; next_char lexbuf }
+  | 'É' { add_string "&Eacute;"; next_char lexbuf }
+  | 'í' { add_string "&iacute;"; next_char lexbuf }
+  | 'Í' { add_string "&Iacute;"; next_char lexbuf }
+  | 'à' { add_string "&agrave;"; next_char lexbuf }
+  | 'ò' { add_string "&ograve;"; next_char lexbuf }
+  | 'ù' { add_string "&ugrave;"; next_char lexbuf }
+  | 'è' { add_string "&egrave;"; next_char lexbuf }
+  | 'À' { add_string "&Agrave;"; next_char lexbuf }
+  | 'Ò' { add_string "&Ograve;"; next_char lexbuf }
+  | 'Ù' { add_string "&Ugrave;"; next_char lexbuf }
+  | 'È' { add_string "&Egrave;"; next_char lexbuf }
+  | 'ì' { add_string "&igrave;"; next_char lexbuf }
+  | 'Ì' { add_string "&Igrave;"; next_char lexbuf }
+  | 'â' { add_string "&acirc;"; next_char lexbuf }
+  | 'ô' { add_string "&ocirc;"; next_char lexbuf }
+  | 'û' { add_string "&ucirc;"; next_char lexbuf }
+  | 'ê' { add_string "&ecirc;"; next_char lexbuf }
+  | 'î' { add_string "&icirc;"; next_char lexbuf }
+  | 'Â' { add_string "&Acirc;"; next_char lexbuf }
+  | 'Ô' { add_string "&Ocirc;"; next_char lexbuf }
+  | 'Û' { add_string "&Ucirc;"; next_char lexbuf }
+  | 'Ê' { add_string "&Ecirc;"; next_char lexbuf }
+  | 'Î' { add_string "&Icirc;"; next_char lexbuf }
   | _                             { add lexbuf ; next_char lexbuf }
   | eof                           { () }
 

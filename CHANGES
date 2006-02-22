@@ -1,4 +1,8 @@
 
+Version 1.79, 22/2/2006
+=======================
+ o fixed bug with ISO-latin characters in bib2bib conditions
+
 Version 1.78, 16/12/2005
 Version 1.77, 18/11/2005
 ========================

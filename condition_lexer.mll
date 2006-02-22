@@ -50,6 +50,9 @@ and string = parse
       { Buffer.contents string_buf }
   | eof                   
       { raise (Lex_error ("Unterminated string")) }
+  | '\\' '"'              
+      { Buffer.add_char string_buf '"';
+	string lexbuf }
   | '\\' 'r'              
       { Buffer.add_char string_buf '\r';
 	string lexbuf }
@@ -77,6 +80,9 @@ and string2 = parse
       { Buffer.contents string_buf }
   | eof                  
       { raise (Lex_error ("Unterminated string")) }
+  | '\\' '\''   
+      { Buffer.add_char string_buf '\'';
+	string2 lexbuf }
   | '\\' 'r'   
       { Buffer.add_char string_buf '\r';
 	string2 lexbuf }
