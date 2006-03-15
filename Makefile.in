@@ -17,7 +17,7 @@ DOCDIR = $(prefix)/doc/bibtex2html
 # End of configuration part
 #########################################
 
-VERSION=1.79
+VERSION=1.80
 
 OCAMLC   = @OCAMLC@
 OCAMLOPT = @OCAMLOPT@ 

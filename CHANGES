@@ -1,4 +1,9 @@
 
+Version 1.80, 15/3/2006
+=======================
+ o remove leading ./ in front of relative URLs (was introduced a long
+   time ago to circumvent an Internet Explorer bug; see below)
+ o no more escaping of the character & in URLs
 
 Version 1.79, 22/2/2006
 =======================
