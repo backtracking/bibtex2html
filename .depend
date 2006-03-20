@@ -36,8 +36,8 @@ expand.cmo: options.cmi latexscan.cmo bibtex.cmi expand.cmi
 expand.cmx: options.cmx latexscan.cmx bibtex.cmx expand.cmi 
 latex_accents.cmo: latex_accents.cmi 
 latex_accents.cmx: latex_accents.cmi 
-latexmacros.cmo: options.cmi html.cmo latexmacros.cmi 
-latexmacros.cmx: options.cmx html.cmx latexmacros.cmi 
+latexmacros.cmo: options.cmi latexmacros.cmi 
+latexmacros.cmx: options.cmx latexmacros.cmi 
 latexscan.cmo: options.cmi latexmacros.cmi 
 latexscan.cmx: options.cmx latexmacros.cmx 
 main.cmo: translate.cmi readbib.cmi options.cmi latexscan.cmo latexmacros.cmi \
