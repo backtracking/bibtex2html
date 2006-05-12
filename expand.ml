@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: expand.ml,v 1.13 2004-08-24 09:27:36 filliatr Exp $ i*)
+(*i $Id: expand.ml,v 1.14 2006-05-12 16:05:02 filliatr Exp $ i*)
 
 (*s Expansion of abbreviations in BibTeX databases. *)
 
@@ -103,10 +103,13 @@ let int_of_month = function
   | _ -> invalid_arg "int_of_month"
 
 let month_day_re = Str.regexp "\\([a-zA-Z]+\\)\\( \\|~\\)\\([0-9]+\\)"
+let month_anything = Str.regexp "\\([a-zA-Z]+\\)"
 
 let parse_month m =
   if Str.string_match month_day_re m 0 then
     int_of_month (Str.matched_group 1 m), int_of_string (Str.matched_group 3 m)
+  else if Str.string_match month_anything m 0 then
+    int_of_month (Str.matched_group 1 m), 1
   else
     int_of_month m, 1
 
@@ -119,7 +122,7 @@ let extract_year k f =
     int_of_string (List.assoc "YEAR" f)
   with Failure "int_of_string" ->
     if not !Options.quiet then
-      eprintf "Warning: incorrect year in entry %s\n" k;
+      eprintf "Warning: incorrect year in entry %s@." k;
     if !Options.warn_error then exit 2;
     0
 
@@ -143,6 +146,7 @@ let rec extract_date el (_,k,f) =
   try
     let y = extract_year k f in
     let m,d = extract_month k f in
+    (* eprintf "extract_date: year = %d month = %d day = %d@." y m d; *)
     { year = y; month = m; day = d }
   with Not_found ->
     try extract_date el (find_entry (List.assoc "CROSSREF" f) el)

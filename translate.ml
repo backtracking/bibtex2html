@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.70 2005-01-19 13:52:02 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.71 2006-05-12 16:05:02 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -45,9 +45,11 @@ let bibentries_file = ref ""
 let title_url = ref false
 let use_label_name = ref false
 let use_keys = ref false
-let table = ref true
 let note_fields = ref ([] : string list)
 let abstract_name = ref "Abstract"
+
+type table_kind = Table | DL | NoTable
+let table = ref Table
 
 (* internal name, plus optional external name *)
 type field_info = string * (string option)
@@ -156,7 +158,7 @@ let footer ch =
   Html.open_href ch own_address;
   output_string ch "bibtex2html";
   Html.close_href ch;
-  output_string ch " "; output_string ch Version.version;
+  output_string ch " "; output_string ch Version.version; output_string ch ".";
   Html.close_balise ch "em"; 
   Html.close_balise ch "p";
   output_string ch "\n";
@@ -335,37 +337,44 @@ let separate_file (b,((_,k,f) as e)) =
   close_out ch;
   in_summary := true
 
-let open_table ch = 
-  Html.open_balise ch (if !table then "table" else "dl")
+let open_table ch = match !table with
+  | Table -> Html.open_balise ch "table"
+  | DL -> Html.open_balise ch "dl"
+  | NoTable -> ()
 
-let close_table ch =
-  Html.close_balise ch (if !table then "table" else "dl")
+let close_table ch = match !table with
+  | Table -> Html.close_balise ch "table"
+  | DL -> Html.close_balise ch "dl"
+  | NoTable -> ()
 
-let open_row ch =
-  if !table then begin
-    Html.open_balise ch "tr valign=\"top\""; output_string ch "\n";
-    Html.open_balise ch "td align=\"right\""; output_string ch "\n"
-  end else begin
-    Html.open_balise ch "dt"; output_string ch "\n"
-  end
+let open_row ch = match !table with
+  | Table ->
+      Html.open_balise ch "tr valign=\"top\""; output_string ch "\n";
+      Html.open_balise ch "td align=\"right\""; output_string ch "\n"
+  | DL ->
+      Html.open_balise ch "dt"; output_string ch "\n"
+  | NoTable ->
+      Html.open_balise ch "p"
 
-let new_column ch =
-  if !table then begin
-    Html.close_balise ch "td"; output_string ch "\n";
-    Html.open_balise ch "td"; output_string ch "\n"
-  end else begin
-    Html.close_balise ch "dt"; output_string ch "\n";
-    Html.open_balise ch "dd"; output_string ch "\n"
-  end
+let new_column ch = match !table with
+  | Table ->
+      Html.close_balise ch "td"; output_string ch "\n";
+      Html.open_balise ch "td"; output_string ch "\n"
+  | DL ->
+      Html.close_balise ch "dt"; output_string ch "\n";
+      Html.open_balise ch "dd"; output_string ch "\n"
+  | NoTable ->
+      output_string ch "\n"
 
-let close_row ch =
-  if !table then begin
-    Html.close_balise ch "td"; output_string ch "\n";
-    Html.close_balise ch "tr"; output_string ch "\n"
-  end else begin
-    (* JK Html.paragraph ch; output_string ch "\n"; *)
-    Html.close_balise ch "dd"; output_string ch "\n"
-  end
+let close_row ch = match !table with
+  | Table ->
+      Html.close_balise ch "td"; output_string ch "\n";
+      Html.close_balise ch "tr"; output_string ch "\n"
+  | DL ->
+      (* JK Html.paragraph ch; output_string ch "\n"; *)
+      Html.close_balise ch "dd"; output_string ch "\n"
+  | NoTable ->
+      Html.close_balise ch "p"
 
 let one_entry_summary ch biblio (_,b,((_,k,f) as e)) =
   if !Options.debug then begin
@@ -380,9 +389,8 @@ let one_entry_summary ch biblio (_,b,((_,k,f) as e)) =
     if !multiple then Html.open_href ch (k ^ !link_suffix);
     latex2html ch (if !use_keys then k else Hashtbl.find cite_tab k);
     if !multiple then Html.close_href ch;
-  end
-  else
-    output_string ch "&nbsp;";
+  end else
+    if !table <> NoTable then output_string ch "&nbsp;";
   Html.close_anchor ch;
   if (not !nokeys) or !multiple then output_string ch "]";
   (* end of JK changes *)
@@ -493,13 +501,14 @@ let format_list biblio sorted_bl keys =
   first_pass sorted_bl;
   bibentries_file := !output_file ^ "_bib";
   if !both then begin
+    let old_print_keywords = !print_keywords in
     (* short version *)
     print_abstract := false;
     print_keywords := false;
     summary biblio sorted_bl;
     (* long version with abstracts and keywords *)
     print_abstract := true;
-    print_keywords := true;
+    print_keywords := old_print_keywords;
     let old_output = !output_file in
     output_file := !output_file ^ "_abstracts";
     summary biblio sorted_bl;

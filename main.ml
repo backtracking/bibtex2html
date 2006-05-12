@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: main.ml,v 1.58 2004-09-16 09:39:16 filliatr Exp $ i*)
+(*i $Id: main.ml,v 1.59 2006-05-12 16:05:02 filliatr Exp $ i*)
 
 (*s Main module of bibtex2html. *)
 
@@ -246,6 +246,7 @@ let insert_title_url bib =
 i*)
 
 let parse_only = ref false
+let print_keys = ref false
 
 let translate fullname =
   let input_bib = Readbib.read_entries_from_file fullname in
@@ -268,6 +269,14 @@ let translate fullname =
       (fun (name,bibitems) -> (name,sort_entries entries bibitems))
       biblios 
   in
+  if !print_keys then begin
+    List.iter
+      (fun (_,bibitems) -> 
+	 List.iter (fun (_,_,(_,k,_)) -> printf "%s\n" k) bibitems)
+      sb;
+    flush stdout;
+    exit 0
+  end;
   format_list 
     (if !expand_abbrev_in_bib_output then 
        Bibtex.expand_abbrevs input_bib 
@@ -280,7 +289,7 @@ let translate fullname =
        let keys =
 	 List.fold_right 
 	   (fun s e -> Bibtex.KeySet.remove s e) !excluded keys in
-	 Some (Bibfilter.saturate input_bib keys)
+       Some (Bibfilter.saturate input_bib keys)
      else None)
 
 
@@ -321,6 +330,8 @@ Usage: bibtex2html <options> [filename]
   -heveaurl  use HeVeA's \\url macro
   -noabstract
              do not print the abstracts (if any)
+  -nokeywords
+             do not print the keywords (if any)
   -noheader  do not print the header (bibtex2html command)
   -nofooter  do not print the footer (bibtex2html web link)
   -noexpand  do not expand abbreviations in the BibTeX output
@@ -340,6 +351,8 @@ Usage: bibtex2html <options> [filename]
              declare a note field
   -dl        use DL lists instead of TABLEs
   -labelname use the label name when inserting a link
+  --print-keys
+             print the sorted bibtex keys and exit
   -debug     verbose mode (to find incorrect BibTeX entries)
   -q         quiet mode
   -w         stop on warning
@@ -380,7 +393,7 @@ let parse () =
     | ("-nolinks" | "-no-links" | "--no-links") :: rem -> 
 	print_links := false; parse_rec rem
     | ("-nokeys" | "-no-keys" | "--no-keys") :: rem -> 
-	nokeys := true; parse_rec rem
+	nokeys := true; table := NoTable; parse_rec rem
     | ("-usekeys" | "-use-keys" | "--use-keys") :: rem ->
 	use_keys := true; parse_rec rem
     | ("-rawurl" | "-raw-url" | "--raw-url") :: rem -> 
@@ -417,7 +430,7 @@ i*)
     | ("-both" | "--both") :: rem ->
 	both := true; parse_rec rem
     | ("-dl" | "--dl") :: rem ->
-	table := false; parse_rec rem
+	table := DL; parse_rec rem
  
     (* Controlling the translation *)
     | ("-m" | "-macros-from" | "--macros-from") :: f :: rem ->
@@ -491,6 +504,8 @@ i*)
 	Options.debug := true; parse_rec rem
     | "-parse-only" :: rem ->
 	parse_only := true; parse_rec rem
+    | ("-print-keys" | "--print-keys") :: rem ->
+	print_keys := true; parse_rec rem
 
     | [fbib] -> 
 	if not (Sys.file_exists fbib) then begin
