@@ -239,7 +239,7 @@ manual.ps: manual.tex
 	dvips manual.dvi -o manual.ps
 
 manual.html: manual.tex
-	hevea manual.tex
+	hevea -fix manual.tex
 
 # generic rules :
 #################

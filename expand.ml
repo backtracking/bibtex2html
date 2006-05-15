@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: expand.ml,v 1.14 2006-05-12 16:05:02 filliatr Exp $ i*)
+(*i $Id: expand.ml,v 1.15 2006-05-15 09:45:53 filliatr Exp $ i*)
 
 (*s Expansion of abbreviations in BibTeX databases. *)
 
@@ -102,12 +102,15 @@ let int_of_month = function
   | "Décembre" | "December" -> 11
   | _ -> invalid_arg "int_of_month"
 
-let month_day_re = Str.regexp "\\([a-zA-Z]+\\)\\( \\|~\\)\\([0-9]+\\)"
+let month_day_re1 = Str.regexp "\\([a-zA-Z]+\\)\\( \\|~\\)\\([0-9]+\\)"
+let month_day_re2 = Str.regexp "\\([0-9]+\\)\\( \\|~\\)\\([a-zA-Z]+\\)"
 let month_anything = Str.regexp "\\([a-zA-Z]+\\)"
 
 let parse_month m =
-  if Str.string_match month_day_re m 0 then
+  if Str.string_match month_day_re1 m 0 then
     int_of_month (Str.matched_group 1 m), int_of_string (Str.matched_group 3 m)
+  else if Str.string_match month_day_re2 m 0 then
+    int_of_month (Str.matched_group 3 m), int_of_string (Str.matched_group 1 m)
   else if Str.string_match month_anything m 0 then
     int_of_month (Str.matched_group 1 m), 1
   else

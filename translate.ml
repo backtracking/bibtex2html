@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.71 2006-05-12 16:05:02 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.72 2006-05-15 09:45:53 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -214,16 +214,16 @@ type link = { l_url : string; l_name : string }
 let display_links ch links = 
   let rec display = function
     | [] -> 
-	output_string ch " ]\n"
+	output_string ch "&nbsp;]\n"
     | l :: r -> 
 	Html.open_href ch l.l_url;
 	output_string ch l.l_name;
 	Html.close_href ch;
-	if r <> [] then output_string ch " | \n";
+	if r <> [] then output_string ch "&nbsp;| \n";
 	display r
   in
   if !print_links && links <> [] then begin 
-    output_string ch "[ "; display links 
+    output_string ch "[&nbsp;"; display links 
   end
 
 exception Caught
@@ -397,7 +397,7 @@ let one_entry_summary ch biblio (_,b,((_,k,f) as e)) =
   output_string ch "\n"; 
   new_column ch;
   latex2html ch b;
-  Html.open_balise ch "br /";
+  (*Html.open_balise ch "br /";*)
   output_string ch "\n";
 
   if !multiple then
@@ -410,7 +410,8 @@ let one_entry_summary ch biblio (_,b,((_,k,f) as e)) =
     let links = make_links e in
     let links = if !bib_entries then bibtex_entry k :: links else links in
     match make_abstract e with
-      | Atext a -> display_links ch links; display_abstract ch a
+      | Atext a -> 
+	  display_links ch links; display_abstract ch a; Html.paragraph ch
       | Alink l -> display_links ch (links @ [l])
       | No_abstract -> display_links ch links
   end;

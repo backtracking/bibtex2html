@@ -12,13 +12,14 @@
 \newcommand{\monurl}[1]{\link{#1}{#1}}
 \newcommand{\mm}{\symbol{45}\symbol{45}}
 
-\begin{document}
-\sloppy
-
 \title{BibTeX2HTML \\ A translator of BibTeX bibliographies into HTML}
 \author{Jean-Christophe Filli\^{a}tre and Claude March\'e \\
         \normalsize\monurl{\url{http://www.lri.fr/~filliatr/bibtex2html}}}
 \date{}
+
+\begin{document}
+\sloppy
+
 \maketitle
 
 \tableofcontents
@@ -356,6 +357,14 @@ or in conjonction with \verb|bib2bib|.
   specify the BibTeX command (default is \texttt{bibtex
     -min-crossrefs=1000}). May be useful for example if
   you need to specify the full path of the \texttt{bibtex} command. 
+
+\item[\texttt{\mm{}print-keys}] ~
+
+  print the BibTeX entries on the standard output (one per line), as
+  selected and sorted by \texttt{bibtex2html}. This is useful if you
+  want to use the selection and sorting facilities of
+  \texttt{bibtex2html} in another program. Note: you may need to set
+  also the \texttt{-q} option (quiet) to suppress the usual output.
 
 \item[\texttt{-i}, \texttt{\mm{}ignore-errors}] ~
 

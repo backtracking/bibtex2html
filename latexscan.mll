@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexscan.mll,v 1.29 2004-10-22 15:12:41 filliatr Exp $ i*)
+(*i $Id: latexscan.mll,v 1.30 2006-05-15 09:45:53 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -56,6 +56,10 @@
   let rec skip_n_args = function
     | 0 -> []
     | n -> Skip_arg :: skip_n_args (pred n)
+
+  let chop_last_space s =
+    let n = String.length s in
+    if s.[n-1] = ' ' then String.sub s 0 (n-1) else s
 
 }
 
@@ -167,7 +171,7 @@ rule main = parse
 	      main lexbuf }
 (* General case for environments and commands *)
   | ("\\begin{" | "\\end{") ['A'-'Z' 'a'-'z']+ "}" |
-    "\\" (['A'-'Z' 'a'-'z']+ '*'? | [^ 'A'-'Z' 'a'-'z'])
+    "\\" (['A'-'Z' 'a'-'z']+ '*'? " "? | [^ 'A'-'Z' 'a'-'z'])
                 { let rec exec_action = function
                     | Print str -> print_s str
                     | Print_arg -> print_arg lexbuf
@@ -177,7 +181,8 @@ rule main = parse
 		    | Parameterized f ->
 			List.iter exec_action (f (raw_arg lexbuf))
 		  in
-                  List.iter exec_action (find_macro(Lexing.lexeme lexbuf));
+		  let m = chop_last_space (Lexing.lexeme lexbuf) in
+                  List.iter exec_action (find_macro m);
                   main lexbuf }
 (* Nesting of braces *)
   | '{'         { incr brace_nesting; main lexbuf }

@@ -1,4 +1,10 @@
 
+ o aesthetic changes: 
+   - no more line break between the entry and the links;
+   - more space between an abstract and the next entry
+ o improving date parsing: month field such as "2~" # dec is now parsed
+ o fixed bug: a space after a macro is now discarded
+
 Version 1.81, 12/05/2006
 ========================
  o new option --print-keys to display the sorted keys (and exit)
