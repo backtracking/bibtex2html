@@ -1,4 +1,7 @@
 
+Version 1.82, 07/06/2006
+========================
+ o `` and '' translated to &ldquo; and &rdquo;
  o aesthetic changes: 
    - no more line break between the entry and the links;
    - more space between an abstract and the next entry
