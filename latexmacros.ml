@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.56 2006-05-12 16:05:02 filliatr Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.57 2006-08-25 07:46:35 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -229,6 +229,12 @@ def "\\v" [Raw_arg(function "r" -> print_s "&#X0159;"
                           | "i" -> print_s "&#X012D;"
                           | "I" -> print_s "&#X012C;"
 			  | s   -> print_s s)];
+def "\\H" [Raw_arg (function 
+		      | "O" -> print_s "&#336;"
+		      | "o" -> print_s "&#337;"
+		      | "U" -> print_s "&#368;"
+		      | "u" -> print_s "&#369;"
+		      | s -> print_s s)];
 
 (* Math macros *)
 def "\\[" [Print "<blockquote>"];
