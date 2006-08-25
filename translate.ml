@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.72 2006-05-15 09:45:53 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.73 2006-08-25 12:02:06 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -45,6 +45,7 @@ let bibentries_file = ref ""
 let title_url = ref false
 let use_label_name = ref false
 let use_keys = ref false
+let linebreak = ref false
 let note_fields = ref ([] : string list)
 let abstract_name = ref "Abstract"
 
@@ -397,7 +398,7 @@ let one_entry_summary ch biblio (_,b,((_,k,f) as e)) =
   output_string ch "\n"; 
   new_column ch;
   latex2html ch b;
-  (*Html.open_balise ch "br /";*)
+  if !linebreak then Html.open_balise ch "br /";
   output_string ch "\n";
 
   if !multiple then

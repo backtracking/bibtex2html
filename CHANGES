@@ -1,5 +1,6 @@
 
  o macro \H (Hungarian umlauts)
+ o new option -linebreak to insert a linebreak between an entry and its links
 
 Version 1.82, 07/06/2006
 ========================

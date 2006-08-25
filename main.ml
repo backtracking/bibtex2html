@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: main.ml,v 1.59 2006-05-12 16:05:02 filliatr Exp $ i*)
+(*i $Id: main.ml,v 1.60 2006-08-25 12:02:06 filliatr Exp $ i*)
 
 (*s Main module of bibtex2html. *)
 
@@ -332,6 +332,7 @@ Usage: bibtex2html <options> [filename]
              do not print the abstracts (if any)
   -nokeywords
              do not print the keywords (if any)
+  -linebreak add a linebreak between an entry and its links
   -noheader  do not print the header (bibtex2html command)
   -nofooter  do not print the footer (bibtex2html web link)
   -noexpand  do not expand abbreviations in the BibTeX output
@@ -404,6 +405,8 @@ let parse () =
 i*)
     | ("-heveaurl" | "-hevea-url" | "--hevea-url") :: rem -> 
 	Latexscan.hevea_url := true; parse_rec rem
+    | ("-linebreak" | "--linebreak") :: rem ->
+	linebreak := true; parse_rec rem
     | ("-noheader" | "-no-header" | "--no-header") :: rem ->
 	print_header := false; parse_rec rem
     | ("-nofooter" | "-no-footer" | "--no-footer") :: rem ->
