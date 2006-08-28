@@ -1,6 +1,8 @@
 
  o macro \H (Hungarian umlauts)
  o new option -linebreak to insert a linebreak between an entry and its links
+ o new option -use-table to enforce the use of a table (to be used
+   _after_ -no-keys if needed)
 
 Version 1.82, 07/06/2006
 ========================
