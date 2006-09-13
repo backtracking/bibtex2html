@@ -1,4 +1,10 @@
 
+Version 1.83, 13/09/2006
+========================
+ o support for DOI links: a field "DOI = {xxx}" will be recognized, if any,
+   and a link to http://dx.doi.org/xxx will be displayed; 
+   option -no-doi turns it off and option -doi-prefix <url> sets a
+   different prefix for the DOI urls  
  o macro \H (Hungarian umlauts)
  o new option -linebreak to insert a linebreak between an entry and its links
  o new option -use-table to enforce the use of a table (to be used

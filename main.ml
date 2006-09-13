@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: main.ml,v 1.61 2006-08-28 07:51:18 filliatr Exp $ i*)
+(*i $Id: main.ml,v 1.62 2006-09-13 07:38:00 filliatr Exp $ i*)
 
 (*s Main module of bibtex2html. *)
 
@@ -332,6 +332,9 @@ Usage: bibtex2html <options> [filename]
              do not print the abstracts (if any)
   -nokeywords
              do not print the keywords (if any)
+  -nodoi     do not insert the DOI links
+  -doi-prefix url
+             set the DOI links prefix (default is http://dx.doi.org/)
   -linebreak add a linebreak between an entry and its links
   -noheader  do not print the header (bibtex2html command)
   -nofooter  do not print the footer (bibtex2html web link)
@@ -389,6 +392,12 @@ let parse () =
 	usage()
     | ("-noabstract" | "-no-abstract" | "--no-abstract") :: rem ->
 	print_abstract := false; parse_rec rem
+    | ("-nodoi" | "-no-doi" | "--no-doi") :: rem ->
+	doi := false; parse_rec rem
+    | ("-doi-prefix" | "--doi-prefix") :: s :: rem ->
+	doi_prefix := s; parse_rec rem
+    | ("-doi-prefix" | "--doi-prefix") :: [] ->
+	usage ()
     | ("-nokeywords" | "-no-keywords" | "--no-keywords") :: rem ->
 	print_keywords := false; parse_rec rem
     | ("-nolinks" | "-no-links" | "--no-links") :: rem -> 

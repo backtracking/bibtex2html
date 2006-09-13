@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.73 2006-08-25 12:02:06 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.74 2006-09-13 07:38:00 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -48,6 +48,8 @@ let use_keys = ref false
 let linebreak = ref false
 let note_fields = ref ([] : string list)
 let abstract_name = ref "Abstract"
+let doi = ref true
+let doi_prefix = ref "http://dx.doi.org/"
 
 type table_kind = Table | DL | NoTable
 let table = ref Table
@@ -198,8 +200,7 @@ let get_url s =
   else
     s
 
-let link_name (u, name) url s =
-  match name with
+let link_name (u, name) url s = match name with
   | Some name ->
       name
   | None ->
@@ -300,6 +301,15 @@ let display_keywords ch e =
   with Not_found -> 
     ()
 
+let doi_link e =
+  if !doi then begin
+    try
+      let k = Expand.get_uppercase_field e "DOI" in
+      [{ l_url = !doi_prefix ^ k; l_name = "DOI" }]
+    with Not_found -> []
+  end else
+    []
+
 (* Printing of one entry *)  
 
 let bibtex_entry k =
@@ -328,7 +338,7 @@ let separate_file (b,((_,k,f) as e)) =
   Html.paragraph ch;
   display_notes ch e;
   if !print_keywords then display_keywords ch e;
-  display_links ch (labs @ bibtex_entry k :: make_links e);
+  display_links ch (labs @ bibtex_entry k :: doi_link e @ make_links e);
   (* JK Html.paragraph ch; *)
   Html.open_href ch (!output_file ^ !link_suffix);
   output_string ch "Back";
@@ -408,7 +418,7 @@ let one_entry_summary ch biblio (_,b,((_,k,f) as e)) =
     let ks = Bibfilter.saturate biblio ks in
     Biboutput.output_bib true ch biblio (Some ks);
   end else begin
-    let links = make_links e in
+    let links = doi_link e @ make_links e in
     let links = if !bib_entries then bibtex_entry k :: links else links in
     match make_abstract e with
       | Atext a -> 
