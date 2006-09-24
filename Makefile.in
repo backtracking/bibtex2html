@@ -85,7 +85,7 @@ demons: bibtex2html bib2bib
 
 bibtex2html: $(OBJS)
 	$(OCAMLOPT) $(PROFILE) $(FLAGS) -o bibtex2html str.cmxa $(OBJS) $(STRLIB)
-	strip bibtex2html
+	strip bibtex2html$(EXE)
 
 bibtex2html.byte: $(OBJS:.cmx=.cmo)
 	$(OCAMLC) $(PROFILE) $(FLAGS)-o bibtex2html.byte str.cma $(OBJS:.cmx=.cmo) $(STRLIB) 
@@ -105,7 +105,7 @@ bibtex2html.dfc: $(SRC)
 
 bib2bib: $(BIB2BIBOBJS)
 	$(OCAMLOPT) $(PROFILE) $(FLAGS) -o bib2bib str.cmxa $(BIB2BIBOBJS) $(STRLIB)
-	strip bib2bib
+	strip bib2bib$(EXE)
 
 bib2bib.byte: $(BIB2BIBOBJS:.cmx=.cmo)
 	$(OCAMLC)  $(PROFILE) $(FLAGS) -o bib2bib.byte str.cma $(BIB2BIBOBJS:.cmx=.cmo) $(STRLIB)

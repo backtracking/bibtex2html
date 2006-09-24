@@ -88,6 +88,17 @@ fi
 # where is perl
 AC_PATH_PROG(PERL,perl,/usr/bin/perl)
 
+# platform
+AC_MSG_CHECKING(platform)
+if echo "let _ = Sys.os_type" | ocaml | grep -q Win32; then
+    AC_MSG_RESULT(Win32)
+    OCAMLWIN32=yes
+    EXE=.exe
+else
+    OCAMLWIN32=no
+    EXE=
+fi
+
 # substitutions to perform
 AC_SUBST(OCAMLC)
 AC_SUBST(OCAMLOPT)
@@ -97,6 +108,7 @@ AC_SUBST(OCAMLBEST)
 AC_SUBST(OCAMLVERSION)
 AC_SUBST(OCAMLLIB)
 AC_SUBST(PERL)
+AC_SUBST(EXE)
 
 # Finally create all the generated files
 AC_OUTPUT(Makefile aux2bib)
