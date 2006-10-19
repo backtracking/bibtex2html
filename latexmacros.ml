@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.57 2006-08-25 07:46:35 filliatr Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.58 2006-10-19 09:00:22 marche Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -397,8 +397,15 @@ def "\\Omega" [Print "&Omega;"];
 def "\\bysame" [Print "<u>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</u>"];
 def "\\MR" 
   [Raw_arg (fun s -> 
+	      let mr = 
+		try 
+		  let i = String.index s ' ' in
+		  if i=0 then raise Not_found;
+		  String.sub s 0 i
+		with Not_found -> s
+	      in
 	      print_s "<a href=\"http://www.ams.org/mathscinet-getitem?mr=";
-	      print_s s; print_s "\">MR "; print_s s; print_s "</a>")];
+	      print_s mr; print_s "\">MR "; print_s s; print_s "</a>")];
 def "\\MRhref" 
   [Print "<a href=\"http://www.ams.org/mathscinet-getitem?mr=";
    Print_arg; Print "\">"; Print_arg; Print "</a>"];

@@ -1,4 +1,7 @@
 
+ o improved support for MRNUMBER of AMS styles: only first word used
+   in URL link
+
 Version 1.83, 13/09/2006
 ========================
  o support for DOI links: a field "DOI = {xxx}" will be recognized, if any,
