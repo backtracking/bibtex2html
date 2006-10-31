@@ -1,4 +1,7 @@
 
+ o option -t now sets the title of f_bib.html too (and of entries
+   files when used with -multiple)
+
 Version 1.84, 19/10/2006
 ========================
  o improved support for MRNUMBER of AMS styles: only first word used
