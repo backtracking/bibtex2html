@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bib2bib.ml,v 1.22 2005-12-16 08:39:35 filliatr Exp $ i*)
+(*i $Id: bib2bib.ml,v 1.23 2006-11-02 11:58:40 filliatr Exp $ i*)
 
 open Printf
 open Bibtex
@@ -120,7 +120,7 @@ let output_bib_file biblio keys =
 	   empty_biblio)
     in
     let biblio = merge_biblios comments biblio in
-    Biboutput.output_bib false ch biblio keys; 
+    Biboutput.output_bib ~html:false ch biblio keys; 
     if !bib_output_file_name <> "" then close_out ch
   with Sys_error msg ->  
     prerr_endline ("Cannot write output bib file (" ^ msg ^ ")"); 

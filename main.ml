@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: main.ml,v 1.63 2006-11-02 09:20:00 filliatr Exp $ i*)
+(*i $Id: main.ml,v 1.64 2006-11-02 11:58:41 filliatr Exp $ i*)
 
 (*s Main module of bibtex2html. *)
 
@@ -261,7 +261,7 @@ let translate fullname =
     if fullname = "" then begin
       let tmp = Filename.temp_file "bibtex2htmlinput" ".bib" in
       let ch = open_out tmp in
-      Biboutput.output_bib false ch input_bib None;
+      Biboutput.output_bib ~html:false ch input_bib None;
       close_out ch;
       let bbl = get_biblios tmp in
       Sys.remove tmp;
@@ -331,6 +331,8 @@ Usage: bibtex2html <options> [filename]
   -nodoc     only produces the body of the HTML documents
   -nokeys    do not print the BibTeX keys
   -nolinks   do not print any web link
+  -nobiblinks
+             do not add web links in the BibTeX output
   -rawurl    print URL instead of file type
   -heveaurl  use HeVeA's \\url macro
   -noabstract
@@ -407,6 +409,8 @@ let parse () =
 	print_keywords := false; parse_rec rem
     | ("-nolinks" | "-no-links" | "--no-links") :: rem -> 
 	print_links := false; parse_rec rem
+    | ("-nobiblinks" | "-no-bib-links" | "--no-bib-links") :: rem -> 
+	links_in_bib_file := false; parse_rec rem
     | ("-nokeys" | "-no-keys" | "--no-keys") :: rem -> 
 	nokeys := true; table := NoTable; parse_rec rem
     | ("-use-table" | "--use-table") :: rem -> 

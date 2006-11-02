@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.58 2006-10-19 09:00:22 marche Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.59 2006-11-02 11:58:41 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -94,6 +94,10 @@ def "\\mathnormal" [Print "<i>" ; Print_arg ; Print "</i>"];
 def "\\mathcal" [Print_arg];
 def "\\mathbb" [Print_arg];
 
+def "\\textin" [Print "<sub>"; Print_arg; Print "</sub>"];
+def "\\textsu" [Print "<sup>"; Print_arg; Print "</sup>"];
+def "\\textsi" [Print "<i>" ; Print_arg ; Print "</i>"];
+
 (* Basic color support. *)
 
 def "\\textcolor" [ Parameterized (function name ->
@@ -114,6 +118,11 @@ def "\\textcolor" [ Parameterized (function name ->
 def "\\textsf" [Print "<b>" ; Print_arg ; Print "</b>"];
 def "\\mathsf" [Print "<b>" ; Print_arg ; Print "</b>"];
 def "\\textsc" [Print_arg];
+
+def "\\textln" [Print_arg];
+def "\\textos" [Print_arg];
+def "\\textdf" [Print_arg];
+def "\\textsw" [Print_arg];
 
 def "\\rm" [];
 def "\\cal" [];

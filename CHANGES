@@ -1,4 +1,10 @@
 
+Version 1.85, 2/11/2006
+=======================
+ o fixed HTML output in f_bib.html: <pre> no more enclosed in <p>;
+   bibtex fields now typeset in lowercase; added links back to f.html
+ o macros \textin (<sub>), \textsu (<sup>), \textsi (<i>),  
+   and macros \textln, \textos, \textdf, \textsw without translation
  o fixed bug in --quiet under Windows
  o option -t now sets the title of f_bib.html too (and of entries
    files when used with -multiple)

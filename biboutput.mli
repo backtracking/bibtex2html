@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: biboutput.mli,v 1.4 2003-10-01 15:23:24 filliatr Exp $ i*)
+(*i $Id: biboutput.mli,v 1.5 2006-11-02 11:58:41 filliatr Exp $ i*)
 
 (*s [output_bib html ch bib keys] outputs to the channel [ch] the
    fields of the bibliography [bib] whose key belong to [keys]. [html]
@@ -29,7 +29,9 @@
 
 open Bibtex
 
-val output_bib : bool -> out_channel -> biblio -> KeySet.t option -> unit
+val output_bib : 
+  html:bool -> ?html_file:string -> 
+  out_channel -> biblio -> KeySet.t option -> unit
 
 (*s [add_link_field f] declares a new field [f] to be displayed as a web link
     (when HTML option of [output_bib] is set) *)

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: biboutput.ml,v 1.19 2005-12-16 08:39:35 filliatr Exp $ i*)
+(*i $Id: biboutput.ml,v 1.20 2006-11-02 11:58:41 filliatr Exp $ i*)
 
 (*s Output a BibTeX bibliography. *)
 
@@ -85,7 +85,7 @@ let print_link_field ch = function
       if !Options.warn_error then exit 2;
       print_atom_list true ch l
 
-let print_command html ch keys = function 
+let print_command html html_file ch keys = function 
   | Comment s -> 
       if html then output_string ch "<pre>\n";
       output_string ch ("@COMMENT{{" ^ s ^ "}}\n");
@@ -112,13 +112,21 @@ let print_command html ch keys = function
   | Entry (entry_type,key,fields) ->
       if needs_output key keys then 
 	begin
-	  if html then Html.open_balise ch "p";
+	  (*if html then Html.open_balise ch "p";*)
 	  if html then begin Html.open_anchor ch key; Html.close_anchor ch end;
 	  if html then output_string ch "<pre>\n";
-	  output_string ch ("@" ^ entry_type ^ "{" ^ key);
+	  output_string ch ("@" ^ entry_type ^ "{");
+	  begin match html_file with
+	    | Some f -> 
+		Html.open_href ch (f ^ "#" ^ key); 
+		output_string ch key; 
+		Html.close_href ch
+	    | None -> 
+		output_string ch key
+	  end;
 	  List.iter
 	    (fun (field,l) ->
-	       output_string ch (",\n  " ^ field ^ " = ");
+	       output_string ch (",\n  " ^ String.lowercase field ^ " = ");
 	       if html & field = "CROSSREF" then 
 		 print_crossref html ch l
 	       else if html & is_link_field field then
@@ -128,13 +136,13 @@ let print_command html ch keys = function
 	    fields;
 	  output_string ch "\n}\n";
 	  if html then output_string ch "</pre>\n";
-	  if html then Html.close_balise ch "p";
+	  (*if html then Html.close_balise ch "p";*)
 	  output_string ch "\n"
 
 	end
 
-let output_bib html ch bib keys =
+let output_bib ~html ?html_file ch bib keys =
   Bibtex.fold
-    (fun entry () -> print_command html ch keys entry)    
+    (fun entry () -> print_command html html_file ch keys entry)    
     bib
     ()
