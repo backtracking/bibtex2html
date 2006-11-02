@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: main.ml,v 1.62 2006-09-13 07:38:00 filliatr Exp $ i*)
+(*i $Id: main.ml,v 1.63 2006-11-02 09:20:00 filliatr Exp $ i*)
 
 (*s Main module of bibtex2html. *)
 
@@ -138,7 +138,12 @@ let call_bibtex tmp =
   end;
   match 
     let redir = 
-      if !output_file = "" || !Options.quiet then "> /dev/null 2>&1" else "" 
+      if !output_file = "" || !Options.quiet then 
+	match Sys.os_type with 
+	  | "Win32" -> "> nul 2>&1"
+	  | _ -> "> /dev/null 2>&1" 
+      else 
+	"" 
     in
     Sys.command (sprintf "%s %s %s" !command tmp redir)
   with

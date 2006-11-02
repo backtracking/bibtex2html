@@ -1,4 +1,5 @@
 
+ o fixed bug in --quiet under Windows
  o option -t now sets the title of f_bib.html too (and of entries
    files when used with -multiple)
 
