@@ -1,4 +1,6 @@
 
+ o more accents macros: oelig OElig Ntilde
+
 Version 1.85, 2/11/2006
 =======================
  o fixed HTML output in f_bib.html: <pre> no more enclosed in <p>;

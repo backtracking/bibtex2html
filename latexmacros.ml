@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.59 2006-11-02 11:58:41 filliatr Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.60 2007-01-17 14:34:39 marche Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -152,7 +152,8 @@ def "\\\n" [Print " "];
 def "\\{" [Print "{"];
 def "\\}" [Print "}"];
 def "\\l" [Print "l"];
-def "\\oe" [Print "oe"];       (*r There is no \oe{} in HTML. *)
+def "\\oe" [Print "&oelig;"];
+def "\\OE" [Print "&OElig;"];
 def "\\o" [Print "&oslash;"];
 def "\\O" [Print "&Oslash;"];
 def "\\ae" [Print "&aelig;"];
@@ -200,6 +201,7 @@ def "\\`" [Raw_arg(function "e" -> print_s "&egrave;"
 			  | ""  -> print_s "&lsquo;"
                           | s   -> print_s s)];
 def "\\~" [Raw_arg(function "n" -> print_s "&ntilde;"
+		          | "N" -> print_s "&Ntilde;"
 		          | ""  -> print_s "&tilde;"
                           | s   -> print_s s)];
 def "\\c" [Raw_arg(function "c" -> print_s "&ccedil;"
