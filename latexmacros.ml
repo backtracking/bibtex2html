@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.60 2007-01-17 14:34:39 marche Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.61 2007-03-21 08:41:32 marche Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -184,6 +184,7 @@ def "\\'" [Raw_arg(function "e" -> print_s "&eacute;"
 			  | "U" -> print_s "&Uacute;"
 			  | "'"  -> print_s "&rdquo;"
 			  | "c" -> print_s "&#263;"
+			  | "y" -> print_s "&#253;"
 			  | ""  -> print_c '\''
                           | s   -> print_s s)];
 def "\\`" [Raw_arg(function "e" -> print_s "&egrave;"
@@ -232,14 +233,17 @@ def "\\\"" [Raw_arg(function "e" -> print_s "&euml;"
                           | "U" -> print_s "&Uuml;"
                           | s   -> print_s s)];
 def "\\u" [Raw_arg print_s ];
-def "\\v" [Raw_arg(function "r" -> print_s "&#X0159;"
-                          | "R" -> print_s "&#X0158;"
-                          | "s" -> print_s "&#X0161;"
-                          | "S" -> print_s "&#X0160;"
-                          | "\\i" -> print_s "&#X012D;"
-                          | "i" -> print_s "&#X012D;"
-                          | "I" -> print_s "&#X012C;"
-			  | s   -> print_s s)];
+def "\\v" [Raw_arg(function 
+		     | "c" -> print_s "&#x010D;"
+                     | "C" -> print_s "&#x010C;"
+		     | "r" -> print_s "&#X0159;"
+                     | "R" -> print_s "&#X0158;"
+                     | "s" -> print_s "&#X0161;"
+                     | "S" -> print_s "&#X0160;"
+                     | "\\i" -> print_s "&#X012D;"
+                     | "i" -> print_s "&#X012D;"
+                     | "I" -> print_s "&#X012C;"
+		     | s   -> print_s s)];
 def "\\H" [Raw_arg (function 
 		      | "O" -> print_s "&#336;"
 		      | "o" -> print_s "&#337;"
