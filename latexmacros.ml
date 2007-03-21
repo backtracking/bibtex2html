@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.61 2007-03-21 08:41:32 marche Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.62 2007-03-21 14:25:56 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -184,7 +184,8 @@ def "\\'" [Raw_arg(function "e" -> print_s "&eacute;"
 			  | "U" -> print_s "&Uacute;"
 			  | "'"  -> print_s "&rdquo;"
 			  | "c" -> print_s "&#263;"
-			  | "y" -> print_s "&#253;"
+			  | "y" -> print_s "&yacute;"
+			  | "Y" -> print_s "&Yacute;"
 			  | ""  -> print_c '\''
                           | s   -> print_s s)];
 def "\\`" [Raw_arg(function "e" -> print_s "&egrave;"
@@ -234,21 +235,35 @@ def "\\\"" [Raw_arg(function "e" -> print_s "&euml;"
                           | s   -> print_s s)];
 def "\\u" [Raw_arg print_s ];
 def "\\v" [Raw_arg(function 
-		     | "c" -> print_s "&#x010D;"
                      | "C" -> print_s "&#x010C;"
+		     | "c" -> print_s "&#x010D;"
+                     | "D" -> print_s "&#270;"
+		     | "d" -> print_s "&#271;"
+                     | "E" -> print_s "&#282;"
+		     | "e" -> print_s "&#283;"
+                     | "N" -> print_s "&#327;"
+		     | "n" -> print_s "&#328;"
 		     | "r" -> print_s "&#X0159;"
                      | "R" -> print_s "&#X0158;"
                      | "s" -> print_s "&#X0161;"
                      | "S" -> print_s "&#X0160;"
+                     | "T" -> print_s "&#356;"
+		     | "t" -> print_s "&#357;"
                      | "\\i" -> print_s "&#X012D;"
                      | "i" -> print_s "&#X012D;"
                      | "I" -> print_s "&#X012C;"
+                     | "Z" -> print_s "&#381;"
+		     | "z" -> print_s "&#382;"
 		     | s   -> print_s s)];
 def "\\H" [Raw_arg (function 
 		      | "O" -> print_s "&#336;"
 		      | "o" -> print_s "&#337;"
 		      | "U" -> print_s "&#368;"
 		      | "u" -> print_s "&#369;"
+		      | s -> print_s s)];
+def "\\r" [Raw_arg (function 
+		      | "U" -> print_s "&#366;"
+		      | "u" -> print_s "&#367;"
 		      | s -> print_s s)];
 
 (* Math macros *)
