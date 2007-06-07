@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexscan.mll,v 1.31 2006-06-07 06:44:01 filliatr Exp $ i*)
+(*i $Id: latexscan.mll,v 1.32 2007-06-07 11:13:03 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -148,6 +148,8 @@ rule main = parse
   | "~"         { print_s "&nbsp;"; main lexbuf }
   | "``"        { print_s "&ldquo;"; main lexbuf }
   | "''"        { print_s "&rdquo;"; main lexbuf }
+  | "--"        { print_s "&ndash;"; main lexbuf }
+  | "---"       { print_s "&mdash;"; main lexbuf }
   | "^"         { if !math_mode then begin
 		    let buf = Lexing.from_string (raw_arg lexbuf) in
 		    print_s "<sup>";

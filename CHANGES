@@ -1,4 +1,6 @@
 
+ o translation of -- to &ndash; and --- to &mdash;
+
 Version 1.86, 21/03/2007
 ========================
  o more accents macros: \oe \OE \~ \v \' \r
