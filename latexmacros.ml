@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.62 2007-03-21 14:25:56 filliatr Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.63 2007-07-16 14:34:08 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -93,6 +93,7 @@ def "\\textnormal" [Print_arg];
 def "\\mathnormal" [Print "<i>" ; Print_arg ; Print "</i>"];
 def "\\mathcal" [Print_arg];
 def "\\mathbb" [Print_arg];
+def "\\mathfrak" [Print_arg];
 
 def "\\textin" [Print "<sub>"; Print_arg; Print "</sub>"];
 def "\\textsu" [Print "<sup>"; Print_arg; Print "</sup>"];
@@ -204,6 +205,10 @@ def "\\`" [Raw_arg(function "e" -> print_s "&egrave;"
                           | s   -> print_s s)];
 def "\\~" [Raw_arg(function "n" -> print_s "&ntilde;"
 		          | "N" -> print_s "&Ntilde;"
+		          | "o" -> print_s "&otilde;"
+		          | "O" -> print_s "&Otilde;"
+		          | "a" -> print_s "&atilde;"
+		          | "A" -> print_s "&Atilde;"
 		          | ""  -> print_s "&tilde;"
                           | s   -> print_s s)];
 def "\\c" [Raw_arg(function "c" -> print_s "&ccedil;"
@@ -219,6 +224,19 @@ def "\\^" [Raw_arg(function "a" -> print_s "&acirc;"
                           | "O" -> print_s "&Ocirc;"
                           | "u" -> print_s "&ucirc;"
                           | "U" -> print_s "&Ucirc;"
+			  | ""  -> print_c '^'
+                          | s   -> print_s s)];
+def "\\hat" [Raw_arg(function "a" -> print_s "<em>&acirc;</em>"
+                          | "A" -> print_s "<em>&Acirc;</em>"
+                          | "e" -> print_s "<em>&ecirc;</em>"
+                          | "E" -> print_s "<em>&Ecirc;</em>"
+                          | "i" -> print_s "<em>&icirc;</em>"
+                          | "\\i" -> print_s "<em>&icirc;</em>"
+                          | "I" -> print_s "<em>&Icirc;</em>"
+                          | "o" -> print_s "<em>&ocirc;</em>"
+                          | "O" -> print_s "<em>&Ocirc;</em>"
+                          | "u" -> print_s "<em>&ucirc;</em>"
+                          | "U" -> print_s "<em>&Ucirc;</em>"
 			  | ""  -> print_c '^'
                           | s   -> print_s s)];
 def "\\\"" [Raw_arg(function "e" -> print_s "&euml;"

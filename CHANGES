@@ -1,5 +1,10 @@
 
- o translation of -- to &ndash; and --- to &mdash;
+Version 1.87, 16/07/2007
+========================
+ o \hat
+ o \mathfrak (supported but no font change, as for \mathcal ad \mathbb)
+ o \~a, \~A, \~o, and \~O
+ o -- translated to &ndash; and --- to &mdash;
 
 Version 1.86, 21/03/2007
 ========================

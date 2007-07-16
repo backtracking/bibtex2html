@@ -538,6 +538,10 @@ which are not the ones you use to forbid shell interpretation. In
 examples below, we will use Unix convention, so under Windows you have
 to permute the use of single and double quotes.
 
+Note that within \texttt{Makefile}s you have to escape the \verb|$|
+character in \verb|$key| or \verb|$type| (using \verb|$$key| and
+\verb|$$type| instead, at least with GNU make).
+
 Regular expressions must be put between single or double quotes, and must
 follow the GNU syntax of regular expressions, as for example in GNU Emacs. Any
 character other than \verb|$^.*+?[]| matches itself, see
