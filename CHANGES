@@ -1,4 +1,7 @@
 
+ o \c{C}, \"y, \"Y  (patch by John Kewley)
+ o \k (using unicode entities, patch by John Kewley)
+
 Version 1.87, 16/07/2007
 ========================
  o \hat

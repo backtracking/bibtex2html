@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.63 2007-07-16 14:34:08 filliatr Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.64 2007-08-03 07:04:42 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -211,7 +211,13 @@ def "\\~" [Raw_arg(function "n" -> print_s "&ntilde;"
 		          | "A" -> print_s "&Atilde;"
 		          | ""  -> print_s "&tilde;"
                           | s   -> print_s s)];
+def "\\k" [Raw_arg(function "A" -> print_s "&#260;"
+                          | "a" -> print_s "&#261;"
+                          | "i" -> print_s "&#302;"
+                          | "I" -> print_s "&#303;"
+                          | s   -> print_s s)];
 def "\\c" [Raw_arg(function "c" -> print_s "&ccedil;"
+                          | "C" -> print_s "&Ccedil;"
                           | s   -> print_s s)];
 def "\\^" [Raw_arg(function "a" -> print_s "&acirc;"
                           | "A" -> print_s "&Acirc;"
@@ -224,6 +230,10 @@ def "\\^" [Raw_arg(function "a" -> print_s "&acirc;"
                           | "O" -> print_s "&Ocirc;"
                           | "u" -> print_s "&ucirc;"
                           | "U" -> print_s "&Ucirc;"
+                          | "w" -> print_s "&#x175;"
+                          | "W" -> print_s "&#x174;"
+                          | "y" -> print_s "&#x177;"
+                          | "Y" -> print_s "&#x176;"
 			  | ""  -> print_c '^'
                           | s   -> print_s s)];
 def "\\hat" [Raw_arg(function "a" -> print_s "<em>&acirc;</em>"
@@ -250,6 +260,8 @@ def "\\\"" [Raw_arg(function "e" -> print_s "&euml;"
                           | "O" -> print_s "&Ouml;"
                           | "u" -> print_s "&uuml;"
                           | "U" -> print_s "&Uuml;"
+                          | "y" -> print_s "&yuml;"
+                          | "Y" -> print_s "&Yuml;"
                           | s   -> print_s s)];
 def "\\u" [Raw_arg print_s ];
 def "\\v" [Raw_arg(function 
