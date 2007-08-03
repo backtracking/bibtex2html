@@ -31,3 +31,4 @@ bibtex2html.dvi
 manual.haux
 aux2bib
 patches
+autom4te.cache test.bib test_bib.html test.html semantic.cache
