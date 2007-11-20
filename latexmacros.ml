@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.64 2007-08-03 07:04:42 filliatr Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.65 2007-11-20 13:42:30 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -314,6 +314,18 @@ def "\\mapsto" [Print "<tt>|-&gt;</tt>"];
 def "\\times" [Print "&#215;"];
 def "\\neg" [Print "&#172;"];
 def "\\frac" [Print "("; Print_arg; Print ")/("; Print_arg; Print ")"];
+
+(*** unicode characters
+def "\\models" [Print "&#X22A8;"];
+def "\\curlyvee" [Print "&#X22CE;"];
+def "\\curlywedge" [Print "&#X22CF"];
+def "\\infty" [Print "&infin;"];
+
+def "\\not" [Raw_arg (function
+  | "\\models" -> print_s "&#8877;"
+  | s -> print_s "not "; print_s s)];
+***)
+def "\\not" [Print "not "];
 
 (* Math symbols printed as texts (could we do better?) *)
 def "\\ne" [Print "=/="];

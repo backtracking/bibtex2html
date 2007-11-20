@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.76 2006-11-02 11:58:41 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.77 2007-11-20 13:42:30 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -51,6 +51,7 @@ let note_fields = ref ([] : string list)
 let abstract_name = ref "Abstract"
 let doi = ref true
 let doi_prefix = ref "http://dx.doi.org/"
+let revkeys = ref false
 
 type table_kind = Table | DL | NoTable
 let table = ref Table
@@ -465,6 +466,7 @@ let summary biblio bl =
 	     output_string ch "\n"
        end;
        open_table ch;
+       let el = if !revkeys then List.rev el else el in
        List.iter (one_entry_summary ch biblio) el;
        close_table ch)
     bl;

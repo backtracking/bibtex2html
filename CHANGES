@@ -1,4 +1,10 @@
 
+Version 1.88, 20/11/2007
+========================
+ o new option -revkeys to number entries in reverse order
+   (patch by Walter Guttmann)
+ o fixed bug with '\ ' (backslash space) introduced in version 1.82
+   (shows up with -s gerplain)
  o \c{C}, \"y, \"Y  (patch by John Kewley)
  o \k (using unicode entities, patch by John Kewley)
 

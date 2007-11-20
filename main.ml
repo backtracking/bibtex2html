@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: main.ml,v 1.64 2006-11-02 11:58:41 filliatr Exp $ i*)
+(*i $Id: main.ml,v 1.65 2007-11-20 13:42:30 filliatr Exp $ i*)
 
 (*s Main module of bibtex2html. *)
 
@@ -319,6 +319,7 @@ Usage: bibtex2html <options> [filename]
   -a         sort as BibTeX (usually by author)
   -u         unsorted i.e. same order as in .bib file (default)
   -r         reverse the sort
+  -revkeys   entries numbered in reverse order
   -t title   title of the HTML file (default is the filename)
   -bg color  background color of the HTML file (default is none)
   -css file  specify a style sheet file
@@ -469,7 +470,9 @@ i*)
     | ("-u" | "-unsorted" | "--unsorted") :: rem ->
 	sort := Unsorted; parse_rec rem
     | ("-r" | "-reverse-sort" | "--reverse-sort") :: rem ->
-	reverse_sort := true; parse_rec rem
+	reverse_sort := not !reverse_sort; parse_rec rem
+    | ("-revkeys" | "--revkeys") :: rem ->
+	reverse_sort := not !reverse_sort; revkeys := true; parse_rec rem
 
     (* Options for selecting keys *)
     | ("-citefile" | "--citefile") :: f :: rem ->

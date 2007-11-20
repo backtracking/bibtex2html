@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexscan.mll,v 1.32 2007-06-07 11:13:03 filliatr Exp $ i*)
+(*i $Id: latexscan.mll,v 1.33 2007-11-20 13:42:30 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -173,6 +173,8 @@ rule main = parse
 	      else
 		print_latex_url url;
 	      main lexbuf }
+  | "\\" " "
+      { print_s " "; main lexbuf }
 (* General case for environments and commands *)
   | ("\\begin{" | "\\end{") ['A'-'Z' 'a'-'z']+ "}" |
     "\\" (['A'-'Z' 'a'-'z']+ '*'? " "? | [^ 'A'-'Z' 'a'-'z'])
