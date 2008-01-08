@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.66 2008-01-08 13:32:42 filliatr Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.67 2008-01-08 14:17:45 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -495,7 +495,7 @@ let unicode_entities () =
     | s -> print_s "not "; print_s s)];
   ()
 
-let math_entities () =
+let html_entities () =
   def "\\sqrt" [Print "&radic;("; Print_arg; Print ")"];
   def "\\copyright" [Print "&copy;"];
   def "\\tm" [Print "&trade;"];

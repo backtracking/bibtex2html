@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexscan.mll,v 1.33 2007-11-20 13:42:30 filliatr Exp $ i*)
+(*i $Id: latexscan.mll,v 1.34 2008-01-08 14:17:45 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -25,6 +25,7 @@
   let brace_nesting = ref 0
   let math_mode = ref false
   let hevea_url = ref false
+  let html_entities = ref false
 
   let save_nesting f arg =
     let n = !brace_nesting in 
@@ -141,15 +142,15 @@ rule main = parse
                   let code = String.sub lxm 5 (String.length lxm - 5) in
                   print_c(Char.chr(int_of_string code));
                   main lexbuf }
-  | "--" | "---"
-                { print_s "-"; main lexbuf }
   | "<"         { print_s "&lt;"; main lexbuf }
   | ">"         { print_s "&gt;"; main lexbuf }
   | "~"         { print_s "&nbsp;"; main lexbuf }
   | "``"        { print_s "&ldquo;"; main lexbuf }
   | "''"        { print_s "&rdquo;"; main lexbuf }
-  | "--"        { print_s "&ndash;"; main lexbuf }
-  | "---"       { print_s "&mdash;"; main lexbuf }
+  | "--"        { print_s (if !html_entities then "&ndash;" else "-"); 
+		  main lexbuf }
+  | "---"       { print_s (if !html_entities then "&mdash;" else "-"); 
+		  main lexbuf }
   | "^"         { if !math_mode then begin
 		    let buf = Lexing.from_string (raw_arg lexbuf) in
 		    print_s "<sup>";

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: main.ml,v 1.66 2008-01-08 13:32:42 filliatr Exp $ i*)
+(*i $Id: main.ml,v 1.67 2008-01-08 14:17:45 filliatr Exp $ i*)
 
 (*s Main module of bibtex2html. *)
 
@@ -364,8 +364,8 @@ Usage: bibtex2html <options> [filename]
              declare a note field
   -dl        use DL lists instead of TABLEs
   -unicode   use Unicode characters for some LaTeX macros (as HTML entities) 
-  -math-entities
-             use HTML entities for some LaTeX math macros
+  -html-entities
+             use HTML entities for some LaTeX macros
   -labelname use the label name when inserting a link
   --print-keys
              print the sorted bibtex keys and exit
@@ -465,8 +465,9 @@ i*)
 	table := DL; parse_rec rem
     | ("-unicode" | "--unicode") :: rem ->
 	Latexmacros.unicode_entities (); parse_rec rem
-    | ("-math-entities" | "--math-entities") :: rem ->
-	Latexmacros.math_entities (); parse_rec rem
+    | ("-html-entities" | "--html-entities") :: rem ->
+	Latexscan.html_entities := true;
+	Latexmacros.html_entities (); parse_rec rem
 
     (* Controlling the translation *)
     | ("-m" | "-macros-from" | "--macros-from") :: f :: rem ->
