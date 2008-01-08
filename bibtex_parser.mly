@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  */
 
-/*i $Id: bibtex_parser.mly,v 1.12 2005-12-16 08:39:35 filliatr Exp $ i*/
+/*i $Id: bibtex_parser.mly,v 1.13 2008-01-08 13:32:42 filliatr Exp $ i*/
 
 /*s Parser for BibTeX files. */
 
@@ -51,9 +51,9 @@ command:
  | Tpreamble sharp_string_list Trbrace
      { Preamble $2 }
  | Tabbrev Tident Tequal sharp_string_list Trbrace
-     { Abbrev (String.uppercase $2,$4) }
+     { Abbrev (String.lowercase $2,$4) }
  | entry Tcomma comma_field_list Trbrace
-     { let et,key = $1 in Entry (String.uppercase et, key, $3) }
+     { let et,key = $1 in Entry (String.lowercase et, key, $3) }
 ;
 
 entry: 
@@ -75,8 +75,8 @@ field:
      { ($1,[String ""]) }
 ;
 field_name:
-   Tident   { String.uppercase $1 }
- | Tcomment { "COMMENT" }
+   Tident   { String.lowercase $1 }
+ | Tcomment { "comment" }
 ;
 sharp_string_list:
    atom Tsharp sharp_string_list
@@ -86,7 +86,7 @@ sharp_string_list:
 ;
 atom:
    Tident
-     { Id (String.uppercase $1) }
+     { Id (String.lowercase $1) }
  | Tstring
      { String $1 }
 ;

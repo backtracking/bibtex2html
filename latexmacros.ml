@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.65 2007-11-20 13:42:30 filliatr Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.66 2008-01-08 13:32:42 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -314,17 +314,6 @@ def "\\mapsto" [Print "<tt>|-&gt;</tt>"];
 def "\\times" [Print "&#215;"];
 def "\\neg" [Print "&#172;"];
 def "\\frac" [Print "("; Print_arg; Print ")/("; Print_arg; Print ")"];
-
-(*** unicode characters
-def "\\models" [Print "&#X22A8;"];
-def "\\curlyvee" [Print "&#X22CE;"];
-def "\\curlywedge" [Print "&#X22CF"];
-def "\\infty" [Print "&infin;"];
-
-def "\\not" [Raw_arg (function
-  | "\\models" -> print_s "&#8877;"
-  | s -> print_s "not "; print_s s)];
-***)
 def "\\not" [Print "not "];
 
 (* Math symbols printed as texts (could we do better?) *)
@@ -351,6 +340,7 @@ def "\\vee" [Print "V"];
 def "\\lor" [Print "V"];
 def "\\wedge" [Print "/\\"];
 def "\\land" [Print "/\\"];
+def "\\Vert" [Print "||"];
 def "\\parallel" [Print "||"];
 def "\\mid" [Print "|"];
 def "\\cup" [Print "U"];
@@ -491,6 +481,91 @@ def "\\egroup" []; (* should go into latexscan? *)
 def "\\citename" [];
 
 ()
+
+(* Unicode entities *)
+
+let unicode_entities () =
+  def "\\models" [Print "&#X22A8;"];
+  def "\\curlyvee" [Print "&#X22CE;"];
+  def "\\curlywedge" [Print "&#X22CF"];
+  def "\\bigcirc" [Print "&#9711;"];
+  def "\\varepsilon" [Print "&#603;"];
+  def "\\not" [Raw_arg (function
+    | "\\models" -> print_s "&#8877;"
+    | s -> print_s "not "; print_s s)];
+  ()
+
+let math_entities () =
+  def "\\sqrt" [Print "&radic;("; Print_arg; Print ")"];
+  def "\\copyright" [Print "&copy;"];
+  def "\\tm" [Print "&trade;"];
+  def "\\lang" [Print "&lang;"];
+  def "\\rang" [Print "&rang;"];
+  def "\\lceil" [Print "&lceil;"];
+  def "\\rceil" [Print "&rceil;"];
+  def "\\lfloor" [Print "&lfloor;"];
+  def "\\rfloor" [Print "&rfloor;"];
+  def "\\le" [Print "&le;"];
+  def "\\leq" [Print "&le;"];
+  def "\\ge" [Print "&ge;"];
+  def "\\geq" [Print "&ge;"];
+  def "\\neq" [Print "&ne;"];
+  def "\\approx" [Print "&asymp;"];
+  def "\\cong" [Print "&cong;"];
+  def "\\equiv" [Print "&equiv;"];
+  def "\\propto" [Print "&prop;"];
+  def "\\subset" [Print "&sub;"];
+  def "\\subseteq" [Print "&sube;"];
+  def "\\supset" [Print "&sup;"];
+  def "\\supseteq" [Print "&supe;"];
+  def "\\ang" [Print "&ang;"];
+  def "\\perp" [Print "&perp;"];
+  def "\\therefore" [Print "&there4;"];
+  def "\\sim" [Print "&sim;"];
+  def "\\times" [Print "&times;"];
+  def "\\ast" [Print "&lowast;"];
+  def "\\otimes" [Print "&otimes;"];
+  def "\\oplus" [Print "&oplus;"];
+  def "\\lozenge" [Print "&loz;"];
+  def "\\diamond" [Print "&loz;"];
+  def "\\neg" [Print "&not;"];
+  def "\\pm" [Print "&plusmn;"];
+  def "\\dagger" [Print "&dagger;"];
+  def "\\ne" [Print "&ne;"];
+  def "\\in" [Print "&isin;"];
+  def "\\notin" [Print "&notin;"];
+  def "\\ni" [Print "&ni;"];
+  def "\\forall" [Print "&forall;"];
+  def "\\exists" [Print "&exist;"];
+  def "\\Re" [Print "&real;"];
+  def "\\Im" [Print "&image;"];
+  def "\\aleph" [Print "&alefsym;"];
+  def "\\wp" [Print "&weierp;"];
+  def "\\emptyset" [Print "&empty;"];
+  def "\\nabla" [Print "&nabla;"];
+  def "\\rightarrow" [Print "&rarr;"];
+  def "\\to" [Print "&rarr;"];
+  def "\\longrightarrow" [Print "&rarr;"];
+  def "\\Rightarrow" [Print "&rArr;"];
+  def "\\leftarrow" [Print "&larr;"];
+  def "\\longleftarrow" [Print "&larr;"];
+  def "\\Leftarrow" [Print "&lArr;"];
+  def "\\leftrightarrow" [Print "&harr;"];
+  def "\\sum" [Print "&sum;"];
+  def "\\prod" [Print "&prod;"];
+  def "\\int" [Print "&int;"];
+  def "\\partial" [Print "&part;"];
+  def "\\vee" [Print "&or;"];
+  def "\\lor" [Print "&or;"];
+  def "\\wedge" [Print "&and;"];
+  def "\\land" [Print "&and;"];
+  def "\\cup" [Print "&cup;"];
+  def "\\infty" [Print "&infin;"];
+  def "\\simeq" [Print "&cong;"];
+  def "\\cdot" [Print "&sdot;"];
+  def "\\cdots" [Print "&sdot;&sdot;&sdot;"];
+  def "\\vartheta" [Print "&thetasym;"];
+  ()
 
 (*s Macros for German BibTeX style. *) 
 

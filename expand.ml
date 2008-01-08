@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: expand.ml,v 1.15 2006-05-15 09:45:53 filliatr Exp $ i*)
+(*i $Id: expand.ml,v 1.16 2008-01-08 13:32:42 filliatr Exp $ i*)
 
 (*s Expansion of abbreviations in BibTeX databases. *)
 
@@ -35,18 +35,18 @@ let find_abbrev s = Hashtbl.find abbrev_table s
 (* months are predefined abbreviations *)
 let () = 
   List.iter (fun (id,m) -> add_abbrev id m)
-  [ "JAN", "January" ;
-    "FEB", "February" ;
-    "MAR", "March" ;
-    "APR", "April" ;
-    "MAY", "May" ;
-    "JUN", "June" ;
-    "JUL", "July" ;
-    "AUG", "August" ;
-    "SEP", "September" ;
-    "OCT", "October" ;
-    "NOV", "November" ;
-    "DEC", "December" ]
+  [ "jan", "January" ;
+    "feb", "February" ;
+    "mar", "March" ;
+    "apr", "April" ;
+    "may", "May" ;
+    "jun", "June" ;
+    "jul", "July" ;
+    "aug", "August" ;
+    "sep", "September" ;
+    "oct", "October" ;
+    "nov", "November" ;
+    "dec", "December" ]
 
 let rec expand_list = function
   | [] -> 
@@ -122,7 +122,7 @@ let dummy_date = { year = 0; month = 0; day = 0 }
 
 let extract_year k f =
   try
-    int_of_string (List.assoc "YEAR" f)
+    int_of_string (List.assoc "year" f)
   with Failure "int_of_string" ->
     if not !Options.quiet then
       eprintf "Warning: incorrect year in entry %s@." k;
@@ -131,7 +131,7 @@ let extract_year k f =
 
 let extract_month k f =
   try
-    parse_month (List.assoc "MONTH" f)
+    parse_month (List.assoc "month" f)
   with 
     | Not_found ->
 	0,1
@@ -152,7 +152,7 @@ let rec extract_date el (_,k,f) =
     (* eprintf "extract_date: year = %d month = %d day = %d@." y m d; *)
     { year = y; month = m; day = d }
   with Not_found ->
-    try extract_date el (find_entry (List.assoc "CROSSREF" f) el)
+    try extract_date el (find_entry (List.assoc "crossref" f) el)
     with Not_found -> dummy_date
 
 let date_order el e1 e2 =
@@ -164,14 +164,14 @@ let date_order el e1 e2 =
 
 (*s Access to the fields. *)
 
-let get_field (_,_,f) s = List.assoc (String.uppercase s) f
-let get_uppercase_field (_,_,f) s = List.assoc s f
+let get_field (_,_,f) s = List.assoc (String.lowercase s) f
+let get_lowercase_field (_,_,f) s = List.assoc s f
 
-let get_title e = get_uppercase_field e "TITLE"
+let get_title e = get_lowercase_field e "title"
 
-let get_year e = get_uppercase_field e "YEAR"
+let get_year e = get_lowercase_field e "year"
 
-let get_month e = get_uppercase_field e "MONTH"
+let get_month e = get_lowercase_field e "month"
 
-let get_author e = get_uppercase_field e "AUTHOR"
+let get_author e = get_lowercase_field e "author"
 

@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.mli,v 1.8 2001-10-10 13:06:19 filliatr Exp $ i*)
+(*i $Id: latexmacros.mli,v 1.9 2008-01-08 13:32:42 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997 Xavier Leroy. It provides a table to
     store the translations of LaTeX macros. A translation is a list
@@ -33,6 +33,12 @@ val def : string -> action list -> unit
 val find_macro: string -> action list
 
 val init_style_macros : string -> unit
+
+(*s HTML entities *)
+
+val math_entities : unit -> unit
+
+val unicode_entities : unit -> unit
 
 (*s Utility functions used in the definition of translations. *)
 

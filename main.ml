@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: main.ml,v 1.65 2007-11-20 13:42:30 filliatr Exp $ i*)
+(*i $Id: main.ml,v 1.66 2008-01-08 13:32:42 filliatr Exp $ i*)
 
 (*s Main module of bibtex2html. *)
 
@@ -229,8 +229,8 @@ let insert_title_url bib =
   in
   let modify_entry f =
     try
-      let t,f' = remove_assoc "TITLE" f in
-      let u,f'' = remove_assoc "URL" f' in
+      let t,f' = remove_assoc "title" f in
+      let u,f'' = remove_assoc "url" f' in
       let u' = Html.normalize_url (url_value u) in 
       let nt = 
 	(Bibtex.String 
@@ -324,6 +324,7 @@ Usage: bibtex2html <options> [filename]
   -bg color  background color of the HTML file (default is none)
   -css file  specify a style sheet file
   -o file    redirect the output
+  -header    additional header in the HTML file
   -footer    additional footer in the HTML file
   -i         ignore BibTeX errors
   -both      produce versions with and without abstracts
@@ -362,6 +363,9 @@ Usage: bibtex2html <options> [filename]
   -note field
              declare a note field
   -dl        use DL lists instead of TABLEs
+  -unicode   use Unicode characters for some LaTeX macros (as HTML entities) 
+  -math-entities
+             use HTML entities for some LaTeX math macros
   -labelname use the label name when inserting a link
   --print-keys
              print the sorted bibtex keys and exit
@@ -389,6 +393,10 @@ let parse () =
     | ("-css" | "-style-sheet" | "--style-sheet") :: f :: rem ->
 	Html.css := Some f; parse_rec rem
     | ("-css" | "-style-sheet" | "--style-sheet") :: [] ->
+	usage()
+    | ("-header" | "--header") :: s :: rem ->
+	user_header := s; parse_rec rem
+    | ("-header" | "--header") :: [] ->
 	usage()
     | ("-footer" | "--footer") :: s :: rem ->
 	user_footer := s; parse_rec rem
@@ -455,7 +463,11 @@ i*)
 	both := true; parse_rec rem
     | ("-dl" | "--dl") :: rem ->
 	table := DL; parse_rec rem
- 
+    | ("-unicode" | "--unicode") :: rem ->
+	Latexmacros.unicode_entities (); parse_rec rem
+    | ("-math-entities" | "--math-entities") :: rem ->
+	Latexmacros.math_entities (); parse_rec rem
+
     (* Controlling the translation *)
     | ("-m" | "-macros-from" | "--macros-from") :: f :: rem ->
 	read_macros f; parse_rec rem

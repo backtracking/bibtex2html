@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibtex.ml,v 1.23 2005-12-16 08:39:35 filliatr Exp $ i*)
+(*i $Id: bibtex.ml,v 1.24 2008-01-08 13:32:42 filliatr Exp $ i*)
 
 (*s Datatype for BibTeX bibliographies. *)
 
@@ -53,9 +53,9 @@ let find_entry key biblio =
     match b with
       | [] -> raise Not_found
       | (Entry (_,s,_) as e) :: b ->
-	  if String.uppercase s = key then e else find key b
+	  if String.lowercase s = key then e else find key b
       | _ :: b -> find key b
-  in find (String.uppercase key) biblio
+  in find (String.lowercase key) biblio
 
 let add_new_entry command biblio = command :: biblio
 
@@ -133,8 +133,8 @@ let merge_biblios b1 b2 =
 let month_env =
   List.map
     (fun s -> (s,[Id s]))
-    [ "JAN" ; "FEB" ; "MAR" ; "APR" ; "MAY" ; "JUN" ;
-      "JUL" ; "AUG" ; "SEP" ; "OCT" ; "NOV" ; "DEC" ]
+    [ "jan" ; "feb" ; "mar" ; "apr" ; "may" ; "jun" ;
+      "jul" ; "aug" ; "sep" ; "oct" ; "nov" ; "dec" ]
 
 let abbrev_is_implicit key =
   try
@@ -207,10 +207,10 @@ let rec expand_abbrevs biblio =
 
 let rec expand_crossrefs biblio = 
   let crossref_table = Hashtbl.create 97 in
-  let add_crossref a l = Hashtbl.add crossref_table (String.uppercase a) l in
-  let find_crossref a = Hashtbl.find crossref_table (String.uppercase a) in
+  let add_crossref a l = Hashtbl.add crossref_table (String.lowercase a) l in
+  let find_crossref a = Hashtbl.find crossref_table (String.lowercase a) in
   let replace_crossref a l = 
-    Hashtbl.replace crossref_table (String.uppercase a) l 
+    Hashtbl.replace crossref_table (String.lowercase a) l 
   in
   List.iter 
     (fun command ->
@@ -218,7 +218,7 @@ let rec expand_crossrefs biblio =
 	 | Entry (t,k,f) ->
 	     begin
 	       try
-		 match List.assoc "CROSSREF" f with
+		 match List.assoc "crossref" f with
 		   | [String(s)] -> 
 		       add_crossref s []
 		   | _ -> 
@@ -251,7 +251,7 @@ let rec expand_crossrefs biblio =
 	 | Entry (t,k,f) ->
 	     begin
 	       try
-		 match List.assoc "CROSSREF" f with
+		 match List.assoc "crossref" f with
 		   | [String(s)] -> 
 		       begin
 			 try 

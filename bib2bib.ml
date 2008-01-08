@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bib2bib.ml,v 1.23 2006-11-02 11:58:40 filliatr Exp $ i*)
+(*i $Id: bib2bib.ml,v 1.24 2008-01-08 13:32:42 filliatr Exp $ i*)
 
 open Printf
 open Bibtex
@@ -63,7 +63,7 @@ let args_spec =
     ("-w", Arg.Set Options.warn_error, "stop on warning");
     ("-d", Arg.Set Options.debug, "debug flag");
     ("-q", Arg.Set Options.quiet, "quiet flag");
-    ("-s", Arg.String (fun s -> sort_criteria := (String.uppercase s):: !sort_criteria),
+    ("-s", Arg.String (fun s -> sort_criteria := (String.lowercase s):: !sort_criteria),
      "sort with respect to keys or a given field");
     ("-r", Arg.Set reverse_sort,
      "reverse the sort order");

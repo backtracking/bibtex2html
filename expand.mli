@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: expand.mli,v 1.4 2001-02-21 09:51:53 filliatr Exp $ i*)
+(*i $Id: expand.mli,v 1.5 2008-01-08 13:32:42 filliatr Exp $ i*)
 
 (*s Expansion of abbreviations in BibTeX databases. *)
 
@@ -31,7 +31,7 @@ val date_order : entry list -> entry -> entry -> bool
 (*s Access to the fields of a given entry. *)
 
 val get_field : entry -> string -> string
-val get_uppercase_field : entry -> string -> string
+val get_lowercase_field : entry -> string -> string
 
 val get_title : entry -> string
 val get_year  : entry -> string

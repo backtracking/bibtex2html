@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  */
 
-/*i $Id: condition_parser.mly,v 1.6 2003-10-03 15:37:30 marche Exp $ i*/
+/*i $Id: condition_parser.mly,v 1.7 2008-01-08 13:32:42 filliatr Exp $ i*/
 
 %{
 
@@ -57,15 +57,10 @@ atom:
 | cte COMP cte               
     { Comp($1,$2,$3) }
 | EXISTS IDENT               
-    { Exists(String.uppercase $2) }
+    { Exists(String.lowercase $2) }
 ;
 
-cte:
-  IDENT                      { Field(String.uppercase $1) }
-| INT                        { Cte($1) }
-| STRING                     { Cte($1) }
-| DOLLAR_KEY                 { Key }
-| DOLLAR_TYPE                { Entrytype }
-;
+cte: IDENT { Field(String.lowercase $1) } | INT { Cte($1) } | STRING {
+  Cte($1) } | DOLLAR_KEY { Key } | DOLLAR_TYPE { Entrytype } ;
 
 

@@ -1,4 +1,13 @@
 
+Version 1.89, 08/01/2008
+========================
+ o new option -unicode to use Unicode entities for some macros
+   (such as &#9711; for \bigcirc, etc.)
+ o new option -math-entities to use HTML entities for math macros
+   such as \le, \approx, etc. (patch by Steven G. Johnson)
+ o new option -header to insert a header (similar to -footer)
+  (patch by Steven G. Johnson)
+
 Version 1.88, 20/11/2007
 ========================
  o new option -revkeys to number entries in reverse order

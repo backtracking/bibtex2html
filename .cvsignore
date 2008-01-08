@@ -32,3 +32,6 @@ manual.haux
 aux2bib
 patches
 autom4te.cache test.bib test_bib.html test.html semantic.cache
+test.tex test2.bib test2_bib.html test2.html
+manual.htoc
+patches patch-linebreak patch-macro-H patch-use-table

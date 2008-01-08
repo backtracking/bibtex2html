@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: biboutput.ml,v 1.20 2006-11-02 11:58:41 filliatr Exp $ i*)
+(*i $Id: biboutput.ml,v 1.21 2008-01-08 13:32:42 filliatr Exp $ i*)
 
 (*s Output a BibTeX bibliography. *)
 
@@ -88,12 +88,12 @@ let print_link_field ch = function
 let print_command html html_file ch keys = function 
   | Comment s -> 
       if html then output_string ch "<pre>\n";
-      output_string ch ("@COMMENT{{" ^ s ^ "}}\n");
+      output_string ch ("@comment{{" ^ s ^ "}}\n");
       if html then output_string ch "</pre>\n";
       output_string ch "\n"
   | Preamble l ->
       if html then output_string ch "<pre>\n";
-      output_string ch "@PREAMBLE{";
+      output_string ch "@preamble{";
       print_atom_list html ch l;
       output_string ch "}\n";
       if html then output_string ch "</pre>\n";
@@ -103,7 +103,7 @@ let print_command html html_file ch keys = function
 	begin
 	  if html then begin Html.open_anchor ch s; Html.close_anchor ch end;
 	  if html then output_string ch "<pre>\n";
-	  output_string ch ("@STRING{" ^ s ^ " = ");
+	  output_string ch ("@string{" ^ s ^ " = ");
 	  print_atom_list html ch l;
 	  output_string ch "}\n";
 	  if html then output_string ch "</pre>\n";
@@ -126,8 +126,8 @@ let print_command html html_file ch keys = function
 	  end;
 	  List.iter
 	    (fun (field,l) ->
-	       output_string ch (",\n  " ^ String.lowercase field ^ " = ");
-	       if html & field = "CROSSREF" then 
+	       output_string ch (",\n  " ^ field ^ " = ");
+	       if html & field = "crossref" then 
 		 print_crossref html ch l
 	       else if html & is_link_field field then
 		 print_link_field ch l

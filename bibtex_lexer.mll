@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibtex_lexer.mll,v 1.15 2005-12-16 08:39:35 filliatr Exp $ i*)
+(*i $Id: bibtex_lexer.mll,v 1.16 2008-01-08 13:32:42 filliatr Exp $ i*)
 
 (*s Lexer for BibTeX files. *)
 
@@ -60,15 +60,15 @@ rule token = parse
     (('{' | '(') as delim) space*
        { serious := true; 
 	 start_delim := delim; 
-	 match String.uppercase entry_type with 
-	   | "STRING" -> 
+	 match String.lowercase entry_type with 
+	   | "string" -> 
 	       Tabbrev
-	   | "COMMENT" -> 
+	   | "comment" -> 
 	       reset_string_buffer ();
                comment lexbuf;
                serious := false;
                Tcomment (get_stored_string ())
-	   | "PREAMBLE" -> 
+	   | "preamble" -> 
 	       Tpreamble
 	   |  et -> 
 		Tentry (entry_type, key lexbuf) 

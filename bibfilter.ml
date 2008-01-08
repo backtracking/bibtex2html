@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibfilter.ml,v 1.11 2006-02-22 10:32:29 marche Exp $ i*)
+(*i $Id: bibfilter.ml,v 1.12 2008-01-08 13:32:42 filliatr Exp $ i*)
 
 (*s Filtering and saturating BibTeX files. *)
 
@@ -42,7 +42,7 @@ let filter biblio criterion =
     [keys] augmented with the needed keys for [value] *)
 
 let rec needed_keys_for_field biblio field value keys abbrevs =
-  if field = "CROSSREF"
+  if field = "crossref"
   then 
     match value with
 	[String(s)] -> 
@@ -72,7 +72,7 @@ let rec needed_keys_for_field biblio field value keys abbrevs =
       (fun a (keys,abbrevs) ->
 	 match a with
 	     Id(id) -> 
-	       let id = String.uppercase id in		 
+	       let id = String.lowercase id in		 
 	       if not (KeySet.mem id abbrevs) 
 	       then
 		 try
