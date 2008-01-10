@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexmacros.ml,v 1.67 2008-01-08 14:17:45 filliatr Exp $ i*)
+(*i $Id: latexmacros.ml,v 1.68 2008-01-10 14:43:44 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997  Xavier Leroy. *)
 
@@ -153,6 +153,7 @@ def "\\\n" [Print " "];
 def "\\{" [Print "{"];
 def "\\}" [Print "}"];
 def "\\l" [Print "l"];
+def "\\L" [Print "L"];
 def "\\oe" [Print "&oelig;"];
 def "\\OE" [Print "&OElig;"];
 def "\\o" [Print "&oslash;"];
@@ -161,6 +162,8 @@ def "\\ae" [Print "&aelig;"];
 def "\\AE" [Print "&AElig;"];
 def "\\aa" [Print "&aring;"];
 def "\\AA" [Print "&Aring;"];
+def "\\i" [Print "i"];
+def "\\j" [Print "j"];
 def "\\&" [Print "&amp;"];
 def "\\$" [Print "$"];
 def "\\%" [Print "%"];
@@ -184,9 +187,22 @@ def "\\'" [Raw_arg(function "e" -> print_s "&eacute;"
 			  | "u" -> print_s "&uacute;"
 			  | "U" -> print_s "&Uacute;"
 			  | "'"  -> print_s "&rdquo;"
-			  | "c" -> print_s "&#263;"
+			  | "c" -> print_s "&#x107;"
+			  | "C" -> print_s "&#x106;"
+			  | "g" -> print_s "&#x1f5;"
+			  | "G" -> print_s "G"
+			  | "l" -> print_s "&#x13A;"
+			  | "L" -> print_s "&#x139;"
+			  | "n" -> print_s "&#x144;"
+			  | "N" -> print_s "&#x143;"
+			  | "r" -> print_s "&#x155;"
+			  | "R" -> print_s "&#x154;"
+			  | "s" -> print_s "&#x15b;"
+			  | "S" -> print_s "&#x15a;"
 			  | "y" -> print_s "&yacute;"
 			  | "Y" -> print_s "&Yacute;"
+			  | "z" -> print_s "&#x179;"
+			  | "Z" -> print_s "&#x17a;"
 			  | ""  -> print_c '\''
                           | s   -> print_s s)];
 def "\\`" [Raw_arg(function "e" -> print_s "&egrave;"
@@ -207,8 +223,13 @@ def "\\~" [Raw_arg(function "n" -> print_s "&ntilde;"
 		          | "N" -> print_s "&Ntilde;"
 		          | "o" -> print_s "&otilde;"
 		          | "O" -> print_s "&Otilde;"
+			  | "i" -> print_s "&#x129;"
+			  | "\\i" -> print_s "&#x129;"
+			  | "I" -> print_s "&#x128;"
 		          | "a" -> print_s "&atilde;"
 		          | "A" -> print_s "&Atilde;"
+			  | "u" -> print_s "&#169;"
+			  | "U" -> print_s "&#168;"
 		          | ""  -> print_s "&tilde;"
                           | s   -> print_s s)];
 def "\\k" [Raw_arg(function "A" -> print_s "&#260;"
@@ -263,7 +284,39 @@ def "\\\"" [Raw_arg(function "e" -> print_s "&euml;"
                           | "y" -> print_s "&yuml;"
                           | "Y" -> print_s "&Yuml;"
                           | s   -> print_s s)];
-def "\\u" [Raw_arg print_s ];
+def "\\d" [Raw_arg print_s ];
+def "\\." [Raw_arg (function "a" -> print_s "&#x227;"
+			   | "A" -> print_s "&#x226;"
+			   | "c" -> print_s "&#x10b;"
+			   | "C" -> print_s "&#x10a;"
+			   | "e" -> print_s "&#279;"
+			   | "E" -> print_s "&#278;"
+			   | "g" -> print_s "&#289;"
+			   | "G" -> print_s "&#288;"
+			   | "i" -> print_s "i"
+			   | "\\i" -> print_s "i"
+			   | "I" -> print_s "&#304;"
+			   | "o" -> print_s "&#559;"
+			   | "O" -> print_s "&#558;"
+			   | "z" -> print_s "&#380;"
+			   | "Z" -> print_s "&#379;"
+			   | s   -> print_s s)];
+def "\\u" [Raw_arg(function "a" -> print_s "&#x101;"
+			   | "A" -> print_s "&#x102;"
+			   | "e" -> print_s "&#x115;"
+			   | "E" -> print_s "&#x114;"
+			   | "i" -> print_s "&#x12C;"
+			   | "\\i" -> print_s "&#x12C;"
+			   | "I" -> print_s "&#x12D;"
+			   | "g" -> print_s "&#x11F;"
+			   | "G" -> print_s "&#x11E;"
+			   | "n" -> print_s "&#x148;"
+			   | "N" -> print_s "&#x147;"
+			   | "o" -> print_s "&#x14F;"
+			   | "O" -> print_s "&#x14E;"
+			   | "u" -> print_s "&#x16D;"
+			   | "U" -> print_s "&#x16C;"
+			   | s   -> print_s s)];
 def "\\v" [Raw_arg(function 
                      | "C" -> print_s "&#x010C;"
 		     | "c" -> print_s "&#x010D;"
@@ -275,8 +328,8 @@ def "\\v" [Raw_arg(function
 		     | "n" -> print_s "&#328;"
 		     | "r" -> print_s "&#X0159;"
                      | "R" -> print_s "&#X0158;"
-                     | "s" -> print_s "&#X0161;"
-                     | "S" -> print_s "&#X0160;"
+                     | "s" -> print_s "&scaron;" (*"&#X0161;"*)
+                     | "S" -> print_s "&Scaron;" (*"&#X0160;"*)
                      | "T" -> print_s "&#356;"
 		     | "t" -> print_s "&#357;"
                      | "\\i" -> print_s "&#X012D;"
@@ -565,6 +618,11 @@ let html_entities () =
   def "\\cdot" [Print "&sdot;"];
   def "\\cdots" [Print "&sdot;&sdot;&sdot;"];
   def "\\vartheta" [Print "&thetasym;"];
+  def "\\angle" [Print "&ang;"];
+  def "\\=" [Raw_arg(function 
+    | "a" -> print_s "&abar;"
+    | "A" -> print_s "&Abar;"
+    | s   -> print_s s)];
   ()
 
 (*s Macros for German BibTeX style. *) 
