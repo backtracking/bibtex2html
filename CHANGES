@@ -1,4 +1,6 @@
 
+ o correctly support $x$$y$ where the central $$ is not passing into 
+   display math mode
  o more cases for accent macros \' \~ \. \u \v (patch by John Kewley)
 
 Version 1.89, 08/01/2008

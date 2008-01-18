@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexscan.mll,v 1.34 2008-01-08 14:17:45 filliatr Exp $ i*)
+(*i $Id: latexscan.mll,v 1.35 2008-01-18 16:34:07 marche Exp $ i*)
 
 (*s This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -22,8 +22,16 @@
   open Printf
   open Latexmacros
 
+  type math_mode = MathNone | MathDisplay | MathNoDisplay
+
   let brace_nesting = ref 0
-  let math_mode = ref false
+  let math_mode = ref MathNone
+
+  let is_math_mode () = 
+    match !math_mode with
+      | MathNone -> false
+      | MathDisplay | MathNoDisplay -> true
+
   let hevea_url = ref false
   let html_entities = ref false
 
@@ -36,7 +44,7 @@
   let save_state f arg =
     let n = !brace_nesting and m = !math_mode in
     brace_nesting := 0;
-    math_mode := false;
+    math_mode := MathNone;
     f arg;
     brace_nesting := n;
     math_mode := m
@@ -126,11 +134,25 @@ rule main = parse
                   print_s "<dd>"; main lexbuf }
   | "\\item"    { print_s "<li>"; main lexbuf }
 (* Math mode (hmph) *)
-  | "$"         { math_mode := not !math_mode; main lexbuf }
-  | "$$"        { math_mode := not !math_mode;
-                  if !math_mode
-                  then print_s "<blockquote>"
-                  else print_s "\n</blockquote>";
+  | "$"         { math_mode := 
+		    begin
+		      match !math_mode with
+			| MathNone -> MathNoDisplay
+			| MathNoDisplay -> MathNone
+			| MathDisplay -> (* syntax error *) MathNone
+		    end; 
+		  main lexbuf }
+  | "$$"        { math_mode := 
+		    begin
+		      match !math_mode with
+			| MathNone -> 
+			    print_s "<blockquote>";
+			    MathDisplay
+			| MathNoDisplay -> MathNoDisplay
+			| MathDisplay -> 
+			    print_s "\n</blockquote>";
+			    MathNone
+		    end;
                   main lexbuf }
 (* \hkip *)
   | "\\hskip" space* dimension 
@@ -151,7 +173,7 @@ rule main = parse
 		  main lexbuf }
   | "---"       { print_s (if !html_entities then "&mdash;" else "-"); 
 		  main lexbuf }
-  | "^"         { if !math_mode then begin
+  | "^"         { if is_math_mode() then begin
 		    let buf = Lexing.from_string (raw_arg lexbuf) in
 		    print_s "<sup>";
 		    save_state main buf;
@@ -159,7 +181,7 @@ rule main = parse
 		  end else
 		    print_s "^"; 
 		  main lexbuf }
-  | "_"         { if !math_mode then begin
+  | "_"         { if is_math_mode() then begin
 		    let buf = Lexing.from_string (raw_arg lexbuf) in
 		    print_s "<sub>";
 		    save_state main buf;
@@ -199,9 +221,9 @@ rule main = parse
 (* Default rule for other characters *)
   | eof         { () }
   | ['A'-'Z' 'a'-'z']+
-                { if !math_mode then print_s "<em>";
+                { if is_math_mode() then print_s "<em>";
                   print_s(Lexing.lexeme lexbuf);
-                  if !math_mode then print_s "</em>";
+                  if is_math_mode() then print_s "</em>";
                   main lexbuf }
   | _           { print_c(Lexing.lexeme_char lexbuf 0); main lexbuf }
 
