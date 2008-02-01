@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: condition.ml,v 1.12 2004-07-06 15:22:33 marche Exp $ i*)
+(*i $Id: condition.ml,v 1.13 2008-02-01 14:35:49 filliatr Exp $ i*)
 
 open Printf;;
 
@@ -55,18 +55,20 @@ let evaluate_constante entrytype key fields = function
 ;;
 
 let eval_comp v1 op v2 = 
-    match op with
-	"=" -> v1 = v2
-      | "<>" -> v1 <> v2	    
-      | _ ->
-	  let n1 = int_of_string v1
-	  and n2 = int_of_string v2 in
-	    match op with
-		">" -> n1 > n2
-	      | "<" -> n1 < n2
-	      | ">=" -> n1 >= n2
-	      | "<=" -> n1 <= n2
-	      | _ -> assert false
+  match op with
+    | "=" -> String.lowercase v1 = String.lowercase v2
+    | "<>" -> String.lowercase v1 <> String.lowercase v2	    
+    | "==" -> v1 = v2
+    | "!=" -> v1 <> v2	    
+    | _ ->
+	let n1 = int_of_string v1
+	and n2 = int_of_string v2 in
+	match op with
+	  | ">" -> n1 > n2
+	  | "<" -> n1 < n2
+	  | ">=" -> n1 >= n2
+	  | "<=" -> n1 <= n2
+	  | _ -> assert false
 ;;
 
 let rec evaluate_rec entrytype key fields = function

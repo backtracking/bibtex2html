@@ -1,4 +1,6 @@
 
+ o bib2bib: = and <> are now case insensitive; use == and != instead
+   to perform case sensitive comparison
  o correctly support $x$$y$ where the central $$ is not passing into 
    display math mode
  o more cases for accent macros \' \~ \. \u \v (patch by John Kewley)

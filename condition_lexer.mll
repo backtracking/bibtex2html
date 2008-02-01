@@ -33,7 +33,7 @@ rule token = parse
   | ')'                   { RPAR }
   | "$key"                { DOLLAR_KEY }
   | "$type"               { DOLLAR_TYPE }
-  | (">" | "<" | ">=" | "<=" | "=" | "<>") 
+  | (">" | "<" | ">=" | "<=" | "=" | "<>" | "==" | "!=") 
                           { COMP(Lexing.lexeme lexbuf) }
   | ['0'-'9']+            { INT(Lexing.lexeme lexbuf) }
   | ['A'-'Z' 'a'-'z' '_'] +   { IDENT(Lexing.lexeme lexbuf) }
