@@ -1,4 +1,6 @@
 
+Version 1.90, 01/02/2008
+========================
  o bib2bib: = and <> are now case insensitive; use == and != instead
    to perform case sensitive comparison
  o correctly support $x$$y$ where the central $$ is not passing into 
