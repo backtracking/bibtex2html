@@ -1,4 +1,6 @@
 
+ o fixed bug with -nobibsource and -multiple (bib links on the separate pages)
+
 Version 1.90, 01/02/2008
 ========================
  o bib2bib: = and <> are now case insensitive; use == and != instead

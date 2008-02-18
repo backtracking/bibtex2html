@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.78 2008-01-08 13:32:42 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.79 2008-02-18 13:30:03 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -344,7 +344,11 @@ let separate_file (b,((_,k,f) as e)) =
   Html.paragraph ch;
   display_notes ch e;
   if !print_keywords then display_keywords ch e;
-  display_links ch (labs @ bibtex_entry k :: doi_link e @ make_links e);
+  display_links ch 
+    (labs 
+      @ (if !bib_entries then [bibtex_entry k] else []) 
+      @ doi_link e 
+      @ make_links e);
   (* JK Html.paragraph ch; *)
   Html.open_href ch (!output_file ^ !link_suffix);
   output_string ch "Back";
