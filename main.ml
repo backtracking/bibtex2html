@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: main.ml,v 1.67 2008-01-08 14:17:45 filliatr Exp $ i*)
+(*i $Id: main.ml,v 1.68 2008-02-19 08:38:03 filliatr Exp $ i*)
 
 (*s Main module of bibtex2html. *)
 
@@ -345,6 +345,7 @@ Usage: bibtex2html <options> [filename]
   -doi-prefix url
              set the DOI links prefix (default is http://dx.doi.org/)
   -linebreak add a linebreak between an entry and its links
+  -use-table enforce the use of HTML tables (to be used after -nokeys)
   -noheader  do not print the header (bibtex2html command)
   -nofooter  do not print the footer (bibtex2html web link)
   -noexpand  do not expand abbreviations in the BibTeX output
