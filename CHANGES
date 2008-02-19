@@ -1,4 +1,5 @@
 
+ o fixed bug in bib2bib and bibtex2html when quotes (") are used in fields
  o fixed bug with -nobibsource and -multiple (bib links on the separate pages)
 
 Version 1.90, 01/02/2008

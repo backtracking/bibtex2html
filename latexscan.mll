@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexscan.mll,v 1.35 2008-01-18 16:34:07 marche Exp $ i*)
+(*i $Id: latexscan.mll,v 1.36 2008-02-19 19:17:50 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -111,8 +111,10 @@ rule main = parse
                   { save_state main lexbuf; main lexbuf }
   | "\\cal" " "*  { main lexbuf }
 (* Double quotes *)
+(***
   | '"'           { print_s "<tt>"; indoublequote lexbuf;
                     print_s "</tt>"; main lexbuf }
+***)
 (* Verb, verbatim *)
   | ("\\verb" | "\\path") _  
                 { verb_delim := Lexing.lexeme_char lexbuf 5;

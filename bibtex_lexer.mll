@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibtex_lexer.mll,v 1.16 2008-01-08 13:32:42 filliatr Exp $ i*)
+(*i $Id: bibtex_lexer.mll,v 1.17 2008-02-19 19:17:50 filliatr Exp $ i*)
 
 (*s Lexer for BibTeX files. *)
 
@@ -105,6 +105,12 @@ rule token = parse
   | _   { token lexbuf }
 
 and string = parse
+  | '{'
+      { store_string_char '{';
+      	brace lexbuf;
+	store_string_char '}';
+	string lexbuf
+      }  
   | '"'
       { () }
   | "\\\""
