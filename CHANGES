@@ -1,4 +1,6 @@
 
+Version 1.91, 20/02/2008
+========================
  o fixed bug in bib2bib and bibtex2html when quotes (") are used in fields
  o fixed bug with -nobibsource and -multiple (bib links on the separate pages)
 
