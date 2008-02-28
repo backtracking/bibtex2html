@@ -1,4 +1,7 @@
 
+ o fixed bib2bib command line options to accept --warn-error and --quiet
+   (as described in the manual)
+
 Version 1.91, 20/02/2008
 ========================
  o fixed bug in bib2bib and bibtex2html when quotes (") are used in fields
