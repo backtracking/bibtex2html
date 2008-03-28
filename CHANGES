@@ -1,6 +1,8 @@
 
- o fixed bib2bib command line options to accept --warn-error and --quiet
-   (as described in the manual)
+ o added accents conversion for tilda, and fixed accents conversion
+   for \"i, \"\i and such (patch by Samuel Colin)
+ o fixed bib2bib command line options to accept --warn-error and
+   --quiet (as described in the manual)
 
 Version 1.91, 20/02/2008
 ========================

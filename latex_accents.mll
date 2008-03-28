@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latex_accents.mll,v 1.9 2006-02-22 10:05:44 filliatr Exp $ i*)
+(*i $Id: latex_accents.mll,v 1.10 2008-03-28 15:58:56 marche Exp $ i*)
 
 (* Normalize both ISO-latin characters and LaTeX accents to HTML entities *)
 
@@ -33,11 +33,17 @@
 let space = [ '\t']
 
 rule next_char = parse
-    '\\'                          { control lexbuf }
-  | '{'                           { next_char lexbuf }
-  | '}'                           { next_char lexbuf }
+    '\\'{ control lexbuf }
+  | '{' { next_char lexbuf }
+  | '}' { next_char lexbuf }
   | 'ç' { add_string "&ccedil;" ; next_char lexbuf }
+  | 'Ç' { add_string "&Ccedil;" ; next_char lexbuf }
   | 'ñ' { add_string "&ntilde;"; next_char lexbuf }
+  | 'Ñ' { add_string "&Ntilde;"; next_char lexbuf }
+  | 'ã' { add_string "&atilde;"; next_char lexbuf }
+  | 'Ã' { add_string "&Atilde;"; next_char lexbuf }
+  | 'õ' { add_string "&otilde;"; next_char lexbuf }
+  | 'Õ' { add_string "&Otilde;"; next_char lexbuf }
   | 'ä' { add_string "&auml;"; next_char lexbuf }
   | 'ö' { add_string "&ouml;"; next_char lexbuf }
   | 'ü' { add_string "&uuml;"; next_char lexbuf }
@@ -78,8 +84,8 @@ rule next_char = parse
   | 'Û' { add_string "&Ucirc;"; next_char lexbuf }
   | 'Ê' { add_string "&Ecirc;"; next_char lexbuf }
   | 'Î' { add_string "&Icirc;"; next_char lexbuf }
-  | _                             { add lexbuf ; next_char lexbuf }
-  | eof                           { () }
+  | _   { add lexbuf ; next_char lexbuf }
+  | eof { () }
 
 
 (* called when we have seen  "\\"  *)
@@ -90,25 +96,27 @@ and control = parse
 | '`'                { left_accent lexbuf }
 | '^'                { hat lexbuf }
 | "c{c}"             { add_string "&ccedil;" ; next_char lexbuf }
+| "c{C}"             { add_string "&Ccedil;" ; next_char lexbuf }
 | 'v'                { czech lexbuf }
-| ("~n"|"~{n}")      { add_string "&ntilde;"; next_char lexbuf  }
+| '~'                { tilde lexbuf }
 |  _                 { add_string "\\" ; add lexbuf ; next_char lexbuf  }
 | eof                { add_string "\\" }
 
 (* called when we have seen  "\\\""  *)
 and quote_char = parse
-  ('a'|"{a}")                   { add_string "&auml;" ; next_char lexbuf }
-| ('o'|"{o}")                   { add_string "&ouml;" ; next_char lexbuf }
-| ('u'|"{u}")                   { add_string "&uuml;" ; next_char lexbuf }
-| ('e'|"{e}")                   { add_string "&euml;" ; next_char lexbuf }
-| ('A'|"{A}")                   { add_string "&Auml;" ; next_char lexbuf }
-| ('O'|"{O}")                   { add_string "&Ouml;" ; next_char lexbuf }
-| ('U'|"{U}")                   { add_string "&Uuml;" ; next_char lexbuf }
-| ('E'|"{E}")                   { add_string "&Euml;" ; next_char lexbuf }
-| ("\\i" space+|"{\\i}")        { add_string "&iuml;" ; next_char lexbuf }
-| ('I'|"\\I" space+|"{\\I}")    { add_string "&Iuml;" ; next_char lexbuf }
-| _                             { add_string "\\\"" ; add lexbuf }
-| eof                           { add_string "\\\"" }
+  ('a'|"{a}")   { add_string "&auml;" ; next_char lexbuf }
+| ('o'|"{o}")   { add_string "&ouml;" ; next_char lexbuf }
+| ('u'|"{u}")   { add_string "&uuml;" ; next_char lexbuf }
+| ('e'|"{e}")   { add_string "&euml;" ; next_char lexbuf }
+| ('A'|"{A}")   { add_string "&Auml;" ; next_char lexbuf }
+| ('O'|"{O}")   { add_string "&Ouml;" ; next_char lexbuf }
+| ('U'|"{U}")   { add_string "&Uuml;" ; next_char lexbuf }
+| ('E'|"{E}")   { add_string "&Euml;" ; next_char lexbuf }
+| ('i'|"{i}"|"\\i" space*|"{\\i}")        
+                { add_string "&iuml;" ; next_char lexbuf }
+| ('I'|"{I}")   { add_string "&Iuml;" ; next_char lexbuf }
+| _             { add_string "\\\"" ; add lexbuf }
+| eof           { add_string "\\\"" }
 
 (* called when we have seen  "\\'"  *)
 and right_accent = parse
@@ -120,9 +128,10 @@ and right_accent = parse
 | ('O'|"{O}")   { add_string "&Oacute;" ; next_char lexbuf }
 | ('U'|"{U}")   { add_string "&Uacute;" ; next_char lexbuf }
 | ('E'|"{E}")   { add_string "&Eacute;" ; next_char lexbuf }
-| ('\'')   { add_string "&rdquo;" ; next_char lexbuf }
-| ('i'|"\\i" space+|"{\\i}") { add_string "&iacute;" ; next_char lexbuf }
-| ('I'|"\\I" space+|"{\\I}") { add_string "&Iacute;" ; next_char lexbuf }
+| ('\'')        { add_string "&rdquo;" ; next_char lexbuf }
+| ('i'|"{i}"|"\\i" space*|"{\\i}") 
+                { add_string "&iacute;" ; next_char lexbuf }
+| ('I'|"{I}")   { add_string "&Iacute;" ; next_char lexbuf }
 | _             { add_string "\\'" ; add lexbuf ; next_char lexbuf }
 | eof           { add_string "\\'" }
 
@@ -136,12 +145,14 @@ and left_accent = parse
 | ('O'|"{O}")   { add_string "&Ograve;" ; next_char lexbuf }
 | ('U'|"{U}")   { add_string "&Ugrave;" ; next_char lexbuf }
 | ('E'|"{E}")   { add_string "&Egrave;" ; next_char lexbuf }
-| ('`')   { add_string "&ldquo;" ; next_char lexbuf }
-| ('i'|"\\i" space+ |"{\\i}") { add_string "&igrave;" ; next_char lexbuf }
-| ('I'|"\\I" space+ |"{\\I}") { add_string "&Igrave;" ; next_char lexbuf }
+| ('`')         { add_string "&ldquo;" ; next_char lexbuf }
+| ('i'|"{i}"|"\\i" space* |"{\\i}") 
+                { add_string "&igrave;" ; next_char lexbuf }
+| ('I'|"{I}")   { add_string "&Igrave;" ; next_char lexbuf }
 | _             { add_string "\\`" ; add lexbuf ; next_char lexbuf }
 | eof           { add_string "\\`" }
 
+(* called when we have seen "\\^"  *)
 and hat = parse
   ('a'|"{a}")   { add_string "&acirc;" ; next_char lexbuf }
 | ('o'|"{o}")   { add_string "&ocirc;" ; next_char lexbuf }
@@ -151,18 +162,32 @@ and hat = parse
 | ('O'|"{O}")   { add_string "&Ocirc;" ; next_char lexbuf }
 | ('U'|"{U}")   { add_string "&Ucirc;" ; next_char lexbuf }
 | ('E'|"{E}")   { add_string "&Ecirc;" ; next_char lexbuf }
-| ('i'|"\\i" space+ |"{\\i}") { add_string "&icirc;" ; next_char lexbuf }
-| ('I'|"\\I" space+ |"{\\I}") { add_string "&Icirc;" ; next_char lexbuf }
+| ('i'|"{i}"|"\\i" space* |"{\\i}") 
+                { add_string "&icirc;" ; next_char lexbuf }
+| ('I'|"{I}")   { add_string "&Icirc;" ; next_char lexbuf }
 | _             { add_string "\\^" ; add lexbuf ; next_char lexbuf }
 |  eof          { add_string "\\^" }
 
+(* called when we have seen "\\~"  *)
+and tilde = parse
+  ('a'|"{a}")   { add_string "&atilde;" ; next_char lexbuf }
+| ('o'|"{o}")   { add_string "&otilde;" ; next_char lexbuf }
+| ('A'|"{A}")   { add_string "&Atilde;" ; next_char lexbuf }
+| ('O'|"{O}")   { add_string "&Otilde;" ; next_char lexbuf }
+| ('n'|"{n}")   { add_string "&ntilde;" ; next_char lexbuf }
+| ('N'|"{N}")   { add_string "&Ntilde;" ; next_char lexbuf }
+| _             { add_string "\\~" ; add lexbuf ; next_char lexbuf }
+|  eof          { add_string "\\~" }
+
+(* called when we have seen "\\v"  *)
 and czech = parse
   ('r'|"{r}")   { add_string "&#X0159;" ; next_char lexbuf }
 | ('R'|"{R}")   { add_string "&#X0158;" ; next_char lexbuf }
 | ('s'|"{s}")   { add_string "&#X0161;" ; next_char lexbuf }
 | ('S'|"{S}")   { add_string "&#X0160;" ; next_char lexbuf }
-| ('i'|"\\i" space+ |"{\\i}") { add_string "&#X012D;" ; next_char lexbuf }
-| ('I'|"\\I" space+ |"{\\I}") { add_string "&#X012C;" ; next_char lexbuf }
+| ('i'|"{i}"|"\\i" space* |"{\\i}") 
+                { add_string "&#X012D;" ; next_char lexbuf }
+| ('I'|"{I}")   { add_string "&#X012C;" ; next_char lexbuf }
 | _             { add_string "\\^" ; add lexbuf ; next_char lexbuf }
 |  eof          { add_string "\\^" }
 
