@@ -1,4 +1,7 @@
 
+ o option -m (reading macros from a file):
+   - fixed macro definition with \def
+   - macros with arguments are now supported
  o added accents conversion for tilda, and fixed accents conversion
    for \"i, \"\i and such (patch by Samuel Colin)
  o fixed bib2bib command line options to accept --warn-error and
