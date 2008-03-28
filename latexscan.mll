@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexscan.mll,v 1.36 2008-02-19 19:17:50 filliatr Exp $ i*)
+(*i $Id: latexscan.mll,v 1.37 2008-03-28 16:14:16 filliatr Exp $ i*)
 
 (*s This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -62,13 +62,30 @@
     let u = remove_whitespace u in
     print_s (sprintf "<a href=\"%s\">%s</a>" u t)
 
-  let rec skip_n_args = function
-    | 0 -> []
-    | n -> Skip_arg :: skip_n_args (pred n)
-
   let chop_last_space s =
     let n = String.length s in
     if s.[n-1] = ' ' then String.sub s 0 (n-1) else s
+
+  let def_macro s n b =
+    if not !Options.quiet then begin
+      eprintf "macro: %s = %s\n" s b; 
+      flush stderr
+    end;
+    let n = match n with None -> 0 | Some n -> int_of_string n in
+    let rec code i subst = 
+      if i <= n then
+	let r = Str.regexp ("#" ^ string_of_int i) in
+	[Parameterized 
+	    (fun arg -> 
+	      let subst s = Str.global_replace r (subst s) arg in
+	      code (i+1) subst)]
+      else begin
+	let s = subst b in
+	(* eprintf "subst b = %s\n" s; flush stderr; *)
+	[Recursive (subst b)]
+      end
+    in
+    def s (code 1 (fun s -> s))
 
 }
 
@@ -107,6 +124,10 @@ rule main = parse
                   { print_s "<font size=\"-1\">";
                     save_state main lexbuf;
                     print_s "</font>"; main lexbuf }
+  | "{\\rm" " "*
+                  { print_s "<span style=\"font-style: normal\">";
+                    save_state main lexbuf;
+                    print_s "</span>"; main lexbuf }
   | "{\\cal" " "*
                   { save_state main lexbuf; main lexbuf }
   | "\\cal" " "*  { main lexbuf }
@@ -201,8 +222,8 @@ rule main = parse
   | "\\" " "
       { print_s " "; main lexbuf }
 (* General case for environments and commands *)
-  | ("\\begin{" | "\\end{") ['A'-'Z' 'a'-'z']+ "}" |
-    "\\" (['A'-'Z' 'a'-'z']+ '*'? " "? | [^ 'A'-'Z' 'a'-'z'])
+  | ("\\begin{" | "\\end{") ['A'-'Z' 'a'-'z' '@']+ "}" |
+    "\\" (['A'-'Z' 'a'-'z' '@']+ '*'? " "? | [^ 'A'-'Z' 'a'-'z'])
                 { let rec exec_action = function
                     | Print str -> print_s str
                     | Print_arg -> print_arg lexbuf
@@ -307,28 +328,21 @@ and skip_optional_arg = parse
 (* ajout personnel: [read_macros] pour lire les macros (La)TeX *)
 
 and read_macros = parse
-    "\\def" | "\\newcommand"
-        { read_def lexbuf; read_macros lexbuf }
-  | eof { () }
-  | _   { read_macros lexbuf }
-
-and read_def = parse
-    '\\' (['a'-'z' 'A'-'Z']+ as s)
+  | "\\def" ('\\' ['a'-'z' 'A'-'Z' '@']+ as s) ("#" (['0'-'9']+ as n))?
       { let b = raw_arg lexbuf in
-	if not !Options.quiet then begin
-	  eprintf "macro: %s = %s\n" s b; 
-	  flush stderr
-	end;
-	def s [Recursive b] }
-  | "{" ("\\" ['a'-'z' 'A'-'Z']+ as s) "}" ("[" (['0'-'9']+ as n) "]")?
+	def_macro s n b;
+        read_macros lexbuf }
+  | "\\newcommand" space* 
+    "{" ("\\" ['a'-'z' 'A'-'Z']+ as s) "}" ("[" (['0'-'9']+ as n) "]")?
       { let b = raw_arg lexbuf in
-	if not !Options.quiet then begin
-	  eprintf "macro: %s = %s\n" s b; 
-	  flush stderr
-	end;
-	let n = match n with None -> 0 | Some n -> int_of_string n in
-	def s (skip_n_args n @ [Recursive b]) }
-  | [' ' '\t' '\n']* 
-      { read_def lexbuf }
-  | _ { () }
+	def_macro s n b;
+        read_macros lexbuf }
+  | "\\let" ('\\' ['a'-'z' 'A'-'Z' '@']+ as s) '='
+      { let b = raw_arg lexbuf in
+	def_macro s None b;
+        read_macros lexbuf }
+  | eof 
+      { () }
+  | _   
+      { read_macros lexbuf }
 
