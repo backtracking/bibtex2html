@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: latexscan.mll,v 1.37 2008-03-28 16:14:16 filliatr Exp $ i*)
+(*i $Id: latexscan.mll,v 1.38 2008-06-17 14:39:22 marche Exp $ i*)
 
 (*s This code is Copyright (C) 1997 Xavier Leroy. *)
 
@@ -80,7 +80,7 @@
 	      let subst s = Str.global_replace r (subst s) arg in
 	      code (i+1) subst)]
       else begin
-	let s = subst b in
+	let _s = subst b in
 	(* eprintf "subst b = %s\n" s; flush stderr; *)
 	[Recursive (subst b)]
       end

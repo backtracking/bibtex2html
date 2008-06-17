@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibtex.ml,v 1.24 2008-01-08 13:32:42 filliatr Exp $ i*)
+(*i $Id: bibtex.ml,v 1.25 2008-06-17 14:39:22 marche Exp $ i*)
 
 (*s Datatype for BibTeX bibliographies. *)
 
@@ -255,6 +255,7 @@ let rec expand_crossrefs biblio =
 		   | [String(s)] -> 
 		       begin
 			 try 
+			   let f = List.remove_assoc "crossref" f in
 			   let f' = find_crossref s in
 			   if f' = [] then
 			     begin

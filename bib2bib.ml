@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bib2bib.ml,v 1.25 2008-02-28 11:14:49 filliatr Exp $ i*)
+(*i $Id: bib2bib.ml,v 1.26 2008-06-17 14:39:22 marche Exp $ i*)
 
 open Printf
 open Bibtex
@@ -49,6 +49,8 @@ let add_condition c =
 
 let expand_abbrevs = ref false
 
+let expand_xrefs = ref false
+
 let sort_criteria = ref []
 
 let reverse_sort = ref false
@@ -71,6 +73,8 @@ let args_spec =
      "reverse the sort order");
     ("--expand", Arg.Unit (fun () -> expand_abbrevs := true), 
      "expand the abbreviations");
+    ("--expand-xrefs", Arg.Unit (fun () -> expand_xrefs := true), 
+     "expand the cross-references");
     ("--version", Arg.Unit (fun () -> Copying.banner "bib2bib"; exit 0), 
      "print version and exit");
     ("--warranty", 
@@ -205,10 +209,10 @@ let main () =
       !input_file_names
       empty_biblio
   in 
-  let expanded = Bibtex.expand_abbrevs all_entries
-  in
+  let abbrv_expanded = Bibtex.expand_abbrevs all_entries in
+  let xref_expanded = Bibtex.expand_crossrefs abbrv_expanded in
   let matching_keys =
-    Bibfilter.filter (Bibtex.expand_crossrefs expanded)
+    Bibfilter.filter xref_expanded
       (fun e k f -> Condition.evaluate_cond e k f !condition) 
   in
   if KeySet.cardinal matching_keys = 0 then
@@ -217,7 +221,13 @@ let main () =
       if !Options.warn_error then exit 2;
     end;
   
-  let user_expanded = if !expand_abbrevs then expanded else all_entries in
+  let user_expanded = 
+    if !expand_abbrevs then 
+      if !expand_xrefs then xref_expanded else abbrv_expanded 
+    else 
+      if !expand_xrefs then Bibtex.expand_crossrefs all_entries 
+      else all_entries
+  in
   let needed_keys = Bibfilter.saturate user_expanded matching_keys in
   (* this should be to right place to sort the output bibliography *)
   let final_bib =

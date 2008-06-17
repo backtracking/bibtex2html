@@ -477,11 +477,14 @@ suitable for input as option \verb|-citefile| to \verb|bibtex2html|.
 
 \item[\texttt{\mm{}expand}] ~
 
-  expand all abbreviations in the output file. Notice that there is no
-  way to ask for expansion of cross-references, since the meaning of
-  such an expansion is unclear: it's better to let bibtex (via
-  bibtex2html) handle the cross-references himself, depending on the
-  style considered.
+  expand all abbreviations in the output file. 
+
+\item[\texttt{\mm{}expand-xrefs}] ~
+
+  expand all crossrefs in the output file. Notice that the meaning of
+  such an expansion is not completely obvious: it's better to let
+  bibtex (via bibtex2html) handle the cross-references itself,
+  depending on the style considered.
 
 \item[\texttt{-s} \textit{field}] ~
 
