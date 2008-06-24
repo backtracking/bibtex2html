@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bibtex.ml,v 1.25 2008-06-17 14:39:22 marche Exp $ i*)
+(*i $Id: bibtex.ml,v 1.26 2008-06-24 12:53:34 marche Exp $ i*)
 
 (*s Datatype for BibTeX bibliographies. *)
 
@@ -205,6 +205,12 @@ let rec expand_abbrevs biblio =
     biblio
     []
 
+let add_crossref_fields =
+  List.fold_left
+    (fun acc ((x,_) as d) -> 
+       if List.mem_assoc x acc then acc else d::acc)
+
+
 let rec expand_crossrefs biblio = 
   let crossref_table = Hashtbl.create 97 in
   let add_crossref a l = Hashtbl.add crossref_table (String.lowercase a) l in
@@ -212,6 +218,7 @@ let rec expand_crossrefs biblio =
   let replace_crossref a l = 
     Hashtbl.replace crossref_table (String.lowercase a) l 
   in
+  (* first phase: record needed crossrefs in table *)
   List.iter 
     (fun command ->
        match command with
@@ -231,6 +238,7 @@ let rec expand_crossrefs biblio =
 	     end
 	 | _ -> ())
     biblio;
+  (* second phase: record crossrefs data in table *)
   List.iter 
     (fun command ->
        match command with
@@ -245,6 +253,7 @@ let rec expand_crossrefs biblio =
 	     end
 	 | _ -> ())
     biblio;
+  (* third phase: expand crossrefs *)
   fold 
     (fun command accu ->
        match command with
@@ -263,7 +272,7 @@ let rec expand_crossrefs biblio =
 				 "Warning: cross-reference '%s' not found.@." s;
 			       if !Options.warn_error then exit 2;
 			     end;
-			   Entry (t,k,f@f') :: accu
+			   Entry (t,k,add_crossref_fields f f') :: accu
 			 with Not_found ->
 			   assert false
 		       end
