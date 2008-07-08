@@ -16,8 +16,8 @@ InstallDir "$PROGRAMFILES\Bibtex2html"
 UninstallText "Do you really want to delete bibtex2html from your system ?"
 UninstallIcon "icons\uninstall.ico"
 
-InstType Normale
-InstType Entiere
+;InstType Normale
+;InstType Entiere
 
 ; ================================================================
 
