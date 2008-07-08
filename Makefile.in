@@ -18,7 +18,7 @@ DOCDIR = $(prefix)/doc/bibtex2html
 # End of configuration part
 #########################################
 
-VERSION=1.91
+VERSION=1.92
 
 OCAMLC   = @OCAMLC@
 OCAMLOPT = @OCAMLOPT@ 
@@ -46,7 +46,7 @@ BIB2BIBOBJS = options.cmx bibtex.cmx bibtex_lexer.cmx \
 
 all: @OCAMLBEST@
 
-opt: bibtex2html bib2bib
+opt: bibtex2html$(EXE) bib2bib$(EXE)
 
 byte: bibtex2html.byte bib2bib.byte
 
@@ -76,6 +76,9 @@ install-byte: install-indep
 	cp bibtex2html.byte $(BINDIR)/bibtex2html
 	cp bib2bib.byte $(BINDIR)/bib2bib
 
+win: bibtex2html$(EXE) bib2bib$(EXE) bibtex2html.nsi
+	"/cygdrive/c/Program Files (x86)/NSIS/makensis" /DVERSION=$(VERSION) bibtex2html.nsi
+
 local: bibtex2html bib2bib
 	cp bibtex2html bib2bib aux2bib $$HOME/bin/$$OSTYPE
 	cp *.1 $$HOME/man/man1
@@ -84,8 +87,8 @@ demons: bibtex2html bib2bib
 	cp bibtex2html bib2bib aux2bib /users/demons/demons/bin/$$OSTYPE
 	cp *.1 $$HOME/man/man1
 
-bibtex2html: $(OBJS)
-	$(OCAMLOPT) $(PROFILE) $(FLAGS) -o bibtex2html str.cmxa $(OBJS) $(STRLIB)
+bibtex2html$(EXE): $(OBJS)
+	$(OCAMLOPT) $(PROFILE) $(FLAGS) -o bibtex2html$(EXE) str.cmxa $(OBJS) $(STRLIB)
 	strip bibtex2html$(EXE)
 
 bibtex2html.byte: $(OBJS:.cmx=.cmo)
@@ -104,8 +107,8 @@ bibtex2html.dfc: $(SRC)
 	ocamldefun -d defun `ocamldefun-args $(SRC)`
 	cd defun; $(OCAMLOPT) $(FLAGS) -o ../$@ str.cmxa $(SRC)
 
-bib2bib: $(BIB2BIBOBJS)
-	$(OCAMLOPT) $(PROFILE) $(FLAGS) -o bib2bib str.cmxa $(BIB2BIBOBJS) $(STRLIB)
+bib2bib$(EXE): $(BIB2BIBOBJS)
+	$(OCAMLOPT) $(PROFILE) $(FLAGS) -o bib2bib$(EXE) str.cmxa $(BIB2BIBOBJS) $(STRLIB)
 	strip bib2bib$(EXE)
 
 bib2bib.byte: $(BIB2BIBOBJS:.cmx=.cmo)

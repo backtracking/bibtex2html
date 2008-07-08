@@ -1,4 +1,5 @@
 
+ o Windows installer (using NSIS nsis.sourceforge.net)
  o new bib2bib option --expand-xrefs to perform crossrefs expansion
  o option -m (reading macros from a file):
    - fixed macro definition with \def
