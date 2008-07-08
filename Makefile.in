@@ -6,6 +6,7 @@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 BINDIR=@bindir@
+EXE=@EXE@
 
 # where to install the man pages
 MANDIR = @mandir@

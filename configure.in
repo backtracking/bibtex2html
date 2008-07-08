@@ -14,8 +14,9 @@ fi
 # we extract Ocaml version number and library path
 OCAMLVERSION=`$OCAMLC -v | sed -n -e 's|.*version *\(.*\)$|\1|p' `
 echo "ocaml version is $OCAMLVERSION"
-OCAMLLIB=`$OCAMLC -v | tail -1 | cut -f 4 -d " "`
-echo "ocaml library path is $OCAMLLIB"
+# IMPORTANT! do not use OCAMLLIB, because it is already set under Windows
+CAMLLIB=`ocamlc -where`
+echo "ocaml library path is $CAMLLIB"
 
 case $OCAMLVERSION in
   0.*|1.*|2.00|3.00*|3.01*|3.02*|3.03*|3.04*|3.05*|3.06*)
@@ -90,7 +91,7 @@ AC_PATH_PROG(PERL,perl,/usr/bin/perl)
 
 # platform
 AC_MSG_CHECKING(platform)
-if echo "let _ = Sys.os_type" | ocaml | grep -q Win32; then
+if echo "Sys.os_type;;" | ocaml | grep -q Win32; then
     AC_MSG_RESULT(Win32)
     OCAMLWIN32=yes
     EXE=.exe
@@ -106,7 +107,7 @@ AC_SUBST(OCAMLDEP)
 AC_SUBST(OCAMLLEX)
 AC_SUBST(OCAMLBEST)
 AC_SUBST(OCAMLVERSION)
-AC_SUBST(OCAMLLIB)
+AC_SUBST(CAMLLIB)
 AC_SUBST(PERL)
 AC_SUBST(EXE)
 
