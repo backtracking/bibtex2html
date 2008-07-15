@@ -18,6 +18,8 @@ let digit = ['0' - '9']
 
 let special_char = ['$' '^' '.' '*' '+' '?' '[' ']' 'b' '|' '(' ')' '\\']
 
+let letter = [ 'A'-'Z' 'a'-'z' ]
+
 rule token = parse
     [' ' '\t' '\n'] +     { token lexbuf }
   | "and"                 { AND }
@@ -35,8 +37,9 @@ rule token = parse
   | "$type"               { DOLLAR_TYPE }
   | (">" | "<" | ">=" | "<=" | "=" | "<>" | "==" | "!=") 
                           { COMP(Lexing.lexeme lexbuf) }
-  | ['0'-'9']+            { INT(Lexing.lexeme lexbuf) }
-  | ['A'-'Z' 'a'-'z' '_'] +   { IDENT(Lexing.lexeme lexbuf) }
+  | digit +               { INT(Lexing.lexeme lexbuf) }
+  | (letter | '_') (letter | digit | '_') *   
+                          { IDENT(Lexing.lexeme lexbuf) }
   | '"'                   { Buffer.clear string_buf; STRING(string lexbuf) }
   | '\''                  { Buffer.clear string_buf; STRING(string2 lexbuf) }
   | eof                   { EOF }

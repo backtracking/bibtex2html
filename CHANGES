@@ -1,3 +1,7 @@
+
+ o bib2bib: field names in conditions may contain digits (usefull for 
+   custom fields)
+
 Version 1.92, 08/07/08
 ======================
  o Windows installer (using NSIS nsis.sourceforge.net)
