@@ -38,7 +38,7 @@ rule token = parse
   | (">" | "<" | ">=" | "<=" | "=" | "<>" | "==" | "!=") 
                           { COMP(Lexing.lexeme lexbuf) }
   | digit +               { INT(Lexing.lexeme lexbuf) }
-  | (letter | '_') (letter | digit | '_') *   
+  | (letter | '_') (letter | digit | '_' | '-') *   
                           { IDENT(Lexing.lexeme lexbuf) }
   | '"'                   { Buffer.clear string_buf; STRING(string lexbuf) }
   | '\''                  { Buffer.clear string_buf; STRING(string2 lexbuf) }

@@ -1,5 +1,6 @@
 
- o bib2bib: field names in conditions may contain digits (usefull for 
+ 
+ o bib2bib: field names in conditions may contain digits and '-' (usefull for 
    custom fields)
 
 Version 1.92, 08/07/08
