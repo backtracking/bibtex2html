@@ -489,10 +489,16 @@ suitable for input as option \verb|-citefile| to \verb|bibtex2html|.
 \item[\texttt{-s} \textit{field}] ~
 
   sorts the entries of the bibliography with respect to the given
-  \textit{field}, which may be \texttt{\$key} or \texttt{\$type} to
-  refer to the key or to the entry type, as for filter conditions.
-  This options may be used several times to specifiy a lexicographic
-  order, such as by year, then by keys.
+  \textit{field}, which may also be \texttt{\$key} or \texttt{\$type}
+  to refer to the key or to the entry type, as for filter
+  conditions. It may also be \texttt{\$date}, to ask for sorting from
+  oldest to newest, as for option \texttt{-d} of bibtex2html.
+ 
+  This option may be used several times to specify a lexicographic
+  order, such as by author, then by type, then by date:
+  \begin{quote}
+    \texttt{bib2bib -s 'author' -s '\$type' -s '\$date' $bibfile.bib$}
+  \end{quote}
 
   When sorting, the resulting bibliography will always contains the
   comments first, then the preambles, then the abbreviations, and
@@ -501,7 +507,7 @@ suitable for input as option \verb|-citefile| to \verb|bibtex2html|.
 
 \item[\texttt{-r}] ~
 
-  reverses the sort.
+  reverses the sort order.
 
 \item[\texttt{-q}, \texttt{\mm{}quiet}] ~
 

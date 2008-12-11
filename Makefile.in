@@ -41,7 +41,7 @@ BIB2BIBOBJS = options.cmx bibtex.cmx bibtex_lexer.cmx \
         bibtex_parser.cmx readbib.cmx \
 	latex_accents.cmx condition.cmx \
 	condition_parser.cmx condition_lexer.cmx parse_condition.cmx \
-	bibfilter.cmx \
+	bibfilter.cmx latexmacros.cmx latexscan.cmx expand.cmx \
 	html.cmx biboutput.cmx version.cmx copying.cmx bib2bib.cmx
 
 all: @OCAMLBEST@

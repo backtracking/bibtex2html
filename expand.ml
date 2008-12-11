@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: expand.ml,v 1.16 2008-01-08 13:32:42 filliatr Exp $ i*)
+(*i $Id: expand.ml,v 1.17 2008-12-11 16:05:55 marche Exp $ i*)
 
 (*s Expansion of abbreviations in BibTeX databases. *)
 
@@ -161,6 +161,18 @@ let date_order el e1 e2 =
   (d1.year < d2.year) ||
   (d1.year == d2.year && d1.month < d2.month) ||
   (d1.year == d2.year && d1.month == d2.month && d1.day < d2.day)
+
+let combine_comp c d =
+  if c=0 then d else c
+
+let date_compare el e1 e2 =
+  let d1 = extract_date el e1 in
+  let d2 = extract_date el e2 in
+  combine_comp 
+    (d1.year - d2.year)
+    (combine_comp 
+       (d1.month - d2.month)
+       (d1.day - d2.day))
 
 (*s Access to the fields. *)
 

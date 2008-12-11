@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bib2bib.ml,v 1.26 2008-06-17 14:39:22 marche Exp $ i*)
+(*i $Id: bib2bib.ml,v 1.27 2008-12-11 16:05:55 marche Exp $ i*)
 
 open Printf
 open Bibtex
@@ -133,13 +133,13 @@ let output_bib_file biblio keys =
     exit 1 
 
 
-let rec make_compare_fun criteria c1 c2 =
+let rec make_compare_fun db criteria c1 c2 =
   match criteria with
     | [] -> 0	
     | field :: rem ->
 	let comp = 
 	  match field with
-	    | "$KEY"  ->
+	    | "$key"  ->
 		begin
 		  match (c1,c2) with
 		    | (Abbrev(s1,_),Abbrev(s2,_))
@@ -147,14 +147,23 @@ let rec make_compare_fun criteria c1 c2 =
 			compare s1 s2
 		    | _ -> 0
 		end
-	    | "$TYPE" ->
+	    | "$type" ->
 		begin
 		  match (c1,c2) with
 		    | (Entry(s1,_,_),Entry(s2,_,_)) ->
 			compare s1 s2
 		    | _ -> 0
 		end
-	    | _ ->
+	    | "$date" -> 
+		begin
+		  match (c1,c2) with
+		    | (Entry(s1,t1,l1),Entry(s2,t2,l2)) ->
+			Expand.date_compare db 
+			  (s1,t1,Expand.expand_fields l1) 
+			  (s2,t2,Expand.expand_fields l2)
+		    | _ -> 0
+		end
+	    | f ->
 		begin
 		  match (c1,c2) with
 		    | (Entry(_,_,l1),Entry(_,_,l2)) ->
@@ -180,7 +189,7 @@ let rec make_compare_fun criteria c1 c2 =
 		end
 	in
 	if comp = 0
-	then make_compare_fun rem c1 c2
+	then make_compare_fun db rem c1 c2
 	else 
 	  if !reverse_sort then -comp else comp
 ;;
@@ -233,7 +242,7 @@ let main () =
   let final_bib =
     if !sort_criteria = [] then user_expanded
     else      
-      let comp = make_compare_fun (List.rev !sort_criteria) in
+      let comp = make_compare_fun (Expand.expand user_expanded) (List.rev !sort_criteria) in
       eprintf "Sorting...";
       let b = Bibtex.sort comp user_expanded in
       eprintf "done.\n";
