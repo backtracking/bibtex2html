@@ -1,4 +1,6 @@
 
+Version 1.93, 12/12/08
+======================
  o bib2bib: giving '$date' as argument of option -s allows to sort from 
    oldest to newest entry 
  o bib2bib: field names in conditions may contain digits and '-' (usefull for 
