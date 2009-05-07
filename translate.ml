@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.79 2008-02-18 13:30:03 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.80 2009-05-07 07:19:27 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -52,6 +52,8 @@ let note_fields = ref ([] : string list)
 let abstract_name = ref "Abstract"
 let doi = ref true
 let doi_prefix = ref "http://dx.doi.org/"
+let eprint = ref true
+let eprint_prefix = ref "http://arxiv.org/abs/"
 let revkeys = ref false
 
 type table_kind = Table | DL | NoTable
@@ -313,6 +315,15 @@ let doi_link e =
   end else
     []
 
+let eprint_link e =
+  if !eprint then begin
+    try
+      let k = Expand.get_lowercase_field e "eprint" in
+      [{ l_url = !eprint_prefix ^ k; l_name = "arXiv" }]
+    with Not_found -> []
+  end else
+    []
+
 (* Printing of one entry *)  
 
 let bibtex_entry k =
@@ -347,7 +358,8 @@ let separate_file (b,((_,k,f) as e)) =
   display_links ch 
     (labs 
       @ (if !bib_entries then [bibtex_entry k] else []) 
-      @ doi_link e 
+      @ doi_link e        
+      @ eprint_link e
       @ make_links e);
   (* JK Html.paragraph ch; *)
   Html.open_href ch (!output_file ^ !link_suffix);
@@ -428,7 +440,7 @@ let one_entry_summary ch biblio (_,b,((_,k,f) as e)) =
     let ks = Bibfilter.saturate biblio ks in
     Biboutput.output_bib ~html:true ch biblio (Some ks);
   end else begin
-    let links = doi_link e @ make_links e in
+    let links = doi_link e @ eprint_link e @ make_links e in
     let links = if !bib_entries then bibtex_entry k :: links else links in
     match make_abstract e with
       | Atext a -> 

@@ -1,4 +1,11 @@
 
+Version 1.94, 07/05/09
+======================
+ o support for arXiv preprints links: a field "eprint = {xxx}" will be
+   recognized, if any, and a link to http://arxiv.org/abs/ will be displayed; 
+   option -noeprint turns it off and option -eprintf-prefix <url> sets a
+   different prefix for the urls (contributed by Ari Stern)
+
 Version 1.93, 12/12/08
 ======================
  o bib2bib: giving '$date' as argument of option -s allows to sort from 
