@@ -180,6 +180,7 @@ export: source export-doc linux
 	echo "<#def version>$(VERSION)</#def>" > $(WWWSRC)/version.prehtml
 	make -C $(WWWSRC) install
 	mail -s "nouvelle release de bibtex2html" treinen@debian.org < /dev/null
+	mail -s "new release of bibtex2html" guido.grazioli@gmail.com < /dev/null
 	echo "*** prevenir Gerald Pfeifer <pfeifer@dbai.tuwien.ac.at> ***"
 
 move-olds:
