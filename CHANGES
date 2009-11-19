@@ -1,4 +1,9 @@
 
+o fixed support for DOI links: when field "doi" is already an URL, the
+  DOI prefix is not prepended
+o tags "bibtexnumber" and "bibtexitem" are now inserted to ease the 
+  customization using CSS
+
 Version 1.94, 07/05/09
 ======================
  o support for arXiv preprints links: a field "eprint = {xxx}" will be

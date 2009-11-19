@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: translate.ml,v 1.80 2009-05-07 07:19:27 filliatr Exp $ i*)
+(*i $Id: translate.ml,v 1.81 2009-11-19 10:04:23 filliatr Exp $ i*)
 
 (*s Production of the HTML documents from the BibTeX bibliographies. *)
 
@@ -310,7 +310,8 @@ let doi_link e =
   if !doi then begin
     try
       let k = Expand.get_lowercase_field e "doi" in
-      [{ l_url = !doi_prefix ^ k; l_name = "DOI" }]
+      let url = if is_url k then k else !doi_prefix ^ k in
+      [{ l_url = url; l_name = "DOI" }]
     with Not_found -> []
   end else
     []
@@ -383,7 +384,8 @@ let close_table ch = match !table with
 let open_row ch = match !table with
   | Table ->
       Html.open_balise ch "tr valign=\"top\""; output_string ch "\n";
-      Html.open_balise ch "td align=\"right\""; output_string ch "\n"
+      Html.open_balise ch "td align=\"right\" class=\"bibtexnumber\""; 
+      output_string ch "\n"
   | DL ->
       Html.open_balise ch "dt"; output_string ch "\n"
   | NoTable ->
@@ -392,7 +394,7 @@ let open_row ch = match !table with
 let new_column ch = match !table with
   | Table ->
       Html.close_balise ch "td"; output_string ch "\n";
-      Html.open_balise ch "td"; output_string ch "\n"
+      Html.open_balise ch "td class=\"bibtexitem\""; output_string ch "\n"
   | DL ->
       Html.close_balise ch "dt"; output_string ch "\n";
       Html.open_balise ch "dd"; output_string ch "\n"
