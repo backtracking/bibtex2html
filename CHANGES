@@ -1,8 +1,10 @@
 
-o fixed support for DOI links: when field "doi" is already an URL, the
-  DOI prefix is not prepended
-o tags "bibtexnumber" and "bibtexitem" are now inserted to ease the 
-  customization using CSS
+ o option "--no-comment" to bib2bib, to prevent generation of extra 
+   comments
+ o fixed support for DOI links: when field "doi" is already an URL, the
+   DOI prefix is not prepended
+ o tags "bibtexnumber" and "bibtexitem" are now inserted to ease the 
+   customization using CSS
 
 Version 1.94, 07/05/09
 ======================

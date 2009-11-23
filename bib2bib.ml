@@ -14,7 +14,7 @@
  * (enclosed in the file GPL).
  *)
 
-(*i $Id: bib2bib.ml,v 1.27 2008-12-11 16:05:55 marche Exp $ i*)
+(*i $Id: bib2bib.ml,v 1.28 2009-11-23 15:16:32 marche Exp $ i*)
 
 open Printf
 open Bibtex
@@ -51,6 +51,8 @@ let expand_abbrevs = ref false
 
 let expand_xrefs = ref false
 
+let no_comment = ref false
+
 let sort_criteria = ref []
 
 let reverse_sort = ref false
@@ -71,6 +73,8 @@ let args_spec =
      "sort with respect to keys or a given field");
     ("-r", Arg.Set reverse_sort,
      "reverse the sort order");
+    ("--no-comment", Arg.Unit (fun () -> no_comment := true), 
+     "expand the abbreviations");
     ("--expand", Arg.Unit (fun () -> expand_abbrevs := true), 
      "expand the abbreviations");
     ("--expand-xrefs", Arg.Unit (fun () -> expand_xrefs := true), 
@@ -117,6 +121,7 @@ let output_bib_file biblio keys =
 	"" 
     in 
     let comments =
+      if !no_comment then empty_biblio else
       add_new_entry
 	(Comment ("Command line:" ^ cmd))
 	(add_new_entry 
