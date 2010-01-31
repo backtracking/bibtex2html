@@ -1,7 +1,22 @@
-;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;  bibtex2html - A BibTeX to HTML translator                              ;
+;  Copyright (C) 1997-2010 Jean-Christophe Filliâtre and Claude Marché  ;
+;                                                                         ;
+;  This software is free software; you can redistribute it and/or         ;
+;  modify it under the terms of the GNU General Public                    ;
+;  License version 2, as published by the Free Software Foundation.       ;
+;                                                                         ;
+;  This software is distributed in the hope that it will be useful,       ;
+;  but WITHOUT ANY WARRANTY; without even the implied warranty of         ;
+;  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                   ;
+;                                                                         ;
+;  See the GNU General Public License version 2 for more details          ;
+;  (enclosed in the file GPL).                                            ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ; bibtex2html.nsi
-; Created by Aur�lien OUDOT
-;
+; Initially created by Aurélien OUDOT
+; Maintained by Claude Marché
 
 Name "Bibtex2html"
 Icon "icons\install.ico"
@@ -13,11 +28,8 @@ ComponentText "Bibtex2html installation"
 DirText "Destination Folder"
 
 InstallDir "$PROGRAMFILES\Bibtex2html"
-UninstallText "Do you really want to delete bibtex2html from your system ?"
+UninstallText "Do you really want to delete bibtex2html from your system?"
 UninstallIcon "icons\uninstall.ico"
-
-;InstType Normale
-;InstType Entiere
 
 ; ================================================================
 

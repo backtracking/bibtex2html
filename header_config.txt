@@ -1,0 +1,15 @@
+# Objective Caml source 
+| ".*\\.ml[il4]?" -> frame open:"(*" line:"*" close:"*)"
+| ".*\\.mly"      -> frame open:"/*" line:"*" close:"*/"
+# C source 
+| ".*\\.c"        -> frame open:"/*" line:"*" close:"*/"
+# Java source 
+| ".*\\.java"     -> frame open:"/*" line:"*" close:"*/"
+# LaTeX source 
+| ".*\\.tex"      -> frame open:"%" line:"%" close:"%"
+# Misc
+| "configure.in" -> frame open:"#"  line:"#" close:"#"
+| "Makefile.in"  -> frame open:"#"  line:"#" close:"#"
+| "README"       -> frame open:"*"  line:"*" close:"*"
+| "aux2bib.in"   -> frame open:"#"  line:"#" close:"#"
+| "bibtex2html.nsi"   -> frame open:";"  line:";" close:";"

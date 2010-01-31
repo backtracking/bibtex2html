@@ -163,7 +163,8 @@ bibtex_lexer.ml: bibtex_lexer.mll
 headers:
 	headache -c header_config.txt -h common_header.txt \
 		Makefile.in configure.in README \
-		*.ml *.ml[ily4] manual.tex 
+		*.ml *.ml[ily4] manual.tex \
+		bibtex2html.nsi
 	# aux2bib.in ?
 
 # literate programming
