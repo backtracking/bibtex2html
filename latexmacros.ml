@@ -14,7 +14,19 @@
 (*  (enclosed in the file GPL).                                            *)
 (***************************************************************************)
 
-(*s This code is Copyright (C) 1997  Xavier Leroy. *)
+(* This code is an adaptation of a code written by Xavier Leroy in
+   1995-1997, in its own made latex2html translator. See
+
+@inproceedings{Leroy-latex2html,
+               author =        "Xavier Leroy",
+               title =         "Lessons learned from the translation of
+                         documentation from \LaTeX\ to {HTML}",
+               booktitle =     "ERCIM/W4G Int. Workshop on WWW
+                         Authoring and Integration Tools",
+               year =          1995,
+               month =         feb}
+
+*)
 
 open Printf
 open Options

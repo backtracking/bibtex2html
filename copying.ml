@@ -32,15 +32,11 @@ See the GNU General Public License version 2 for more details
 (enclosed in the file GPL).";
   flush stderr
 
-let authors = match Sys.os_type with
-  | "Win32" -> "Jean-Christophe Filli\131tre and Claude March\130"
-  | _       -> "Jean-Christophe Filli‚tre and Claude MarchÈ" (* iso latin 1 *)
-
 let banner softname =
   if not !Options.quiet then begin
     eprintf "This is %s version %s, compiled on %s\n"
       softname Version.version Version.date;
-    eprintf "Copyright (c) 1997-2001 %s\n" authors;
+    eprintf "Copyright (c) 1997-2010 Jean-Christophe Filli√¢tre and Claude March√©\n";
     eprintf "This is free software with ABSOLUTELY NO WARRANTY (use option --warranty)\n\n";
     flush stderr
   end

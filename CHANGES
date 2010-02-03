@@ -1,4 +1,5 @@
 
+ o new headers with proper copyright
  o option "--no-comment" to bib2bib, to prevent generation of extra 
    comments
  o fixed support for DOI links: when field "doi" is already an URL, the

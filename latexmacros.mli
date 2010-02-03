@@ -14,9 +14,24 @@
 (*  (enclosed in the file GPL).                                            *)
 (***************************************************************************)
 
-(*s This code is Copyright (C) 1997 Xavier Leroy. It provides a table to
-    store the translations of LaTeX macros. A translation is a list
-    of actions of the following type [action]. *)
+(*s This module provides a table to store the translations of LaTeX
+  macros. A translation is a list of actions of the following type
+  [action]. *)
+
+(* This code is an adaptation of a code written by Xavier Leroy in
+   1995-1997, in its own home-made latex2html translator. See
+
+
+@inproceedings{Leroy-latex2html,
+               author =        "Xavier Leroy",
+               title =         "Lessons learned from the translation of
+                         documentation from \LaTeX\ to {HTML}",
+               booktitle =     "ERCIM/W4G Int. Workshop on WWW
+                         Authoring and Integration Tools",
+               year =          1995,
+               month =         feb}
+
+*)
 
 type action =
   | Print of string
