@@ -1,6 +1,9 @@
 
+Version 1.95, to release when APP deposit will be ready, ?/?/10
+======================
+ o bib2bib: options "--remove" and "--rename", to remove or rename fields
  o new headers with proper copyright
- o option "--no-comment" to bib2bib, to prevent generation of extra 
+ o bib2bib: option "--no-comment", to prevent generation of extra 
    comments
  o fixed support for DOI links: when field "doi" is already an URL, the
    DOI prefix is not prepended

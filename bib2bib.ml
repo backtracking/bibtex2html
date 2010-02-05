@@ -55,24 +55,41 @@ let sort_criteria = ref []
 
 let reverse_sort = ref false
 
+let remove_fields = ref []
+
+let rename_field = ref ""
+
+let rename_fields = ref []
+
 let args_spec =
   [
     ("-ob", Arg.String (fun f -> bib_output_file_name := f),
-     "bib output file name");
+     "<f> uses <f> as name for output bibliography file");
     ("-oc", Arg.String (fun f -> cite_output_file_name := f),
-     "citations output file name");
-    ("-c", Arg.String (add_condition),"filter condition");
+     "<f> uses <f> as name for output citations file");
+    ("-c", Arg.String (add_condition),"<c> adds <c> as a filter condition");
     ("-w", Arg.Set Options.warn_error, "stop on warning");
     ("--warn-error", Arg.Set Options.warn_error, "stop on warning");
     ("-d", Arg.Set Options.debug, "debug flag");
     ("-q", Arg.Set Options.quiet, "quiet flag");
     ("--quiet", Arg.Set Options.quiet, "quiet flag");
-    ("-s", Arg.String (fun s -> sort_criteria := (String.lowercase s):: !sort_criteria),
-     "sort with respect to keys or a given field");
+    ("-s", Arg.String 
+       (fun s -> sort_criteria := (String.lowercase s):: !sort_criteria),
+     "<c> sort with respect to keys (if c=$keys) or a given field <c>");
     ("-r", Arg.Set reverse_sort,
      "reverse the sort order");
     ("--no-comment", Arg.Unit (fun () -> no_comment := true), 
-     "expand the abbreviations");
+     "do not add extra comments at beginning");
+    ("--remove", Arg.String 
+       (fun s -> remove_fields := (String.lowercase s):: !remove_fields),
+          "<f> removes the field <f>");
+    ("--rename", 
+     Arg.Tuple 
+       [ Arg.Set_string rename_field ;
+         Arg.String (fun s -> rename_fields := 
+                       (String.lowercase !rename_field,
+                        String.lowercase s):: !rename_fields)], 
+       "<f1> <f2> rename field <f1> into <f2>");
     ("--expand", Arg.Unit (fun () -> expand_abbrevs := true), 
      "expand the abbreviations");
     ("--expand-xrefs", Arg.Unit (fun () -> expand_xrefs := true), 
@@ -99,7 +116,7 @@ let output_cite_file keys =
 
 
 
-let output_bib_file biblio keys = 
+let output_bib_file remove rename biblio keys = 
   try 
     let ch = 
       if !bib_output_file_name = "" 
@@ -129,7 +146,7 @@ let output_bib_file biblio keys =
 	   empty_biblio)
     in
     let biblio = merge_biblios comments biblio in
-    Biboutput.output_bib ~html:false ch biblio keys; 
+    Biboutput.output_bib ~remove ~rename ~html:false ch biblio keys; 
     if !bib_output_file_name <> "" then close_out ch
   with Sys_error msg ->  
     prerr_endline ("Cannot write output bib file (" ^ msg ^ ")"); 
@@ -252,7 +269,7 @@ let main () =
       b
   in
   output_cite_file matching_keys;
-  output_bib_file final_bib (Some needed_keys)
+  output_bib_file !remove_fields !rename_fields final_bib (Some needed_keys)
 
 
 let _ = 

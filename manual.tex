@@ -28,7 +28,12 @@
 \newcommand{\monurl}[1]{\link{#1}{#1}}
 \newcommand{\mm}{\symbol{45}\symbol{45}}
 
-\title{BibTeX2HTML \\ A translator of BibTeX bibliographies into HTML}
+\input{version.tex}
+
+\title{{\Huge\bfseries BibTeX2HTML} \\ 
+  A translator of BibTeX bibliographies into HTML\\
+  ~\\
+  Version \version{} --- \today}
 \author{Jean-Christophe Filli\^{a}tre and Claude March\'e \\
         \normalsize\monurl{\url{http://www.lri.fr/~filliatr/bibtex2html}}}
 \date{}
@@ -66,9 +71,9 @@ consists in three command line tools:
 \section{The \texttt{bibtex2html} command tool}
 
 bibtex2html is a BibTeX to HTML translator. It is invocated as 
-\begin{quote}
+\begin{flushleft}
 \texttt{bibtex2html} [options] [\textit{file.bib}]
-\end{quote}
+\end{flushleft}
 where the possible \link{\#options}{options} are described below and
 where \textit{file.bib} is the name of the BibTeX file, which must
 have a \textit{.bib} suffix. If this file is not given, then entries
@@ -447,9 +452,9 @@ or in conjonction with \verb|bib2bib|.
 
 \texttt{bib2bib} is a tool for extracting some entries from a list of
 bibliography files. It is invocated as 
-\begin{quote}
+\begin{flushleft}
 \texttt{bib2bib} [options] \textit{file1.bib} $\cdots$ \textit{filen.bib}
-\end{quote}
+\end{flushleft}
 where the possible options are described below and where
 \textit{file1.bib} $\cdots$ \textit{filen.bib} are the names of the
 BibTeX files, which must have a \textit{.bib} suffix. If no files at
@@ -471,6 +476,16 @@ suitable for input as option \verb|-citefile| to \verb|bibtex2html|.
 
 \begin{description}
   
+\item[\texttt{-c} \textit{condition}] ~
+
+  specify a condition for selecting the entries. The output will
+  retain only the entries that satisfy this condition. If several such
+  condition are given, then only the entries that satisfy all the
+  conditions are selected. The syntax of conditions is given below,
+  notice that it is better to escape shell expansions in that
+  conditions, in other words, you should write conditions between
+  quotes. 
+
 \item[\texttt{-ob} \textit{filename}] ~
 
   specify the filename where the selected entries are output. If not
@@ -481,15 +496,15 @@ suitable for input as option \verb|-citefile| to \verb|bibtex2html|.
   specify the filename where the list of selected keys is output. If
   not given, this file is not created.
 
-\item[\texttt{-c} \textit{condition}] ~
-
-  specify a condition for selecting the entries. The output will
-  retain only the entries that satisfy this condition. If several such
-  condition are given, then only the entries that satisfy all the
-  conditions are selected. The syntax of conditions is given below,
-  notice that it is better to escape shell expansions in that
-  conditions, in other words, you should write conditions between
-  quotes. 
+  Notice that the two output files above are suitable for use with
+  bibtex2html.  A typical use would be
+\begin{flushleft}
+\texttt{bib2bib -oc $citefile$ -ob $bibfile.bib$ -c $condition$
+  file1.bib file2.bib ... } \\
+\texttt{bibtex2html -citefile $citefile$ bibfile.bib}
+\end{flushleft}
+which will produce exactly the HTML file for the selected
+references. 
 
 \item[\texttt{\mm{}expand}] ~
 
@@ -502,23 +517,48 @@ suitable for input as option \verb|-citefile| to \verb|bibtex2html|.
   bibtex (via bibtex2html) handle the cross-references itself,
   depending on the style considered.
 
+  Notice that \texttt{bibtex2html} itself will expand the strings (by
+  default, unless you specify the \verb|-noexpand| option) but not the
+  cross-references.
+
+
 \item[\texttt{\mm{}no-comment}] ~
 
   prevent generation of extra comments at beginning of output bib file.
 
-\item[\texttt{-s} \textit{field}] ~
+\item[\texttt{\mm{}remove} \textit{f}] ~
+
+    remove all occurrences of field \textit{f}. This option can be
+    used several times to remove several fields.
+
+\item[\texttt{\mm{}rename} \textit{f1} \textit{f2}] ~
+
+    rename all occurrences of field \textit{f1} into \texttt{f2}. This
+    option can be used several times to rename several fields. Beware
+    that if an entry already has both fields \texttt{f1} and
+    \texttt{f2}, this will result in two fields \textit{f2}, and
+    BibTeX styles usually take only the first occurrence into account.
+    
+    Example:
+  \begin{flushleft}
+    \texttt{bib2bib \mm{}remove abstract \mm{}remove copyright \mm{}rename x-pdf url $bibfile.bib$}
+  \end{flushleft}
+  removes all \texttt{abstract} and \texttt{copyright} fields and
+  rename all \texttt{x-pdf} fields into name \texttt{url}.
+
+\item[\texttt{-s} \textit{f}] ~
 
   sorts the entries of the bibliography with respect to the given
-  \textit{field}, which may also be \texttt{\$key} or \texttt{\$type}
+  field \textit{f}, which may also be \texttt{\$key} or \texttt{\$type}
   to refer to the key or to the entry type, as for filter
   conditions. It may also be \texttt{\$date}, to ask for sorting from
   oldest to newest, as for option \texttt{-d} of bibtex2html.
  
   This option may be used several times to specify a lexicographic
   order, such as by author, then by type, then by date:
-  \begin{quote}
+  \begin{flushleft}
     \texttt{bib2bib -s 'author' -s '\$type' -s '\$date' $bibfile.bib$}
-  \end{quote}
+  \end{flushleft}
 
   When sorting, the resulting bibliography will always contains the
   comments first, then the preambles, then the abbreviations, and
@@ -538,18 +578,6 @@ suitable for input as option \verb|-citefile| to \verb|bibtex2html|.
   stop at the first warning.
 
 \end{description}
-
-Notice that the two output files are suitable for use with
-bibtex2html.  A typical use would be
-\begin{quote}
-\texttt{bib2bib -oc $citefile$ -ob $bibfile.bib$ -c $condition$
-  file1.bib file2.bib ... } \\
-\texttt{bibtex2html -citefile $citefile$ bibfile.bib}
-\end{quote}
-which will produce exactly the HTML file for the selected
-references. Notice finally that bibtex2html will expand the strings
-(by default, unless you specify the \verb|-noexpand| option) but not
-the cross-references.
 
 \subsection{Filter conditions}
 \label{sec:conditions}
@@ -644,13 +672,13 @@ regular expressions, this operator has low priority against
 Notice that if several conditions are given with option \verb|-c| on
 the command line, then they are understood as the conjunction of them,
 in other words
-\begin{quote}
+\begin{flushleft}
 \texttt{bib2bib -c '$c_1$' $\cdots$ -c '$c_n$'}
-\end{quote} 
+\end{flushleft} 
 is equivalent to
-\begin{quote}
+\begin{flushleft}
 \texttt{bib2bib -c '$c_1$ and $\cdots$ and $c_n$'}
-\end{quote} 
+\end{flushleft} 
 
 Table~\ref{table:syntax} shows a formal grammar for conditions.
 
@@ -777,7 +805,7 @@ for example, it will select a title containing
 
 \subsection{Note on duplicates entries}
  
-\verb|bib2bib| as the effect of merging several bib files into a
+\verb|bib2bib| has the effect of merging several bib files into a
 single one. This process may result in duplicate entries in the
 resulting files, which is considered as erroneous by \verb|bibtex|.  
 Of course, this is not really a bug of \verb|bib2bib| since it is of
@@ -801,9 +829,9 @@ entries.
 \texttt{aux2bib} is a tool extracting the BibTeX references from a
 \texttt{.aux} file (as produced by \LaTeX) and building the
 corresponding BibTeX file. It is invocated as
-\begin{quote}
+\begin{flushleft}
 \texttt{aux2bib} \textit{file.aux}
-\end{quote}
+\end{flushleft}
 The BibTeX file is written on the standard output.
 
 

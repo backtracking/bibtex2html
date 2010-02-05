@@ -15,6 +15,7 @@ bibtex2html.tar
 bibtex2html.tar.gz
 export
 version.ml
+version.tex
 bib2bib
 bib2bib.byte
 tmpmanual.ps

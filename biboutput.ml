@@ -83,7 +83,7 @@ let print_link_field ch = function
       if !Options.warn_error then exit 2;
       print_atom_list true ch l
 
-let print_command html html_file ch keys = function 
+let print_command remove rename html html_file ch keys = function 
   | Comment s -> 
       if html then output_string ch "<pre>\n";
       output_string ch ("@comment{{" ^ s ^ "}}\n");
@@ -124,13 +124,20 @@ let print_command html html_file ch keys = function
 	  end;
 	  List.iter
 	    (fun (field,l) ->
-	       output_string ch (",\n  " ^ field ^ " = ");
-	       if html & field = "crossref" then 
-		 print_crossref html ch l
-	       else if html & is_link_field field then
-		 print_link_field ch l
-	       else 
-		 print_atom_list html ch l)
+               if not (List.mem field remove) then
+                 begin
+                   let ofield =
+                     try List.assoc field rename
+                     with Not_found -> field
+                   in
+	           output_string ch (",\n  " ^ ofield ^ " = ");
+	           if html & field = "crossref" then 
+		     print_crossref html ch l
+	           else if html & is_link_field field then
+		     print_link_field ch l
+	           else 
+		     print_atom_list html ch l
+                 end)
 	    fields;
 	  output_string ch "\n}\n";
 	  if html then output_string ch "</pre>\n";
@@ -139,8 +146,9 @@ let print_command html html_file ch keys = function
 
 	end
 
-let output_bib ~html ?html_file ch bib keys =
+let output_bib ?(remove=[]) ?(rename=[]) ~html ?html_file ch bib keys =
   Bibtex.fold
-    (fun entry () -> print_command html html_file ch keys entry)    
+    (fun entry () -> 
+       print_command remove rename html html_file ch keys entry)    
     bib
     ()

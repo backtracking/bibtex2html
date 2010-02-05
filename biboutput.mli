@@ -28,6 +28,7 @@
 open Bibtex
 
 val output_bib : 
+  ?remove:string list -> ?rename:(string * string) list ->
   html:bool -> ?html_file:string -> 
   out_channel -> biblio -> KeySet.t option -> unit
 
