@@ -27,9 +27,11 @@
 
 open Bibtex
 
+exception Bad_input_for_php of string
+
 val output_bib : 
   ?remove:string list -> ?rename:(string * string) list ->
-  html:bool -> ?html_file:string -> 
+  ?php:bool -> html:bool -> ?html_file:string -> 
   out_channel -> biblio -> KeySet.t option -> unit
 
 (*s [add_link_field f] declares a new field [f] to be displayed as a web link

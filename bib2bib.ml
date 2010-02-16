@@ -24,6 +24,8 @@ let input_file_names = ref ([] : string list)
 
 let bib_output_file_name = ref ""
 
+let php_output_file_name = ref ""
+
 let cite_output_file_name = ref ""
 
 let get_input_file_name f =
@@ -67,6 +69,8 @@ let args_spec =
      "<f> uses <f> as name for output bibliography file");
     ("-oc", Arg.String (fun f -> cite_output_file_name := f),
      "<f> uses <f> as name for output citations file");
+    ("--php-output", Arg.String (fun f -> php_output_file_name := f),
+     "<f> outputs resulting bibliography in PHP syntax in file <f>");
     ("-c", Arg.String (add_condition),"<c> adds <c> as a filter condition");
     ("-w", Arg.Set Options.warn_error, "stop on warning");
     ("--warn-error", Arg.Set Options.warn_error, "stop on warning");
@@ -146,12 +150,32 @@ let output_bib_file remove rename biblio keys =
 	   empty_biblio)
     in
     let biblio = merge_biblios comments biblio in
-    Biboutput.output_bib ~remove ~rename ~html:false ch biblio keys; 
+    Biboutput.output_bib ~remove ~rename ~html:false ch biblio keys;     
     if !bib_output_file_name <> "" then close_out ch
   with Sys_error msg ->  
     prerr_endline ("Cannot write output bib file (" ^ msg ^ ")"); 
     exit 1 
 
+
+let output_php_file remove rename biblio keys = 
+  if !php_output_file_name <> "" then
+    try
+      let ch = open_out !php_output_file_name in
+      output_string ch "<?php
+$parsed_bibfile = 
+Array
+(
+";
+    Biboutput.output_bib ~remove ~rename ~html:false ~php:true ch biblio keys;
+    output_string ch "
+ );
+?>
+";
+    close_out ch
+    with Biboutput.Bad_input_for_php msg ->
+      eprintf "error while producing PHP output: %s\n" msg;
+      exit 2
+      
 
 let rec make_compare_fun db criteria c1 c2 =
   match criteria with
@@ -269,7 +293,8 @@ let main () =
       b
   in
   output_cite_file matching_keys;
-  output_bib_file !remove_fields !rename_fields final_bib (Some needed_keys)
+  output_bib_file !remove_fields !rename_fields final_bib (Some needed_keys);
+  output_php_file !remove_fields !rename_fields final_bib (Some needed_keys)
 
 
 let _ = 

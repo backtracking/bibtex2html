@@ -60,7 +60,7 @@ BIB2BIBOBJS = options.cmx bibtex.cmx bibtex_lexer.cmx \
 	bibfilter.cmx latexmacros.cmx latexscan.cmx expand.cmx \
 	html.cmx biboutput.cmx version.cmx copying.cmx bib2bib.cmx
 
-all: @OCAMLBEST@
+all: @OCAMLBEST@ doc
 
 opt: bibtex2html$(EXE) bib2bib$(EXE)
 
@@ -151,6 +151,9 @@ condition_parser.mli condition_parser.ml: condition_parser.mly
 version.ml: Makefile
 	echo "let version = \""$(VERSION)"\"" > version.ml
 	echo "let date = \""`date`"\"" >> version.ml
+
+version.tex: Makefile
+	printf "\\\newcommand{\\\version}{$(VERSION)}" > version.tex
 
 latexscan.ml: latexscan.mll
 	$(OCAMLLEX) latexscan.mll
@@ -264,12 +267,12 @@ export-doc: manual.ps manual.html
 	gzip -c manual.ps > $(WWW)/doc/manual.ps.gz
 	cp -f manual.html $(WWW)/doc
 
-manual.ps: manual.tex
+manual.ps: version.tex manual.tex
 	latex manual && latex manual && latex manual
 	dvips manual.dvi -o manual.ps
 
-manual.html: manual.tex
-	hevea -fix manual.tex
+manual.html: version.tex manual.tex
+	hevea -exec xxdate.exe -fix manual.tex
 
 # generic rules :
 #################

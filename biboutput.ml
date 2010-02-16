@@ -146,9 +146,105 @@ let print_command remove rename html html_file ch keys = function
 
 	end
 
-let output_bib ?(remove=[]) ?(rename=[]) ~html ?html_file ch bib keys =
-  Bibtex.fold
-    (fun entry () -> 
-       print_command remove rename html html_file ch keys entry)    
-    bib
-    ()
+(*s PHP output *)
+
+open Printf
+
+exception Bad_input_for_php of string
+
+let php_print_atom ch = function
+  | Id s -> fprintf ch "\"%s\"" s
+  | String s -> 
+      let s = String.copy s in
+      for i=0 to String.length s - 1 do
+	s.[i] <- 
+	  match s.[i] with
+	    | '\n' | '\t' -> ' '
+	    | c -> c
+      done;
+      fprintf ch "\"%s\"" (String.escaped s)
+
+let php_print_atom_list ch = function 
+  | [] -> ()
+  | [a] -> php_print_atom ch a
+  | a::l -> 
+      php_print_atom ch a;
+      List.iter
+	(fun a -> 
+	   fprintf ch ".";
+	   php_print_atom ch a)
+	l
+
+let php_print_command index remove rename ch keys = 
+  function 
+  | Comment s -> 
+      raise 
+	(Bad_input_for_php "comments not supported, use option --no-comment")
+(*
+      output_string ch "<pre>\n";
+      output_string ch ("@comment{{" ^ s ^ "}}\n");
+      output_string ch "</pre>\n";
+      output_string ch "\n"
+*)
+  | Preamble l ->
+      raise (Bad_input_for_php "preamble not supported")
+(*
+      output_string ch "<pre>\n";
+      output_string ch "@preamble{";
+      php_print_atom_list ch l;
+      output_string ch "}\n";
+      output_string ch "</pre>\n";
+      output_string ch "\n"
+*)
+  | Abbrev(s,l) ->
+      raise (Bad_input_for_php "string not supported, use option --expand")
+(*
+      if needs_output s keys then 
+	begin
+	  Html.open_anchor ch s; 
+	  Html.close_anchor ch;
+	  output_string ch "<pre>\n";
+	  output_string ch ("@string{" ^ s ^ " = ");
+	  php_print_atom_list ch l;
+	  output_string ch "}\n";
+	  output_string ch "</pre>\n";
+	  output_string ch "\n"
+	end
+*)
+  | Entry (entry_type,key,fields) ->
+      if needs_output key keys then 
+	begin
+	  if index > 0 then fprintf ch ",\n\n";
+	  fprintf ch "%-5d => Array (\n" index;
+	  fprintf ch "  \"entrytype\" => \"%s\",\n" entry_type;
+	  fprintf ch "  \"cite\" => \"%s\"" key;
+	  List.iter
+	    (fun (field,l) ->
+               if not (List.mem field remove) then
+		 begin
+		   let ofield =
+                     try List.assoc field rename
+                     with Not_found -> field
+		   in
+		   fprintf ch ",\n  \"%s\" => " ofield;
+		   php_print_atom_list ch l
+             end)
+	    fields;
+	  fprintf ch ")";
+	  succ index
+	end
+      else index
+
+let output_bib ?(remove=[]) ?(rename=[]) ?(php=false) ~html ?html_file 
+    ch bib keys =
+  let _ =
+    Bibtex.fold
+      (fun entry i -> 
+	 if php then
+	   php_print_command i remove rename ch keys entry
+	 else
+	   (print_command remove rename html html_file ch keys entry;
+	    succ i))    
+      bib
+    0
+  in ()
