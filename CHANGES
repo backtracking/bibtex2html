@@ -1,5 +1,5 @@
 
-Version 1.95, to release when APP deposit will be ready, ?/?/10
+Version 1.95, 22/02/10
 ====================== 
  o bib2bib: option "--php-output" to produce output as a PHP 2D array
  o bib2bib: options "--remove" and "--rename", to remove or rename fields
