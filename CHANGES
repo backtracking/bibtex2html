@@ -1,6 +1,6 @@
 
-Version 1.95, 22/02/10
-====================== 
+Version 1.95, March 23, 2010
+============================
  o bib2bib: option "--php-output" to produce output as a PHP 2D array
  o bib2bib: options "--remove" and "--rename", to remove or rename fields
  o new headers with proper copyright
