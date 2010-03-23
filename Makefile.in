@@ -186,13 +186,13 @@ WEBFILES=options.mli options.ml latexmacros.mli latexmacros.ml \
 bibtex2html.tex: $(WEBFILES)
 	ocamlweb -o $@ $(WEBFILES)
 
-.SUFFIXES: .tex .dvi .ps
+.SUFFIXES: .tex .dvi .pdf
 
 .tex.dvi:
 	latex $< && latex $<
 
-.dvi.ps:
-	dvips $< -o $@
+.tex.pdf:
+	pdflatex $< && pdflatex $<
 
 # export
 ########
@@ -256,20 +256,16 @@ aix:
 
 WWW=/users/demons/filliatr/WWW/bibtex2html
 
-doc: manual.ps manual.html
+doc: manual.pdf manual.html
 
-install-doc: manual.ps manual.html
+install-doc: manual.pdf manual.html
 	mkdir -p $(DOCDIR)
-	gzip -c manual.ps > $(DOCDIR)/manual.ps.gz
+	cp -f manual.pdf $(DOCDIR)
 	cp -f manual.html $(DOCDIR)
 
-export-doc: manual.ps manual.html
-	gzip -c manual.ps > $(WWW)/doc/manual.ps.gz
+export-doc: manual.pdf manual.html
+	cp -f manual.pdf > $(WWW)/doc
 	cp -f manual.html $(WWW)/doc
-
-manual.ps: version.tex manual.tex
-	latex manual && latex manual && latex manual
-	dvips manual.dvi -o manual.ps
 
 manual.html: version.tex manual.tex
 	hevea -exec xxdate.exe -fix manual.tex
@@ -330,7 +326,7 @@ clean::
 	rm -f *~ *.cm[iox] *.o 
 	rm -f $(GENERATED)
 	rm -f bibtex2html bib2bib
-	rm -f manual.{aux,log,dvi,ps,toc,haux,html}
+	rm -f manual.{aux,log,dvi,pdf,toc,haux,html}
 	rm -f bibtex2html.static bib2bib.static
 	rm -f bibtex2html.byte bib2bib.byte
 

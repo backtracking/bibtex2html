@@ -1,5 +1,6 @@
 manual.toc
 manual.html
+manual.pdf
 latexscan.ml
 bibtex_lexer.ml
 bibtex_parser.ml
