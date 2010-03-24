@@ -264,7 +264,7 @@ install-doc: manual.pdf manual.html
 	cp -f manual.html $(DOCDIR)
 
 export-doc: manual.pdf manual.html
-	cp -f manual.pdf > $(WWW)/doc
+	cp -f manual.pdf $(WWW)/doc
 	cp -f manual.html $(WWW)/doc
 
 manual.html: version.tex manual.tex
