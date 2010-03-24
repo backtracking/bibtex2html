@@ -267,6 +267,10 @@ export-doc: manual.pdf manual.html
 	cp -f manual.pdf $(WWW)/doc
 	cp -f manual.html $(WWW)/doc
 
+manual.pdf: version.tex manual.tex
+	pdflatex manual.tex
+	pdflatex manual.tex
+
 manual.html: version.tex manual.tex
 	hevea -exec xxdate.exe -fix manual.tex
 
