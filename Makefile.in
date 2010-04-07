@@ -66,11 +66,15 @@ opt: bibtex2html$(EXE) bib2bib$(EXE)
 
 byte: bibtex2html.byte bib2bib.byte
 
+.PHONY: bench
+
 bench: bibtex2html
 	cd bench; sh bench
 
 test: bibtex2html bib2bib
-	make -C bench test
+	./bib2bib$(EXE) test.bib
+	./bibtex2html$(EXE) test.bib
+	@echo "test passed successfully"
 
 install-indep:
 	mkdir -p $(BINDIR)
@@ -202,7 +206,7 @@ NAME=bibtex2html-$(VERSION)
 FTP = /users/demons/filliatr/ftp/ocaml/bibtex2html
 WWWSRC = /users/demons/filliatr/www/bibtex2html
 
-SOURCEFILES = *.ml* aux2bib.in Makefile.in configure.in configure .depend README COPYING GPL CHANGES manual.tex *.1
+SOURCEFILES = *.ml* aux2bib.in Makefile.in configure.in configure .depend README COPYING GPL CHANGES manual.tex *.1 test.bib
 
 export: source export-doc linux
 	echo "<#def version>$(VERSION)</#def>" > $(WWWSRC)/version.prehtml
