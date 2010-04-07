@@ -324,13 +324,14 @@ configure: configure.in
 GENERATED = bibtex_lexer.ml bbl_lexer.ml \
 	    latexscan.ml latex_accents.ml condition_lexer.ml \
 	    bibtex_parser.mli bibtex_parser.ml \
-            condition_parser.mli condition_parser.ml version.ml
+            condition_parser.mli condition_parser.ml version.ml version.tex
 
 clean::
 	rm -f *~ *.cm[iox] *.o 
 	rm -f $(GENERATED)
 	rm -f bibtex2html bib2bib
-	rm -f manual.{aux,log,dvi,pdf,toc,haux,html}
+	rm -f manual.aux manual.log manual.dvi manual.pdf
+	rm -f manual.toc manual.haux manual.html manual.htoc
 	rm -f bibtex2html.static bib2bib.static
 	rm -f bibtex2html.byte bib2bib.byte
 
