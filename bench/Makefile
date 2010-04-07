@@ -6,7 +6,7 @@ test:
 	bibtex test
 	latex test
 	latex test
-	xdvi test.dvi
+#	xdvi test.dvi
 
 demons:
 	../bibtex2html -parse-only $$HOME/tex/bibliodemons/demons2.bib
