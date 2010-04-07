@@ -1,4 +1,6 @@
 
+ o various little changes in the Makefile requested by the Debian maintainer
+
 Version 1.95, March 23, 2010
 ============================
  o bib2bib: option "--php-output" to produce output as a PHP 2D array
