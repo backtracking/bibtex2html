@@ -1,4 +1,6 @@
 
+ o new option --note-html similar to --note but assuming a bibtex
+   field already in HTML format
  o various little changes in the Makefile requested by the Debian maintainer
 
 Version 1.95, March 23, 2010

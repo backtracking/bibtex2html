@@ -460,6 +460,10 @@ i*)
 	add_note_field s; parse_rec rem
     | ("-note" | "--note") :: [] ->
 	usage()
+    | ("-note-html" | "--note-html") :: s :: rem ->
+	add_note_html_field s; parse_rec rem
+    | ("-note-html" | "--note-html") :: [] ->
+	usage()
     | ("-ln" | "-labelname" | "--labelname" | "--label-name") :: rem ->
 	use_label_name := true; parse_rec rem
     | ("-multiple" | "--multiple") :: rem ->

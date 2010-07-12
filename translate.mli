@@ -58,6 +58,7 @@ val table : table_kind ref
 val add_field : string -> unit
 val add_named_field : string -> string -> unit
 val add_note_field : string -> unit
+val add_note_html_field : string -> unit
 
 (*s Production of the HTML output. *)
 

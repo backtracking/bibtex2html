@@ -46,7 +46,8 @@ let title_url = ref false
 let use_label_name = ref false
 let use_keys = ref false
 let linebreak = ref false
-let note_fields = ref ([] : string list)
+type note_kind = NKlatex | NKhtml
+let note_fields = ref ([] : (string * note_kind) list)
 let abstract_name = ref "Abstract"
 let doi = ref true
 let doi_prefix = ref "http://dx.doi.org/"
@@ -81,7 +82,11 @@ let add_named_field s name =
 
 let add_note_field s =
   let u = String.lowercase s in
-  note_fields := !note_fields @ [u]
+  note_fields := !note_fields @ [u, NKlatex]
+
+let add_note_html_field s =
+  let u = String.lowercase s in
+  note_fields := !note_fields @ [u, NKhtml]
 
 (* first pass to get the crossrefs *)
 
@@ -289,11 +294,12 @@ let display_abstract ch a = blockquote ch (fun () -> latex2html ch a)
 
 let display_notes ch e =
   List.iter 
-    (fun f -> 
+    (fun (f, k) -> 
        try 
 	 let a = Expand.get_lowercase_field e f in 
-	 display_abstract ch a;
-	 (* JK Html.paragraph ch *)
+	 match k with
+	   | NKlatex -> display_abstract ch a (* JK Html.paragraph ch *)
+	   | NKhtml -> output_string ch a
        with Not_found -> ())
     !note_fields
 
