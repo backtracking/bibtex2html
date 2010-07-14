@@ -143,7 +143,11 @@ let call_bibtex tmp =
       else 
 	"" 
     in
-    Sys.command (sprintf "%s %s %s" !command tmp redir)
+    let cmd = sprintf "%s %s %s" !command tmp redir in
+    if !Options.debug then begin 
+      eprintf "\nbibtex command: %s\n" cmd; flush stderr
+    end;
+    Sys.command cmd
   with
     | 0 -> 
 	if not !Options.quiet then begin eprintf "\n"; flush stderr end
