@@ -1,4 +1,6 @@
 
+Version 1.96, September 29, 2010
+================================
  o option -debug now prints the exact BibTeX commmand which is run
  o new option --note-html similar to --note but assuming a bibtex
    field already in HTML format
