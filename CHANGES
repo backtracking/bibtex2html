@@ -1,6 +1,10 @@
 
+ o configure: option --disable-doc to avoid compiling the PDF documentation
+ o configure: pdflatex is searched for; if not found, documentation is disabled
+
 Version 1.96, September 29, 2010
 ================================
+ o PDF documentation (manual.pdf) is compiled by default
  o option -debug now prints the exact BibTeX commmand which is run
  o new option --note-html similar to --note but assuming a bibtex
    field already in HTML format

@@ -60,7 +60,7 @@ BIB2BIBOBJS = options.cmx bibtex.cmx bibtex_lexer.cmx \
 	bibfilter.cmx latexmacros.cmx latexscan.cmx expand.cmx \
 	html.cmx biboutput.cmx version.cmx copying.cmx bib2bib.cmx
 
-all: @OCAMLBEST@ doc
+all: @OCAMLBEST@ doc-@enable_doc@
 
 opt: bibtex2html$(EXE) bib2bib$(EXE)
 
@@ -260,6 +260,8 @@ aix:
 
 WWW=/users/demons/filliatr/WWW/bibtex2html
 
+doc-yes: doc
+doc-no:
 doc: manual.pdf manual.html
 
 install-doc: manual.pdf manual.html
