@@ -96,6 +96,7 @@ and control = parse
 | "c{c}"             { add_string "&ccedil;" ; next_char lexbuf }
 | "c{C}"             { add_string "&Ccedil;" ; next_char lexbuf }
 | 'v'                { czech lexbuf }
+| 'u'		     { breve lexbuf }
 | '~'                { tilde lexbuf }
 |  _                 { add_string "\\" ; add lexbuf ; next_char lexbuf  }
 | eof                { add_string "\\" }
@@ -188,6 +189,22 @@ and czech = parse
 | ('I'|"{I}")   { add_string "&#X012C;" ; next_char lexbuf }
 | _             { add_string "\\^" ; add lexbuf ; next_char lexbuf }
 |  eof          { add_string "\\^" }
+
+(* called when we have seen "\\u"  *)
+and breve = parse
+  ('a'|"{a}")   { add_string "&#259;" ; next_char lexbuf }
+| ('o'|"{o}")   { add_string "&#335;" ; next_char lexbuf }
+| ('u'|"{u}")   { add_string "&#365;" ; next_char lexbuf }
+| ('e'|"{e}")   { add_string "&#277;" ; next_char lexbuf }
+| ('A'|"{A}")   { add_string "&#258;" ; next_char lexbuf }
+| ('O'|"{O}")   { add_string "&#334;" ; next_char lexbuf }
+| ('U'|"{U}")   { add_string "&#364;" ; next_char lexbuf }
+| ('E'|"{E}")   { add_string "&#276;" ; next_char lexbuf }
+| ('i'|"{i}"|"\\i" space* |"{\\i}") 
+                { add_string "&#301;" ; next_char lexbuf }
+| ('I'|"{I}")   { add_string "&#300;" ; next_char lexbuf }
+| _             { add_string "\\u" ; add lexbuf ; next_char lexbuf }
+|  eof          { add_string "\\u" }
 
 {
 

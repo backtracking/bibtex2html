@@ -1,4 +1,7 @@
-
+ 
+ o fixed translation of \u{a}, removed incorrect translations of \u{n}
+   and \u{N} (contributed by Domenico Bianculli)
+ o bib2bib conditions: support for \u (contributed by Domenico Bianculli)
  o configure: option --disable-doc to avoid compiling the PDF documentation
  o configure: pdflatex is searched for; if not found, documentation is disabled
 
