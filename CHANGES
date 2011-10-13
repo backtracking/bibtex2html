@@ -1,4 +1,5 @@
- 
+
+ o fixed compilation (no more -cclib -lstr)
  o fixed translation of \u{a}, removed incorrect translations of \u{n}
    and \u{N} (contributed by Domenico Bianculli)
  o bib2bib conditions: support for \u (contributed by Domenico Bianculli)

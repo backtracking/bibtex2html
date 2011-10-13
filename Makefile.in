@@ -45,7 +45,7 @@ DEBUG    =
 FLAGS    = $(ZLIBS) $(DEBUG)
 PROFILE  =
 
-STRLIB = -cclib -lstr
+STRLIB = 
 
 OBJS =  options.cmx html.cmx latexmacros.cmx latexscan.cmx bbl_lexer.cmx \
 	bibtex.cmx bibtex_parser.cmx bibtex_lexer.cmx \
