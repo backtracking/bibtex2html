@@ -1,4 +1,6 @@
 
+Version 1.97, February 6, 2012
+==============================
  o fixed compilation (no more -cclib -lstr)
  o fixed translation of \u{a}, removed incorrect translations of \u{n}
    and \u{N} (contributed by Domenico Bianculli)
