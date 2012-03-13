@@ -1,4 +1,6 @@
 
+ o fixed a bug with non-ascii characters in php-output
+
 Version 1.97, February 6, 2012
 ==============================
  o fixed compilation (no more -cclib -lstr)

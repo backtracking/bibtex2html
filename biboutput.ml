@@ -31,8 +31,8 @@ let url_re = Str.regexp "\\(ftp\\|http\\)://.*"
 let is_url s = Str.string_match url_re s 0
 
 let print_atom html ch = function
-  | Id s -> 
-      if html & not (abbrev_is_implicit s) then 
+  | Id s ->
+      if html & not (abbrev_is_implicit s) then
 	begin
 	  Html.open_href ch ("#" ^ s);
 	  output_string ch s;
@@ -40,16 +40,16 @@ let print_atom html ch = function
 	end
       else
 	output_string ch s
-  | String s when html & is_url s -> 
+  | String s when html & is_url s ->
       output_string ch "{";
       Html.open_href ch s;
       output_string ch s;
       Html.close_href ch;
       output_string ch "}"
-  | String s -> 
+  | String s ->
       output_string ch ("{"^s^"}")
 
-let print_atom_list html ch = function 
+let print_atom_list html ch = function
   | [] -> ()
   | a::l ->
       print_atom html ch a;
@@ -58,13 +58,13 @@ let print_atom_list html ch = function
 	l
 
 let print_crossref html ch = function
-  | [String s] -> 
+  | [String s] ->
       output_string ch "{";
       if html then Html.open_href ch ("#" ^ s);
       output_string ch s;
       if html then Html.close_href ch;
       output_string ch "}"
-  | l -> 
+  | l ->
       if not !Options.quiet then
 	eprintf "Warning: cross-references must be constant strings\n";
       if !Options.warn_error then exit 2;
@@ -83,8 +83,8 @@ let print_link_field ch = function
       if !Options.warn_error then exit 2;
       print_atom_list true ch l
 
-let print_command remove rename html html_file ch keys = function 
-  | Comment s -> 
+let print_command remove rename html html_file ch keys = function
+  | Comment s ->
       if html then output_string ch "<pre>\n";
       output_string ch ("@comment{{" ^ s ^ "}}\n");
       if html then output_string ch "</pre>\n";
@@ -97,7 +97,7 @@ let print_command remove rename html html_file ch keys = function
       if html then output_string ch "</pre>\n";
       output_string ch "\n"
   | Abbrev(s,l) ->
-      if needs_output s keys then 
+      if needs_output s keys then
 	begin
 	  if html then begin Html.open_anchor ch s; Html.close_anchor ch end;
 	  if html then output_string ch "<pre>\n";
@@ -108,18 +108,18 @@ let print_command remove rename html html_file ch keys = function
 	  output_string ch "\n"
 	end
   | Entry (entry_type,key,fields) ->
-      if needs_output key keys then 
+      if needs_output key keys then
 	begin
 	  (*if html then Html.open_balise ch "p";*)
 	  if html then begin Html.open_anchor ch key; Html.close_anchor ch end;
 	  if html then output_string ch "<pre>\n";
 	  output_string ch ("@" ^ entry_type ^ "{");
 	  begin match html_file with
-	    | Some f -> 
-		Html.open_href ch (f ^ "#" ^ key); 
-		output_string ch key; 
+	    | Some f ->
+		Html.open_href ch (f ^ "#" ^ key);
+		output_string ch key;
 		Html.close_href ch
-	    | None -> 
+	    | None ->
 		output_string ch key
 	  end;
 	  List.iter
@@ -131,11 +131,11 @@ let print_command remove rename html html_file ch keys = function
                      with Not_found -> field
                    in
 	           output_string ch (",\n  " ^ ofield ^ " = ");
-	           if html & field = "crossref" then 
+	           if html & field = "crossref" then
 		     print_crossref html ch l
 	           else if html & is_link_field field then
 		     print_link_field ch l
-	           else 
+	           else
 		     print_atom_list html ch l
                  end)
 	    fields;
@@ -152,33 +152,49 @@ open Printf
 
 exception Bad_input_for_php of string
 
-let php_print_atom ch = function
-  | Id s -> fprintf ch "\"%s\"" s
-  | String s -> 
-      let s = String.copy s in
-      for i=0 to String.length s - 1 do
-	s.[i] <- 
-	  match s.[i] with
-	    | '\n' | '\t' -> ' '
-	    | c -> c
-      done;
-      fprintf ch "\"%s\"" (String.escaped s)
+(* inspired from String.escaped *)
+let add_backslashes s =
+  let n = ref 0 in
+  for i = 0 to String.length s - 1 do
+    n := !n +
+      (match String.unsafe_get s i with
+         | '\'' | '\\' -> 2
+         | _ -> 1)
+  done;
+  if !n = String.length s then s else begin
+    let s' = String.create !n in
+    n := 0;
+    for i = 0 to String.length s - 1 do
+      let c = String.unsafe_get s i in
+      begin match c with
+        | ('\'' | '\\') -> String.unsafe_set s' !n '\\'; incr n
+        | _ -> ()
+      end;
+      String.unsafe_set s' !n c; incr n
+    done;
+    s'
+  end
 
-let php_print_atom_list ch = function 
+let php_print_atom ch = function
+  | Id s -> fprintf ch "\'%s\'" s
+  | String s ->
+      fprintf ch "'%s'" (add_backslashes s)
+
+let php_print_atom_list ch = function
   | [] -> ()
   | [a] -> php_print_atom ch a
-  | a::l -> 
+  | a::l ->
       php_print_atom ch a;
       List.iter
-	(fun a -> 
+	(fun a ->
 	   fprintf ch ".";
 	   php_print_atom ch a)
 	l
 
-let php_print_command index remove rename ch keys = 
-  function 
-  | Comment s -> 
-      raise 
+let php_print_command index remove rename ch keys =
+  function
+  | Comment s ->
+      raise
 	(Bad_input_for_php "comments not supported, use option --no-comment")
 (*
       output_string ch "<pre>\n";
@@ -199,9 +215,9 @@ let php_print_command index remove rename ch keys =
   | Abbrev(s,l) ->
       raise (Bad_input_for_php "string not supported, use option --expand")
 (*
-      if needs_output s keys then 
+      if needs_output s keys then
 	begin
-	  Html.open_anchor ch s; 
+	  Html.open_anchor ch s;
 	  Html.close_anchor ch;
 	  output_string ch "<pre>\n";
 	  output_string ch ("@string{" ^ s ^ " = ");
@@ -212,12 +228,12 @@ let php_print_command index remove rename ch keys =
 	end
 *)
   | Entry (entry_type,key,fields) ->
-      if needs_output key keys then 
+      if needs_output key keys then
 	begin
 	  if index > 0 then fprintf ch ",\n\n";
 	  fprintf ch "%-5d => Array (\n" index;
-	  fprintf ch "  \"entrytype\" => \"%s\",\n" entry_type;
-	  fprintf ch "  \"cite\" => \"%s\"" key;
+	  fprintf ch "  \'entrytype\' => \'%s\',\n" entry_type;
+	  fprintf ch "  \'cite\' => \'%s\'" key;
 	  List.iter
 	    (fun (field,l) ->
                if not (List.mem field remove) then
@@ -226,7 +242,7 @@ let php_print_command index remove rename ch keys =
                      try List.assoc field rename
                      with Not_found -> field
 		   in
-		   fprintf ch ",\n  \"%s\" => " ofield;
+		   fprintf ch ",\n  \'%s\' => " ofield;
 		   php_print_atom_list ch l
              end)
 	    fields;
@@ -235,16 +251,16 @@ let php_print_command index remove rename ch keys =
 	end
       else index
 
-let output_bib ?(remove=[]) ?(rename=[]) ?(php=false) ~html ?html_file 
+let output_bib ?(remove=[]) ?(rename=[]) ?(php=false) ~html ?html_file
     ch bib keys =
   let _ =
     Bibtex.fold
-      (fun entry i -> 
+      (fun entry i ->
 	 if php then
 	   php_print_command i remove rename ch keys entry
 	 else
 	   (print_command remove rename html html_file ch keys entry;
-	    succ i))    
+	    succ i))
       bib
     0
   in ()
