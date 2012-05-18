@@ -34,10 +34,10 @@ DOCDIR = $(prefix)/doc/bibtex2html
 # End of configuration part
 #########################################
 
-VERSION=1.97pl1
+VERSION=1.97pl2
 
 OCAMLC   = @OCAMLC@
-OCAMLOPT = @OCAMLOPT@ 
+OCAMLOPT = @OCAMLOPT@
 CAMLDEP  = @OCAMLDEP@
 OCAMLLEX = @OCAMLLEX@
 ZLIBS    =
@@ -45,7 +45,7 @@ DEBUG    =
 FLAGS    = $(ZLIBS) $(DEBUG)
 PROFILE  =
 
-STRLIB = 
+STRLIB =
 
 OBJS =  options.cmx html.cmx latexmacros.cmx latexscan.cmx bbl_lexer.cmx \
 	bibtex.cmx bibtex_parser.cmx bibtex_lexer.cmx \
@@ -112,11 +112,11 @@ bibtex2html$(EXE): $(OBJS)
 	strip bibtex2html$(EXE)
 
 bibtex2html.byte: $(OBJS:.cmx=.cmo)
-	$(OCAMLC) $(PROFILE) $(FLAGS)-o bibtex2html.byte str.cma $(OBJS:.cmx=.cmo) $(STRLIB) 
+	$(OCAMLC) $(PROFILE) $(FLAGS)-o bibtex2html.byte str.cma $(OBJS:.cmx=.cmo) $(STRLIB)
 
 bibtex2html.pbyte: $(OBJS:.cmx=.cmo)
 	$(OCAMLC) -use-runtime ~demons/bin/$(OSTYPE)/ocamlcustomrun \
-		-o bibtex2html.pbyte str.cma $(OBJS:.cmx=.cmo)  
+		-o bibtex2html.pbyte str.cma $(OBJS:.cmx=.cmo)
 
 bibtex2html.static: $(OBJS)
 	$(OCAMLOPT) $(PROFILE) $(FLAGS) -o $@ str.cmxa $(OBJS) $(STRLIB) -cclib "-L. -static"
@@ -136,7 +136,7 @@ bib2bib.byte: $(BIB2BIBOBJS:.cmx=.cmo)
 
 bib2bib.pbyte: $(BIB2BIBOBJS:.cmx=.cmo)
 	$(OCAMLC) -use-runtime ~demons/bin/$(OSTYPE)/ocamlcustomrun \
-		-o bib2bib.pbyte str.cma $(BIB2BIBOBJS:.cmx=.cmo) 
+		-o bib2bib.pbyte str.cma $(BIB2BIBOBJS:.cmx=.cmo)
 
 bib2bib.static: $(BIB2BIBOBJS)
 	$(OCAMLOPT) $(PROFILE) $(FLAGS) -o $@ str.cmxa $(BIB2BIBOBJS) $(STRLIB) -cclib "-L. -static"
@@ -218,7 +218,7 @@ export: source export-doc linux
 move-olds:
 	cp $(FTP)/bibtex2html* $(FTP)/olds
 
-source: clean 
+source: clean
 	mkdir -p export/$(NAME)
 	cp $(SOURCEFILES) export/$(NAME)
 	(cd export ; tar cf $(NAME).tar $(NAME) ; \
@@ -322,7 +322,7 @@ config.status: configure
 	./config.status --recheck
 
 configure: configure.in
-	autoconf 
+	autoconf
 
 # clean and depend
 ##################
@@ -333,7 +333,7 @@ GENERATED = bibtex_lexer.ml bbl_lexer.ml \
             condition_parser.mli condition_parser.ml version.ml version.tex
 
 clean::
-	rm -f *~ *.cm[iox] *.o 
+	rm -f *~ *.cm[iox] *.o
 	rm -f $(GENERATED)
 	rm -f bibtex2html bib2bib
 	rm -f manual.aux manual.log manual.dvi manual.pdf

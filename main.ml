@@ -53,14 +53,14 @@ let add_citations file =
   with Sys_error msg ->
     prerr_endline ("Cannot open citation file (" ^ msg ^ ")");
     exit 1
-  
+
 (*s Sorting the entries. *)
 
 module KeyMap = Map.Make(struct type t = string let compare = compare end)
 
 let keep_combine combine l1 l2 =
-  let map = 
-    List.fold_left (fun m ((_,k,_) as e) -> KeyMap.add k e m) KeyMap.empty l2 
+  let map =
+    List.fold_left (fun m ((_,k,_) as e) -> KeyMap.add k e m) KeyMap.empty l2
   in
   let rec keep_rec = function
     | [] ->
@@ -82,16 +82,16 @@ let rev_combine_f x y = combine_f y x
 let sort_entries entries bibitems =
   if not !Options.quiet then begin eprintf "Sorting..."; flush stderr end;
   let el =
-    if !sort = By_author then 
+    if !sort = By_author then
       keep_combine combine_f bibitems entries
     else
       keep_combine rev_combine_f entries bibitems
   in
-  let sl = 
+  let sl =
     if !sort = By_date then
       Sort.list (fun (_,_,e1) (_,_,e2) -> Expand.date_order entries e1 e2) el
     else
-      el 
+      el
   in
   if not !Options.quiet then begin eprintf "ok.\n"; flush stderr end;
   if !reverse_sort then List.rev sl else sl
@@ -110,7 +110,7 @@ let create_aux_file fbib tmp =
   output_string ch !style;
   output_string ch "}\n";
   if !use_cite_file then
-    List.iter 
+    List.iter
       (fun k -> output_string ch ("\\citation{" ^ k ^ "}\n"))
       !citations
   else
@@ -131,25 +131,25 @@ let clean tmp =
   end
 
 let call_bibtex tmp =
-  if not !Options.quiet then begin 
-    eprintf "calling BibTeX..."; flush stderr 
+  if not !Options.quiet then begin
+    eprintf "calling BibTeX..."; flush stderr
   end;
-  match 
-    let redir = 
-      if !output_file = "" || !Options.quiet then 
-	match Sys.os_type with 
+  match
+    let redir =
+      if !output_file = "" || !Options.quiet then
+	match Sys.os_type with
 	  | "Win32" -> "> nul 2>&1"
-	  | _ -> "> /dev/null 2>&1" 
-      else 
-	"" 
+	  | _ -> "> /dev/null 2>&1"
+      else
+	""
     in
     let cmd = sprintf "%s %s %s" !command tmp redir in
-    if !Options.debug then begin 
+    if !Options.debug then begin
       eprintf "\nbibtex command: %s\n" cmd; flush stderr
     end;
     Sys.command cmd
   with
-    | 0 -> 
+    | 0 ->
 	if not !Options.quiet then begin eprintf "\n"; flush stderr end
     | n ->
 	if !ignore_bibtex_errors then begin
@@ -168,8 +168,8 @@ let read_one_biblio lb =
       let (_,k,_) as item = Bbl_lexer.bibitem lb in
       if !Options.debug then begin eprintf "[%s]" k; flush stderr end;
       read_items (item::acc) lb
-    with Bbl_lexer.End_of_biblio -> 
-      List.rev acc 
+    with Bbl_lexer.End_of_biblio ->
+      List.rev acc
   in
   let name = Bbl_lexer.biblio_header lb in
   let items = read_items [] lb in
@@ -187,8 +187,8 @@ let read_biblios lb =
 
 let read_bbl tmp =
   let fbbl = tmp ^ ".bbl" in
-  if not !Options.quiet then begin 
-    eprintf "Reading %s..." fbbl; flush stderr 
+  if not !Options.quiet then begin
+    eprintf "Reading %s..." fbbl; flush stderr
   end;
   let ch = open_in fbbl in
   let lexbuf = Lexing.from_channel ch in
@@ -197,15 +197,35 @@ let read_bbl tmp =
   clean tmp;
   if not !Options.quiet then begin
     eprintf "ok ";
-    List.iter 
+    List.iter
       (fun (_,items) -> eprintf "(%d entries)" (List.length items))
       biblios;
     eprintf "\n"; flush stderr
   end;
   biblios
 
+(* temporary files in current directory (from OCaml's standard library) *)
+module Tmp = struct
+  external open_desc: string -> open_flag list -> int -> int = "caml_sys_open"
+  external close_desc: int -> unit = "caml_sys_close"
+
+  let prng = Random.State.make_self_init ()
+
+  let temp_file prefix suffix =
+    let rec try_name counter =
+      let rnd = (Random.State.bits prng) land 0xFFFFFF in
+      let name = Printf.sprintf "%s%06x%s" prefix rnd suffix in
+      try
+        close_desc (open_desc name [Open_wronly; Open_creat; Open_excl] 0o600);
+        name
+      with Sys_error _ as e ->
+        if counter >= 1000 then raise e else try_name (counter + 1)
+    in
+    try_name 0
+end
+
 let get_biblios fbib =
-  let tmp = Filename.temp_file "bib2html" "" in
+  let tmp = Tmp.temp_file "bib2html" "" in
   try
     create_aux_file fbib tmp;
     call_bibtex tmp;
@@ -214,14 +234,14 @@ let get_biblios fbib =
     e -> clean tmp; raise e
 
 (*i
-let insert_title_url bib = 
+let insert_title_url bib =
   let rec remove_assoc x = function
     | [] ->
 	raise Not_found
-    | ((y,v) as p) :: l -> 
-	if x = y then 
-	  (v,l) 
-	else 
+    | ((y,v) as p) :: l ->
+	if x = y then
+	  (v,l)
+	else
 	  let (v',l') = remove_assoc x l in (v', p :: l')
   in
   let url_value = function
@@ -233,21 +253,21 @@ let insert_title_url bib =
     try
       let t,f' = remove_assoc "title" f in
       let u,f'' = remove_assoc "url" f' in
-      let u' = Html.normalize_url (url_value u) in 
-      let nt = 
-	(Bibtex.String 
+      let u' = Html.normalize_url (url_value u) in
+      let nt =
+	(Bibtex.String
 	   (sprintf "\\begin{rawhtml}<A HREF=\"%s\">\\end{rawhtml}" u'))
 	:: t @ [Bibtex.String "\\begin{rawhtml}</A>\\end{rawhtml}"]
       in
       ("TITLE",nt) :: f''
-    with Not_found -> 
+    with Not_found ->
       f
   in
-  Bibtex.fold 
-    (fun com bib' -> match com with 
-       | Bibtex.Entry (ty,k,f) -> 
+  Bibtex.fold
+    (fun com bib' -> match com with
+       | Bibtex.Entry (ty,k,f) ->
 	   Bibtex.add_new_entry (Bibtex.Entry (ty,k,modify_entry f)) bib'
-       | _ -> 
+       | _ ->
 	   Bibtex.add_new_entry com bib')
     bib Bibtex.empty_biblio
 i*)
@@ -259,9 +279,9 @@ let translate fullname =
   let input_bib = Readbib.read_entries_from_file fullname in
   if !parse_only then exit 0;
   let entries = List.rev (Expand.expand input_bib) in
-  let biblios = 
+  let biblios =
     if fullname = "" then begin
-      let tmp = Filename.temp_file "bibtex2htmlinput" ".bib" in
+      let tmp = Tmp.temp_file "bibtex2htmlinput" ".bib" in
       let ch = open_out tmp in
       Biboutput.output_bib ~html:false ch input_bib None;
       close_out ch;
@@ -269,32 +289,32 @@ let translate fullname =
       Sys.remove tmp;
       bbl
     end else
-      get_biblios fullname 
+      get_biblios fullname
   in
   let sb =
-    List.map 
+    List.map
       (fun (name,bibitems) -> (name,sort_entries entries bibitems))
-      biblios 
+      biblios
   in
   if !print_keys then begin
     List.iter
-      (fun (_,bibitems) -> 
+      (fun (_,bibitems) ->
 	 List.iter (fun (_,_,(_,k,_)) -> printf "%s\n" k) bibitems)
       sb;
     flush stdout;
     exit 0
   end;
-  format_list 
-    (if !expand_abbrev_in_bib_output then 
-       Bibtex.expand_abbrevs input_bib 
-     else input_bib) 
-    sb 
+  format_list
+    (if !expand_abbrev_in_bib_output then
+       Bibtex.expand_abbrevs input_bib
+     else input_bib)
+    sb
     (if !use_cite_file then
-       let keys = 
-	 List.fold_right 
+       let keys =
+	 List.fold_right
 	   (fun s e -> Bibtex.KeySet.add s e) !citations Bibtex.KeySet.empty in
        let keys =
-	 List.fold_right 
+	 List.fold_right
 	   (fun s e -> Bibtex.KeySet.remove s e) !excluded keys in
        Some (Bibfilter.saturate input_bib keys)
      else None)
@@ -369,7 +389,7 @@ Usage: bibtex2html <options> [filename]
   -note field
              declare a note field
   -dl        use DL lists instead of TABLEs
-  -unicode   use Unicode characters for some LaTeX macros (as HTML entities) 
+  -unicode   use Unicode characters for some LaTeX macros (as HTML entities)
   -html-entities
              use HTML entities for some LaTeX macros
   -labelname use the label name when inserting a link
@@ -428,23 +448,23 @@ let parse () =
 	usage ()
     | ("-nokeywords" | "-no-keywords" | "--no-keywords") :: rem ->
 	print_keywords := false; parse_rec rem
-    | ("-nolinks" | "-no-links" | "--no-links") :: rem -> 
+    | ("-nolinks" | "-no-links" | "--no-links") :: rem ->
 	print_links := false; parse_rec rem
-    | ("-nobiblinks" | "-no-bib-links" | "--no-bib-links") :: rem -> 
+    | ("-nobiblinks" | "-no-bib-links" | "--no-bib-links") :: rem ->
 	links_in_bib_file := false; parse_rec rem
-    | ("-nokeys" | "-no-keys" | "--no-keys") :: rem -> 
+    | ("-nokeys" | "-no-keys" | "--no-keys") :: rem ->
 	nokeys := true; table := NoTable; parse_rec rem
-    | ("-use-table" | "--use-table") :: rem -> 
+    | ("-use-table" | "--use-table") :: rem ->
 	table := Table; parse_rec rem
     | ("-usekeys" | "-use-keys" | "--use-keys") :: rem ->
 	use_keys := true; parse_rec rem
-    | ("-rawurl" | "-raw-url" | "--raw-url") :: rem -> 
+    | ("-rawurl" | "-raw-url" | "--raw-url") :: rem ->
 	raw_url := true; parse_rec rem
 (*i
-    | ("-tu" | "-titleurl" | "--title-url") :: rem -> 
+    | ("-tu" | "-titleurl" | "--title-url") :: rem ->
 	title_url := true; parse_rec rem
 i*)
-    | ("-heveaurl" | "-hevea-url" | "--hevea-url") :: rem -> 
+    | ("-heveaurl" | "-hevea-url" | "--hevea-url") :: rem ->
 	Latexscan.hevea_url := true; parse_rec rem
     | ("-linebreak" | "--linebreak") :: rem ->
 	linebreak := true; parse_rec rem
@@ -490,7 +510,7 @@ i*)
 	read_macros f; parse_rec rem
     | ("-m" | "-macros-from" | "--macros-from") :: [] ->
 	usage()
- 
+
     (* Sorting the entries *)
     | ("-d" | "-sort-by-date" | "--sort-by-date") :: rem ->
 	sort := By_date; parse_rec rem
@@ -514,7 +534,7 @@ i*)
 	add_exclude k; parse_rec rem
     | ("-e" | "-exclude" | "--exclude") :: [] ->
 	usage()
- 
+
     (* Miscellaneous options *)
     | ("-o" | "-output" | "--output") :: f :: rem ->
 	output_file := f;
@@ -523,9 +543,9 @@ i*)
 	usage()
     | ("-nobibsource" | "--nobibsource") :: rem ->
 	bib_entries := false; parse_rec rem
-    | ("-nodoc" | "--nodoc" | "-no-doc" | "--no-doc") :: rem -> 
+    | ("-nodoc" | "--nodoc" | "-no-doc" | "--no-doc") :: rem ->
 	nodoc := true; parse_rec rem
-    | ("-noexpand" | "-no-expand" | "--no-expand") :: rem -> 
+    | ("-noexpand" | "-no-expand" | "--no-expand") :: rem ->
 	expand_abbrev_in_bib_output := false; parse_rec rem
     | ("-i" | "-ignore-errors" | "--ignore-errors") :: rem ->
 	ignore_bibtex_errors := true; parse_rec rem
@@ -562,7 +582,7 @@ i*)
     | ("-print-keys" | "--print-keys") :: rem ->
 	print_keys := true; parse_rec rem
 
-    | [fbib] -> 
+    | [fbib] ->
 	if not (Sys.file_exists fbib) then begin
 	  eprintf "%s: no such file\n" fbib;
 	  exit 1
@@ -577,7 +597,7 @@ i*)
     | [] ->
 	("","")
     | _ -> usage ()
-  in 
+  in
     parse_rec (List.tl (Array.to_list Sys.argv))
 
 

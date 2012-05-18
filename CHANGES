@@ -1,4 +1,6 @@
 
+ o temporary files are now created in the current directory
+   to avoid bibtex error "Not writing to ... (openout_any = p)."
  o fixed a bug with non-ascii characters in php-output
 
 Version 1.97, February 6, 2012
@@ -23,25 +25,25 @@ Version 1.95, March 23, 2010
  o bib2bib: option "--php-output" to produce output as a PHP 2D array
  o bib2bib: options "--remove" and "--rename", to remove or rename fields
  o new headers with proper copyright
- o bib2bib: option "--no-comment", to prevent generation of extra 
+ o bib2bib: option "--no-comment", to prevent generation of extra
    comments
  o fixed support for DOI links: when field "doi" is already an URL, the
    DOI prefix is not prepended
- o tags "bibtexnumber" and "bibtexitem" are now inserted to ease the 
+ o tags "bibtexnumber" and "bibtexitem" are now inserted to ease the
    customization using CSS
 
 Version 1.94, 07/05/09
 ======================
  o support for arXiv preprints links: a field "eprint = {xxx}" will be
-   recognized, if any, and a link to http://arxiv.org/abs/ will be displayed; 
+   recognized, if any, and a link to http://arxiv.org/abs/ will be displayed;
    option -noeprint turns it off and option -eprintf-prefix <url> sets a
    different prefix for the urls (contributed by Ari Stern)
 
 Version 1.93, 12/12/08
 ======================
- o bib2bib: giving '$date' as argument of option -s allows to sort from 
-   oldest to newest entry 
- o bib2bib: field names in conditions may contain digits and '-' (usefull for 
+ o bib2bib: giving '$date' as argument of option -s allows to sort from
+   oldest to newest entry
+ o bib2bib: field names in conditions may contain digits and '-' (usefull for
    custom fields)
 
 Version 1.92, 08/07/08
@@ -65,7 +67,7 @@ Version 1.90, 01/02/2008
 ========================
  o bib2bib: = and <> are now case insensitive; use == and != instead
    to perform case sensitive comparison
- o correctly support $x$$y$ where the central $$ is not passing into 
+ o correctly support $x$$y$ where the central $$ is not passing into
    display math mode
  o more cases for accent macros \' \~ \. \u \v (patch by John Kewley)
 
@@ -103,7 +105,7 @@ Version 1.85, 2/11/2006
 =======================
  o fixed HTML output in f_bib.html: <pre> no more enclosed in <p>;
    bibtex fields now typeset in lowercase; added links back to f.html
- o macros \textin (<sub>), \textsu (<sup>), \textsi (<i>),  
+ o macros \textin (<sub>), \textsu (<sup>), \textsi (<i>),
    and macros \textln, \textos, \textdf, \textsw without translation
  o fixed bug in --quiet under Windows
  o option -t now sets the title of f_bib.html too (and of entries
@@ -117,9 +119,9 @@ Version 1.84, 19/10/2006
 Version 1.83, 13/09/2006
 ========================
  o support for DOI links: a field "DOI = {xxx}" will be recognized, if any,
-   and a link to http://dx.doi.org/xxx will be displayed; 
+   and a link to http://dx.doi.org/xxx will be displayed;
    option -no-doi turns it off and option -doi-prefix <url> sets a
-   different prefix for the DOI urls  
+   different prefix for the DOI urls
  o macro \H (Hungarian umlauts)
  o new option -linebreak to insert a linebreak between an entry and its links
  o new option -use-table to enforce the use of a table (to be used
@@ -128,7 +130,7 @@ Version 1.83, 13/09/2006
 Version 1.82, 07/06/2006
 ========================
  o `` and '' translated to &ldquo; and &rdquo;
- o aesthetic changes: 
+ o aesthetic changes:
    - no more line break between the entry and the links;
    - more space between an abstract and the next entry
  o improving date parsing: month field such as "2~" # dec is now parsed
@@ -188,8 +190,8 @@ Version 1.72, 3/9/2004
 Version 1.71, 24/8/2004
 =======================
  o improved date sorting algorithm to handle days (e.g. month = "June 29")
- o bib2bib: crossrefs are expanded before conditions are checked 
- o bib2bib: '_' allowed in field identifiers 
+ o bib2bib: crossrefs are expanded before conditions are checked
+ o bib2bib: '_' allowed in field identifiers
  o added option -w (--warn-error) to stop immediately when a warning
    is issued.
 
@@ -245,12 +247,12 @@ Version 1.59, 16/6/2003
 
 Version 1.57, 9/4/2003
 ======================
- o option --note f to declare field f as an annotation (and then displayed 
+ o option --note f to declare field f as an annotation (and then displayed
    like an "abstract" field)
 
 Version 1.56 12/11/2002
 =======================
- o bib2bib: fixed bug in conditions lexer 
+ o bib2bib: fixed bug in conditions lexer
  o fixed parser error in @preamble
  o ./configure updated
 
@@ -294,7 +296,7 @@ Version 1.5 10/10/2001
 Version 1.46 21/2/2001
 ======================
  o code documented with ocamlweb (but still poor comments)
- o fixed bug for links' names 
+ o fixed bug for links' names
  o fixed a minor HTML error (inversion of <blockquote> and <font>)
 
 Version 1.45 31/1/2001
@@ -317,7 +319,7 @@ Version 1.41 30/6/2000
  o macro \par translated to <p> not <br>
  o added symbols '&', '|', '!' and '?' resp. for synonyms of 'and',
    'or', 'not' and 'exists'
- o replaced notations '$' and '#' resp. by '$key' and '$type' in 
+ o replaced notations '$' and '#' resp. by '$key' and '$type' in
    bib2bib conditions
  o all macros \xxfamily, \xxseries and \xxshape
  o fixed bug in translating unbalanced quotes to HTML
@@ -369,15 +371,15 @@ Version 1.2, 1999/02/10
    have to be considered. A new module Latex_accents has been added
    for that purpose.
  o much more LaTeX macros translated
- o macro \u (a romanian accent) recognized (but \u{s} simply outputs s) 
+ o macro \u (a romanian accent) recognized (but \u{s} simply outputs s)
  o option --raw-url to print URL instead of files's types.
- 
+
 Version 1.1, 1999/11/05
 =======================
  o bibtex2html version is written at the end of the document and inside the
    HTML source
  o options --output and --nobibsource for bibtex2html
- o bibtex2html now reads on standard input if no input file is given, 
+ o bibtex2html now reads on standard input if no input file is given,
    and writes on standard output (if no output file is specified).
  o new option of bib2bib: --expand expands the abbreviations
  o macro \neq -> <>
@@ -386,7 +388,7 @@ Version 1.1, 1999/11/05
  o changed behaviour of bib2bib, in order to be used as a filter :
    . if no input files, input is taken from standard input
    . if no -ob option, output is done on standard output
-   . if no -oc option, no citation file created at all 
+   . if no -oc option, no citation file created at all
  o bib2bib now supports options --version and --warranty
  o macro \% -> %
  o macro \ss -> &szlig;
@@ -397,17 +399,17 @@ Version 1.0, 1999/07/15
  o option --footer
  o condition are now arbitrary boolean expressions over comparaisons
    and matchings
- o macro \mathcal 
+ o macro \mathcal
  o bib2bib is able to parse conditions of the form field:regexp (but
    only one condition at a time)
  o the bib output :
     . is in the same order as the original one
-    . option -noexpand produces an bib output still containing @STRINGs 
+    . option -noexpand produces an bib output still containing @STRINGs
       (but notice that crossrefs are never expanded)
  o the default bibtex command is "bibtex -min-crossrefs=1000" in order
     to avoid citation to the crossrefs. (This behaviour is obtained
     only when using a -citefile where the crossrefs are not included.)
- o macros with nested braces now recognized correctly 
+ o macros with nested braces now recognized correctly
  o macros \textrm and \textsl
  o option -citefile to read keys to cite from a file
  o macros \sim, \symbol; macros for accents without argument (\~{}, \'{}, etc.)
@@ -446,7 +448,7 @@ Version 0.72, 1999/01/21
 Version 0.71, 1999/01/11
 ========================
   o translation for macros \o, \O, \ae, \AE, \aa, \AA
-  
+
 Version 0.7, 1998/11/18
 =======================
   o on-line documentation
@@ -463,7 +465,7 @@ Version 0.61, 1998/10/19
 Version 0.6, 1998/02/17
 =======================
   o spaces in URL are removed
-  o compilation in native code  
+  o compilation in native code
 
 Version 0.4, 1998/01/28
 =======================
@@ -484,6 +486,6 @@ Version 0.1, 1997/07/17
 =======================
   o first public release
 
-Local Variables: 
+Local Variables:
 mode: text
-End: 
+End:
