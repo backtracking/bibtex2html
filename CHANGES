@@ -1,4 +1,5 @@
 
+ o \textsuperscript
  o temporary files are now created in the current directory
    to avoid bibtex error "Not writing to ... (openout_any = p)."
  o fixed a bug with non-ascii characters in php-output

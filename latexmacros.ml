@@ -15,7 +15,7 @@
 (**************************************************************************)
 
 (* This code is an adaptation of a code written by Xavier Leroy in
-   1995-1997, in its own made latex2html translator. See
+   1995-1997, in his own made latex2html translator. See
 
 @inproceedings{Leroy-latex2html,
                author =        "Xavier Leroy",
@@ -107,6 +107,7 @@ def "\\mathfrak" [Print_arg];
 
 def "\\textin" [Print "<sub>"; Print_arg; Print "</sub>"];
 def "\\textsu" [Print "<sup>"; Print_arg; Print "</sup>"];
+def "\\textsuperscript" [Print "<sup>"; Print_arg; Print "</sup>"];
 def "\\textsi" [Print "<i>" ; Print_arg ; Print "</i>"];
 
 (* Basic color support. *)

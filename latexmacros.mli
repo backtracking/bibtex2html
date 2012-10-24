@@ -19,8 +19,7 @@
   [action]. *)
 
 (* This code is an adaptation of a code written by Xavier Leroy in
-   1995-1997, in its own home-made latex2html translator. See
-
+   1995-1997, in his own home-made latex2html translator. See
 
 @inproceedings{Leroy-latex2html,
                author =        "Xavier Leroy",
