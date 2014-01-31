@@ -1,4 +1,5 @@
 
+ o fixed translation of -- and --- (contributed by Gabriel Scherer)
  o more macros: \dj \DJ (contributed by Domenico Bianculli)
  o \textsuperscript
  o temporary files are now created in the current directory

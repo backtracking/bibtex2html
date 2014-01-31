@@ -103,6 +103,16 @@
     in
     def s (code 1 (fun s -> s))
 
+  let exec_macro ~main ~print_arg ~raw_arg ~skip_arg lexbuf m =
+    let rec exec = function
+    | Print str -> print_s str
+    | Print_arg -> print_arg lexbuf
+    | Raw_arg f -> f (raw_arg lexbuf)
+    | Skip_arg -> save_nesting skip_arg lexbuf
+    | Recursive s -> main (Lexing.from_string s)
+    | Parameterized f ->
+      List.iter exec (f (raw_arg lexbuf))
+    in List.iter exec (find_macro m)
 }
 
 let space = [' ' '\t' '\n' '\r']
@@ -208,9 +218,9 @@ rule main = parse
   | "~"         { print_s "&nbsp;"; main lexbuf }
   | "``"        { print_s "&ldquo;"; main lexbuf }
   | "''"        { print_s "&rdquo;"; main lexbuf }
-  | "--"        { print_s (if !html_entities then "&ndash;" else "-"); 
+  | "--"        { exec_macro ~main ~print_arg ~raw_arg ~skip_arg lexbuf "--";
 		  main lexbuf }
-  | "---"       { print_s (if !html_entities then "&mdash;" else "-"); 
+  | "---"       { exec_macro ~main ~print_arg ~raw_arg ~skip_arg lexbuf "---";
 		  main lexbuf }
   | "^"         { if is_math_mode() then begin
 		    let buf = Lexing.from_string (raw_arg lexbuf) in
@@ -240,17 +250,8 @@ rule main = parse
 (* General case for environments and commands *)
   | ("\\begin{" | "\\end{") ['A'-'Z' 'a'-'z' '@']+ "}" |
     "\\" (['A'-'Z' 'a'-'z' '@']+ '*'? " "? | [^ 'A'-'Z' 'a'-'z'])
-                { let rec exec_action = function
-                    | Print str -> print_s str
-                    | Print_arg -> print_arg lexbuf
-                    | Raw_arg f -> f (raw_arg lexbuf)
-                    | Skip_arg -> save_nesting skip_arg lexbuf
-		    | Recursive s -> main (Lexing.from_string s)
-		    | Parameterized f ->
-			List.iter exec_action (f (raw_arg lexbuf))
-		  in
-		  let m = chop_last_space (Lexing.lexeme lexbuf) in
-                  List.iter exec_action (find_macro m);
+                { let m = chop_last_space (Lexing.lexeme lexbuf) in
+                  exec_macro ~main ~print_arg ~raw_arg ~skip_arg lexbuf m;
                   main lexbuf }
 (* Nesting of braces *)
   | '{'         { incr brace_nesting; main lexbuf }
@@ -361,4 +362,3 @@ and read_macros = parse
       { () }
   | _   
       { read_macros lexbuf }
-

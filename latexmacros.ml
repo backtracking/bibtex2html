@@ -544,6 +544,10 @@ def "\\bgroup" []; (* should go into latexscan? *)
 def "\\egroup" []; (* should go into latexscan? *)
 def "\\citename" [];
 
+(* dashes *)
+def "--" [Print "--"];
+def "---" [Print "---"];
+
 ()
 
 (* Unicode entities *)
@@ -557,6 +561,8 @@ let unicode_entities () =
   def "\\not" [Raw_arg (function
     | "\\models" -> print_s "&#8877;"
     | s -> print_s "not "; print_s s)];
+  def "--" [Print "&#x2013;"];
+  def "---" [Print "&#x2014;"];
   ()
 
 let html_entities () =
@@ -634,6 +640,8 @@ let html_entities () =
     | "a" -> print_s "&abar;"
     | "A" -> print_s "&Abar;"
     | s   -> print_s s)];
+  def "--" [Print "&ndash;"];
+  def "---" [Print "&mdash;"];
   ()
 
 (*s Macros for German BibTeX style. *) 
