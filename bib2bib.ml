@@ -79,7 +79,7 @@ let args_spec =
     ("--quiet", Arg.Set Options.quiet, "quiet flag");
     ("-s", Arg.String 
        (fun s -> sort_criteria := (String.lowercase s):: !sort_criteria),
-     "<c> sort with respect to keys (if c=$keys) or a given field <c>");
+     "<c> sort with respect to keys (if c=$key) or a given field <c>");
     ("-r", Arg.Set reverse_sort,
      "reverse the sort order");
     ("--no-comment", Arg.Unit (fun () -> no_comment := true), 
