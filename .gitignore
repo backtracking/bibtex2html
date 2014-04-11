@@ -1,4 +1,9 @@
+*.o
+*.cm*
 manual.toc
+manual.aux
+manual.log
+manual.out
 manual.html
 manual.pdf
 latexscan.ml
@@ -23,6 +28,8 @@ tmpmanual.ps
 manual.ps
 bibtex2html.static
 bib2bib.static
+configure
+config.log
 config.cache
 config.status
 Makefile
@@ -33,7 +40,17 @@ bibtex2html.dvi
 manual.haux
 aux2bib
 patches
-autom4te.cache test.bib test_bib.html test.html semantic.cache
-test.tex test2.bib test2_bib.html test2.html
+autom4te.cache
+test.bib
+test_bib.html
+test.html
+semantic.cache
+test.tex
+test2.bib
+test2_bib.html
+test2.html
 manual.htoc
-patches patch-linebreak patch-macro-H patch-use-table
+patches
+patch-linebreak
+patch-macro-H
+patch-use-table
