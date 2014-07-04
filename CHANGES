@@ -1,4 +1,6 @@
 
+Version 1.98, July 4, 2014
+==========================
  o fixed escaping of character & in URLs
  o fixed translation of -- and --- (contributed by Gabriel Scherer)
  o more macros: \dj \DJ (contributed by Domenico Bianculli)
