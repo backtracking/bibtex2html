@@ -1,4 +1,5 @@
 
+ o fixed escaping of character & in URLs
  o fixed translation of -- and --- (contributed by Gabriel Scherer)
  o more macros: \dj \DJ (contributed by Domenico Bianculli)
  o \textsuperscript
@@ -46,7 +47,7 @@ Version 1.93, 12/12/08
 ======================
  o bib2bib: giving '$date' as argument of option -s allows to sort from
    oldest to newest entry
- o bib2bib: field names in conditions may contain digits and '-' (usefull for
+ o bib2bib: field names in conditions may contain digits and '-' (useful for
    custom fields)
 
 Version 1.92, 08/07/08

@@ -62,21 +62,21 @@ let table = ref Table
 type field_info = string * (string option)
 
 let default_fields =
-  List.map (fun x -> x, None) 
+  List.map (fun x -> x, None)
     ["ftp"; "http"; "url"; "dvi"; "ps"; "postscript"; "pdf";
      "documenturl"; "urlps"; "urldvi"; "urlpdf"]
 
 let (fields : field_info list ref) = ref default_fields
 
-let add_field s = 
-  let u = String.lowercase s in 
+let add_field s =
+  let u = String.lowercase s in
   Biboutput.add_link_field u;
   fields := (u, None) :: (List.remove_assoc u !fields)
 
-let add_named_field s name = 
-  let u = String.lowercase s in 
+let add_named_field s name =
+  let u = String.lowercase s in
   Biboutput.add_link_field u;
-  if u = "abstract" then abstract_name := name; 
+  if u = "abstract" then abstract_name := name;
   if not !both || u <> "abstract" then
     fields := (u, Some name) :: (List.remove_assoc u !fields)
 
@@ -124,10 +124,10 @@ let in_summary = ref false
 let cite k =
   try
     let url =
-      if !in_summary then 
+      if !in_summary then
 	sprintf "#%s" k
       else
-	sprintf "%s%s#%s" !output_file !link_suffix k 
+	sprintf "%s%s#%s" !output_file !link_suffix k
     in
     let c = if !use_keys then k else Hashtbl.find cite_tab k in
     print_s (sprintf "[<a href=\"%s\">" url);
@@ -148,9 +148,9 @@ let own_address = "http://www.lri.fr/~filliatr/bibtex2html/"
 
 let header ch =
   let print_arg s =
-    if String.contains s ' ' then 
-      fprintf ch "\"%s\" " s 
-    else 
+    if String.contains s ' ' then
+      fprintf ch "\"%s\" " s
+    else
       fprintf ch "%s " s
   in
   fprintf ch "
@@ -170,7 +170,7 @@ let footer ch =
   output_string ch "bibtex2html";
   Html.close_href ch;
   output_string ch " "; output_string ch Version.version; output_string ch ".";
-  Html.close_balise ch "em"; 
+  Html.close_balise ch "em";
   Html.close_balise ch "p";
   output_string ch "\n";
   output_string ch !user_footer
@@ -180,9 +180,9 @@ let footer ch =
 let compression_suffixes = [ ".gz"; ".Z"; ".zip" ]
 
 let file_suffixes =
-  List.flatten 
+  List.flatten
     (List.map (fun s -> s :: List.map ((^) s) compression_suffixes)
-       [ ".dvi"; ".DVI"; ".ps"; ".PS"; ".pdf"; ".PDF"; 
+       [ ".dvi"; ".DVI"; ".ps"; ".PS"; ".pdf"; ".PDF";
 	 ".rtf"; ".RTF"; ".txt"; ".TXT"; ".html"; ".HTML" ])
 
 let is_http s =
@@ -212,42 +212,42 @@ let link_name (u, name) url s = match name with
   | Some name ->
       name
   | None ->
-      if !raw_url then 
-	url 
-      else if !use_label_name then 
+      if !raw_url then
+	url
+      else if !use_label_name then
 	String.capitalize (String.lowercase u)
       else
 	s
 
 type link = { l_url : string; l_name : string }
 
-let display_links ch links = 
+let display_links ch links =
   let rec display = function
-    | [] -> 
+    | [] ->
 	output_string ch "&nbsp;]\n"
-    | l :: r -> 
+    | l :: r ->
 	Html.open_href ch l.l_url;
 	output_string ch l.l_name;
 	Html.close_href ch;
 	if r <> [] then output_string ch "&nbsp;| \n";
 	display r
   in
-  if !print_links && links <> [] then begin 
-    output_string ch "[&nbsp;"; display links 
+  if !print_links && links <> [] then begin
+    output_string ch "[&nbsp;"; display links
   end
 
 exception Caught
 
 let rec map_succeed f = function
-  | [] -> 
+  | [] ->
       []
-  | x :: l -> 
+  | x :: l ->
       try let y = f x in y :: map_succeed f l with Caught -> map_succeed f l
 
 let make_links ((t,k,_) as e) =
   (* URL's *)
   map_succeed
-    (fun ((f, _) as info) -> 
+    (fun ((f, _) as info) ->
        try
 	 let u = Expand.get_lowercase_field e f in
 	 let s = file_type u in
@@ -256,7 +256,7 @@ let make_links ((t,k,_) as e) =
        with Not_found -> raise Caught)
     !fields
 
-type abstract = 
+type abstract =
   | Alink of link
   | Atext of string
   | No_abstract
@@ -276,7 +276,7 @@ let make_abstract ((t,k,_) as e) =
       Alink { l_url = url; l_name = !abstract_name }
     end else
       No_abstract
-  with Not_found -> 
+  with Not_found ->
     No_abstract
 
 let blockquote ch f =
@@ -293,10 +293,10 @@ let blockquote ch f =
 let display_abstract ch a = blockquote ch (fun () -> latex2html ch a)
 
 let display_notes ch e =
-  List.iter 
-    (fun (f, k) -> 
-       try 
-	 let a = Expand.get_lowercase_field e f in 
+  List.iter
+    (fun (f, k) ->
+       try
+	 let a = Expand.get_lowercase_field e f in
 	 match k with
 	   | NKlatex -> display_abstract ch a (* JK Html.paragraph ch *)
 	   | NKhtml -> output_string ch a
@@ -307,7 +307,7 @@ let display_keywords ch e =
   try
     let k = Expand.get_lowercase_field e "keywords" in
     blockquote ch (fun () -> output_string ch "Keywords: "; latex2html ch k)
-  with Not_found -> 
+  with Not_found ->
     ()
 
 let doi_link e =
@@ -329,12 +329,12 @@ let eprint_link e =
   end else
     []
 
-(* Printing of one entry *)  
+(* Printing of one entry *)
 
 let bibtex_entry k =
-  { l_url = 
+  { l_url =
       sprintf "%s%s#%s" !bibentries_file !link_suffix k;
-    l_name = 
+    l_name =
       "bib" }
 
 let separate_file (b,((_,k,f) as e)) =
@@ -352,7 +352,7 @@ let separate_file (b,((_,k,f) as e)) =
   Html.close_balise ch "h2";
   if !print_header then output_string ch !user_header;
   (* JK Html.paragraph ch; *)
-  let labs = match make_abstract e with 
+  let labs = match make_abstract e with
     | Atext a -> display_abstract ch a; []
     | Alink l -> [l]
     | No_abstract -> []
@@ -360,10 +360,10 @@ let separate_file (b,((_,k,f) as e)) =
   Html.paragraph ch;
   display_notes ch e;
   if !print_keywords then display_keywords ch e;
-  display_links ch 
-    (labs 
-      @ (if !bib_entries then [bibtex_entry k] else []) 
-      @ doi_link e        
+  display_links ch
+    (labs
+      @ (if !bib_entries then [bibtex_entry k] else [])
+      @ doi_link e
       @ eprint_link e
       @ make_links e);
   (* JK Html.paragraph ch; *)
@@ -388,7 +388,7 @@ let close_table ch = match !table with
 let open_row ch = match !table with
   | Table ->
       Html.open_balise ch "tr valign=\"top\""; output_string ch "\n";
-      Html.open_balise ch "td align=\"right\" class=\"bibtexnumber\""; 
+      Html.open_balise ch "td align=\"right\" class=\"bibtexnumber\"";
       output_string ch "\n"
   | DL ->
       Html.open_balise ch "dt"; output_string ch "\n"
@@ -433,7 +433,7 @@ let one_entry_summary ch biblio (_,b,((_,k,f) as e)) =
   Html.close_anchor ch;
   if (not !nokeys) or !multiple then output_string ch "]";
   (* end of JK changes *)
-  output_string ch "\n"; 
+  output_string ch "\n";
   new_column ch;
   latex2html ch b;
   if !linebreak then Html.open_balise ch "br /";
@@ -449,21 +449,21 @@ let one_entry_summary ch biblio (_,b,((_,k,f) as e)) =
     let links = doi_link e @ eprint_link e @ make_links e in
     let links = if !bib_entries then bibtex_entry k :: links else links in
     match make_abstract e with
-      | Atext a -> 
+      | Atext a ->
 	  display_links ch links; display_abstract ch a; Html.paragraph ch
       | Alink l -> display_links ch (links @ [l])
       | No_abstract -> display_links ch links
   end;
   display_notes ch e;
   if !print_keywords then display_keywords ch e;
-  output_string ch "\n"; 
+  output_string ch "\n";
   close_row ch
 
 (* summary file f.html *)
 
 let summary biblio bl =
-  let (ch,filename) = 
-    if !output_file = "" then 
+  let (ch,filename) =
+    if !output_file = "" then
       (stdout, "standard output")
     else
       let filename = !output_file ^ !file_suffix in
@@ -504,7 +504,7 @@ let summary biblio bl =
 
 (* HTML file with BibTeX entries f_bib.html *)
 
-let print_list print sep l = 
+let print_list print sep l =
   let rec print_rec = function
     | [] -> ()
     | [x] -> print x
@@ -525,7 +525,7 @@ let bib_file bl keys =
     let t = if !title_spec then !title else !input_file in
     Html.open_document ch (fun _ -> output_string ch t)
   end;
-    
+
   Html.open_balise ch "h1";
   output_string ch !input_file;
   Html.close_balise ch "h1";
@@ -538,7 +538,7 @@ let bib_file bl keys =
       Biboutput.output_bib ~html:true ch
   in
   output_bib bl keys;
-  
+
   if !print_footer then footer ch;
   if not !nodoc then Html.close_document ch;
   flush ch;

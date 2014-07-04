@@ -28,7 +28,7 @@ let open_document ch ftitle =
   output_string ch "<title>"; ftitle(); output_string ch "</title>\n";
   begin match !css with
     | None -> ()
-    | Some f -> 
+    | Some f ->
 	fprintf ch "<link rel=stylesheet type=\"text/css\" href=\"%s\">\n" f
   end;
   output_string ch "</head>\n\n";
@@ -37,7 +37,7 @@ let open_document ch ftitle =
     | Some color -> fprintf ch "<body bgcolor=%s>\n" color
   end;
   flush ch
-  
+
 
 let close_document ch =
   output_string ch "</body>\n</html>\n";
@@ -55,8 +55,8 @@ let close_balise ch s =
 
 let open_anchor ch s =
   open_balise ch ("a name=\"" ^ s ^ "\"")
-    
-let close_anchor ch = 
+
+let close_anchor ch =
   close_balise ch "a"
 
 
@@ -64,10 +64,13 @@ let absolute_url_regexp = Str.regexp "\\(.+://\\)\\|#\\|mailto:"
 
 let is_absolute_url u =
   try Str.search_forward absolute_url_regexp u 0 = 0 with Not_found -> false
-  
+
 let is_relative_url u = not (is_absolute_url u)
 
+let amp = Str.regexp_string "&"
+
 let open_href ch s =
+  let s = Str.global_replace amp "&amp;" s in
   open_balise ch ("a href=\"" ^ s ^ "\"")
 
 let close_href ch =

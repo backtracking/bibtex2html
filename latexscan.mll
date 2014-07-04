@@ -17,15 +17,15 @@
 (*
  * bibtex2html - A BibTeX to HTML translator
  * Copyright (C) 1997 Jean-Christophe FILLIATRE
- * 
+ *
  * This software is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public
  * License version 2, as published by the Free Software Foundation.
- * 
+ *
  * This software is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * 
+ *
  * See the GNU General Public License version 2 for more details
  * (enclosed in the file GPL).
  *)
@@ -43,7 +43,7 @@
   let brace_nesting = ref 0
   let math_mode = ref MathNone
 
-  let is_math_mode () = 
+  let is_math_mode () =
     match !math_mode with
       | MathNone -> false
       | MathDisplay | MathNoDisplay -> true
@@ -52,7 +52,7 @@
   let html_entities = ref false
 
   let save_nesting f arg =
-    let n = !brace_nesting in 
+    let n = !brace_nesting in
     brace_nesting := 0;
     f arg;
     brace_nesting := n
@@ -70,12 +70,15 @@
   let r = Str.regexp "[ \t\n]+"
   let remove_whitespace u = Str.global_replace r "" u
 
+  let amp = Str.regexp_string "&"
+  let url s = Str.global_replace amp "&amp;" s
+
   let print_latex_url u =
-    let u = remove_whitespace u in
+    let u = url (remove_whitespace u) in
     print_s (sprintf "<a href=\"%s\">%s</a>" u u)
-  
-  let print_hevea_url u t = 
-    let u = remove_whitespace u in
+
+  let print_hevea_url u t =
+    let u = url (remove_whitespace u) in
     print_s (sprintf "<a href=\"%s\">%s</a>" u t)
 
   let chop_last_space s =
@@ -84,15 +87,15 @@
 
   let def_macro s n b =
     if not !Options.quiet then begin
-      eprintf "macro: %s = %s\n" s b; 
+      eprintf "macro: %s = %s\n" s b;
       flush stderr
     end;
     let n = match n with None -> 0 | Some n -> int_of_string n in
-    let rec code i subst = 
+    let rec code i subst =
       if i <= n then
 	let r = Str.regexp ("#" ^ string_of_int i) in
-	[Parameterized 
-	    (fun arg -> 
+	[Parameterized
+	    (fun arg ->
 	      let subst s = Str.global_replace r (subst s) arg in
 	      code (i+1) subst)]
       else begin
@@ -139,10 +142,10 @@ rule main = parse
                   { print_s "<b>";
                     save_state main lexbuf;
                     print_s "</b>"; main lexbuf }
-  | "{\\sc" " "*  | "{\\scshape" " "* | "{\\normalfont" " "* 
-  | "{\\upshape" " "* | "{\\mdseries" " "* | "{\\rmfamily" " "* 
+  | "{\\sc" " "*  | "{\\scshape" " "* | "{\\normalfont" " "*
+  | "{\\upshape" " "* | "{\\mdseries" " "* | "{\\rmfamily" " "*
                   { save_state main lexbuf; main lexbuf }
-  | "{\\tt" " "* | "{\\ttfamily" " "* 
+  | "{\\tt" " "* | "{\\ttfamily" " "*
                   { print_s "<tt>";
                     save_state main lexbuf;
                     print_s "</tt>"; main lexbuf }
@@ -163,7 +166,7 @@ rule main = parse
                     print_s "</tt>"; main lexbuf }
 ***)
 (* Verb, verbatim *)
-  | ("\\verb" | "\\path") _  
+  | ("\\verb" | "\\path") _
                 { verb_delim := Lexing.lexeme_char lexbuf 5;
                   print_s "<tt>"; inverb lexbuf; print_s "</tt>";
                   main lexbuf }
@@ -183,28 +186,28 @@ rule main = parse
                   print_s "<dd>"; main lexbuf }
   | "\\item"    { print_s "<li>"; main lexbuf }
 (* Math mode (hmph) *)
-  | "$"         { math_mode := 
+  | "$"         { math_mode :=
 		    begin
 		      match !math_mode with
 			| MathNone -> MathNoDisplay
 			| MathNoDisplay -> MathNone
 			| MathDisplay -> (* syntax error *) MathNone
-		    end; 
+		    end;
 		  main lexbuf }
-  | "$$"        { math_mode := 
+  | "$$"        { math_mode :=
 		    begin
 		      match !math_mode with
-			| MathNone -> 
+			| MathNone ->
 			    print_s "<blockquote>";
 			    MathDisplay
 			| MathNoDisplay -> MathNoDisplay
-			| MathDisplay -> 
+			| MathDisplay ->
 			    print_s "\n</blockquote>";
 			    MathNone
 		    end;
                   main lexbuf }
 (* \hkip *)
-  | "\\hskip" space* dimension 
+  | "\\hskip" space* dimension
     (space* "plus" space* dimension)? (space* "minus" space* dimension)?
                 { print_s " "; main lexbuf }
 (* Special characters *)
@@ -228,7 +231,7 @@ rule main = parse
 		    save_state main buf;
 		    print_s"</sup>"
 		  end else
-		    print_s "^"; 
+		    print_s "^";
 		  main lexbuf }
   | "_"         { if is_math_mode() then begin
 		    let buf = Lexing.from_string (raw_arg lexbuf) in
@@ -236,7 +239,7 @@ rule main = parse
 		    save_state main buf;
 		    print_s"</sub>"
 		  end else
-		    print_s "_"; 
+		    print_s "_";
 		  main lexbuf }
 (* URLs *)
   | "\\url" { let url = raw_arg lexbuf in
@@ -292,7 +295,7 @@ and inverbatim = parse
   | "\\end{verbatim}" { () }
   | eof         { () }
   | _           { print_c(Lexing.lexeme_char lexbuf 0); inverbatim lexbuf }
-  
+
 and rawhtml = parse
     "\\end{rawhtml}" { () }
   | eof         { () }
@@ -349,7 +352,7 @@ and read_macros = parse
       { let b = raw_arg lexbuf in
 	def_macro s n b;
         read_macros lexbuf }
-  | "\\newcommand" space* 
+  | "\\newcommand" space*
     "{" ("\\" ['a'-'z' 'A'-'Z']+ as s) "}" ("[" (['0'-'9']+ as n) "]")?
       { let b = raw_arg lexbuf in
 	def_macro s n b;
@@ -358,7 +361,7 @@ and read_macros = parse
       { let b = raw_arg lexbuf in
 	def_macro s None b;
         read_macros lexbuf }
-  | eof 
+  | eof
       { () }
-  | _   
+  | _
       { read_macros lexbuf }
