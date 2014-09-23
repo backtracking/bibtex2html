@@ -1,6 +1,6 @@
 ##########################################################################
 #  bibtex2html - A BibTeX to HTML translator                             #
-#  Copyright (C) 1997-2014 Jean-Christophe Filli√¢tre and Claude March√©   #
+#  Copyright (C) 1997-2014 Jean-Christophe Filli‚tre and Claude MarchÈ   #
 #                                                                        #
 #  This software is free software; you can redistribute it and/or        #
 #  modify it under the terms of the GNU General Public                   #
@@ -29,6 +29,9 @@ MANDIR = @mandir@
 
 # where to install the doc
 DOCDIR = $(prefix)/doc/bibtex2html
+
+# only used in target 'binary', only on Linux machines these days
+OSTYPE=linux
 
 #########################################
 # End of configuration part
@@ -100,11 +103,11 @@ win: bibtex2html$(EXE) bib2bib$(EXE) bibtex2html.nsi
 	"/cygdrive/c/Program Files (x86)/NSIS/makensis" /DVERSION=$(VERSION) bibtex2html.nsi
 
 local: bibtex2html bib2bib
-	cp bibtex2html bib2bib aux2bib $$HOME/bin/$$OSTYPE
+	cp bibtex2html bib2bib aux2bib $$HOME/bin/$(OSTYPE)
 	cp *.1 $$HOME/man/man1
 
 demons: bibtex2html bib2bib
-	cp bibtex2html bib2bib aux2bib /users/demons/demons/bin/$$OSTYPE
+	cp bibtex2html bib2bib aux2bib /users/demons/demons/bin/$(OSTYPE)
 	cp *.1 $$HOME/man/man1
 
 bibtex2html$(EXE): $(OBJS)
@@ -143,8 +146,8 @@ bib2bib.static: $(BIB2BIBOBJS)
 	strip $@
 
 static: bibtex2html.static bib2bib.static
-	cp bibtex2html.static $$HOME/bin/$$OSTYPE/bibtex2html
-	cp bib2bib.static $$HOME/bin/$$OSTYPE/bib2bib
+	cp bibtex2html.static $$HOME/bin/$(OSTYPE)/bibtex2html
+	cp bib2bib.static $$HOME/bin/$(OSTYPE)/bib2bib
 
 bibtex_parser.mli bibtex_parser.ml: bibtex_parser.mly
 	ocamlyacc bibtex_parser.mly
