@@ -97,6 +97,7 @@ and control = parse
 | "c{C}"             { add_string "&Ccedil;" ; next_char lexbuf }
 | 'v'                { czech lexbuf }
 | 'u'		     { breve lexbuf }
+| 'H'                { hungarian lexbuf }
 | '~'                { tilde lexbuf }
 |  _                 { add_string "\\" ; add lexbuf ; next_char lexbuf  }
 | eof                { add_string "\\" }
@@ -205,6 +206,15 @@ and breve = parse
 | ('I'|"{I}")   { add_string "&#300;" ; next_char lexbuf }
 | _             { add_string "\\u" ; add lexbuf ; next_char lexbuf }
 |  eof          { add_string "\\u" }
+
+(* called when we have seen "\\H"  *)
+and hungarian = parse
+  ('o'|"{o}")   { add_string "&#337;" ; next_char lexbuf }
+| ('u'|"{u}")   { add_string "&#369;" ; next_char lexbuf }
+| ('O'|"{O}")   { add_string "&#336;" ; next_char lexbuf }
+| ('U'|"{U}")   { add_string "&#368;" ; next_char lexbuf }
+| _             { add_string "\\H" ; add lexbuf ; next_char lexbuf }
+|  eof          { add_string "\\H" }
 
 {
 
