@@ -158,6 +158,9 @@ let header ch =
      (see http://www.lri.fr/~filliatr/bibtex2html/),
      with the following command:
      " Version.version;
+  let argv = Sys.argv in
+  let filename = Array.get argv 0 in
+  Array.set argv 0 (Filename.basename filename);
   Array.iter print_arg Sys.argv;
   output_string ch " -->\n\n"
 
