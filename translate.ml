@@ -450,7 +450,7 @@ let one_entry_summary ch biblio (_,b,((_,k,f) as e)) =
     let links = if !bib_entries then bibtex_entry k :: links else links in
     match make_abstract e with
       | Atext a ->
-	  display_links ch links; display_abstract ch a; Html.paragraph ch
+	  display_links ch links; display_abstract ch a (*; Html.paragraph ch*)
       | Alink l -> display_links ch (links @ [l])
       | No_abstract -> display_links ch links
   end;
