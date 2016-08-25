@@ -110,7 +110,11 @@ let parse_month m =
   else if Str.string_match month_day_re2 m 0 then
     int_of_month (Str.matched_group 3 m), int_of_string (Str.matched_group 1 m)
   else if Str.string_match month_anything m 0 then
-    int_of_month (Str.matched_group 1 m), 1
+    try
+      int_of_month (find_abbrev (Str.matched_group 1 m)), 1
+    with
+      | Not_found ->
+      int_of_month (Str.matched_group 1 m), 1
   else
     int_of_month m, 1
 
