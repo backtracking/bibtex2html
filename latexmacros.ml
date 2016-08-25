@@ -452,6 +452,10 @@ def "\\symbol"
 	      try let n = int_of_string s in print_c (Char.chr n) 
 	      with _ -> ())];
 def "\\html" [Raw_arg print_s];			   
+def "\\textcopyright" [Print "&copy;"];
+def "\\textordfeminine" [Print "&ordf;"];
+def "\\textordmasculine" [Print "&ordm;"];
+def "\\backslash" [Print "&#92;"];
 
 (* hyperref *)
 def "\\href" 
