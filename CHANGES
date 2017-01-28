@@ -1,4 +1,6 @@
 
+ o fixed translation of \@ (to print a space)
+
 Version 1.98, July 4, 2014
 ==========================
  o fixed escaping of character & in URLs
