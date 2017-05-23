@@ -1,6 +1,6 @@
 (**************************************************************************)
 (*  bibtex2html - A BibTeX to HTML translator                             *)
-(*  Copyright (C) 1997-2014 Jean-Christophe Filliâtre and Claude Marché   *)
+(*  Copyright (C) 1997-2014 Jean-Christophe FilliÃ¢tre and Claude MarchÃ©   *)
 (*                                                                        *)
 (*  This software is free software; you can redistribute it and/or        *)
 (*  modify it under the terms of the GNU General Public                   *)
@@ -328,7 +328,7 @@ def "\\u" [Raw_arg(function "a" -> print_s "&#x103;"
 			   | "u" -> print_s "&#x16D;"
 			   | "U" -> print_s "&#x16C;"
 			   | s   -> print_s s)];
-def "\\v" [Raw_arg(function 
+def "\\v" [Raw_arg(function
                      | "C" -> print_s "&#x010C;"
 		     | "c" -> print_s "&#x010D;"
                      | "D" -> print_s "&#270;"
@@ -349,13 +349,13 @@ def "\\v" [Raw_arg(function
                      | "Z" -> print_s "&#381;"
 		     | "z" -> print_s "&#382;"
 		     | s   -> print_s s)];
-def "\\H" [Raw_arg (function 
+def "\\H" [Raw_arg (function
 		      | "O" -> print_s "&#336;"
 		      | "o" -> print_s "&#337;"
 		      | "U" -> print_s "&#368;"
 		      | "u" -> print_s "&#369;"
 		      | s -> print_s s)];
-def "\\r" [Raw_arg (function 
+def "\\r" [Raw_arg (function
 		      | "U" -> print_s "&#366;"
 		      | "u" -> print_s "&#367;"
 		      | s -> print_s s)];
@@ -413,11 +413,11 @@ def "\\inf" [Print "inf"];
 (* Misc. macros. *)
 def "\\TeX" [Print "T<sub>E</sub>X"];
 def "\\LaTeX" [Print "L<sup>A</sup>T<sub>E</sub>X"];
-def "\\LaTeXe" 
+def "\\LaTeXe"
   [Print "L<sup>A</sup>T<sub>E</sub>X&nbsp;2<FONT FACE=symbol>e</FONT>"];
 def "\\tm" [Print "<sup><font size=-1>TM</font></sup>"];
 def "\\par" [Print "<p>"];
-def "\\@" [];
+def "\\@" [Print " "];
 def "\\#" [Print "#"];
 def "\\/" [];
 def "\\-" [];
@@ -447,9 +447,9 @@ def "\\," [];
 def "\\;" [];
 def "\\!" [];
 def "\\hspace" [Skip_arg; Print " "];
-def "\\symbol" 
-  [Raw_arg (function s -> 
-	      try let n = int_of_string s in print_c (Char.chr n) 
+def "\\symbol"
+  [Raw_arg (function s ->
+	      try let n = int_of_string s in print_c (Char.chr n)
 	      with _ -> ())];
 def "\\html" [Raw_arg print_s];			   
 def "\\textcopyright" [Print "&copy;"];
@@ -457,9 +457,10 @@ def "\\textordfeminine" [Print "&ordf;"];
 def "\\textordmasculine" [Print "&ordm;"];
 def "\\backslash" [Print "&#92;"];
 
+
 (* hyperref *)
-def "\\href" 
-  [Print "<a href=\""; Raw_arg print_s; 
+def "\\href"
+  [Print "<a href=\""; Raw_arg print_s;
    Print "\">"; Print_arg; Print "</a>"];
 
 (* Bibliography *)
@@ -472,7 +473,7 @@ def "\\bibitem" [Raw_arg (function r ->
 
 (* Greek letters *)
 (***
-List.iter 
+List.iter
   (fun symbol -> def ("\\" ^ symbol) [Print ("<EM>" ^ symbol ^ "</EM>")])
   ["alpha";"beta";"gamma";"delta";"epsilon";"varepsilon";"zeta";"eta";
    "theta";"vartheta";"iota";"kappa";"lambda";"mu";"nu";"xi";"pi";"varpi";
@@ -525,10 +526,10 @@ def "\\Omega" [Print "&Omega;"];
 (* macros for the AMS styles *)
 
 def "\\bysame" [Print "<u>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</u>"];
-def "\\MR" 
-  [Raw_arg (fun s -> 
-	      let mr = 
-		try 
+def "\\MR"
+  [Raw_arg (fun s ->
+	      let mr =
+		try
 		  let i = String.index s ' ' in
 		  if i=0 then raise Not_found;
 		  String.sub s 0 i
@@ -536,7 +537,7 @@ def "\\MR"
 	      in
 	      print_s "<a href=\"http://www.ams.org/mathscinet-getitem?mr=";
 	      print_s mr; print_s "\">MR "; print_s s; print_s "</a>")];
-def "\\MRhref" 
+def "\\MRhref"
   [Print "<a href=\"http://www.ams.org/mathscinet-getitem?mr=";
    Print_arg; Print "\">"; Print_arg; Print "</a>"];
 
@@ -640,7 +641,7 @@ let html_entities () =
   def "\\cdots" [Print "&sdot;&sdot;&sdot;"];
   def "\\vartheta" [Print "&thetasym;"];
   def "\\angle" [Print "&ang;"];
-  def "\\=" [Raw_arg(function 
+  def "\\=" [Raw_arg(function
     | "a" -> print_s "&abar;"
     | "A" -> print_s "&Abar;"
     | s   -> print_s s)];
@@ -648,7 +649,7 @@ let html_entities () =
   def "---" [Print "&mdash;"];
   ()
 
-(*s Macros for German BibTeX style. *) 
+(*s Macros for German BibTeX style. *)
 
 let is_german_style = function
   | "gerabbrv" | "geralpha" | "gerapali" | "gerplain" | "gerunsrt" -> true
@@ -687,12 +688,12 @@ let init_style_macros st =
       ];
     List.iter (fun (m,s) -> def m [ Skip_arg; Print s])
       [ "\\btxetallong", "et alii";
-	"\\btxandshort", "und"; 
+	"\\btxandshort", "und";
 	"\\btxandlong", "und";
-	"\\btxinlong", "in:"; 
+	"\\btxinlong", "in:";
 	"\\btxinshort", "in:";
 	"\\btxofseriesshort", "d. Reihe";
-	"\\btxinseriesshort", "in"; 
+	"\\btxinseriesshort", "in";
 	"\\btxofserieslong", "der Reihe";
 	"\\btxinserieslong", "in";
 	"\\btxeditorlong", "Herausgeber";
@@ -717,7 +718,7 @@ let init_style_macros st =
 	"\\Btxtechreplong", "Technischer Bericht";
 	"\\btxmonjanlong", "Januar";
 	"\\btxmonfeblong", "Februar";
-	"\\btxmonmarlong", "M�rz";
+	"\\btxmonmarlong", "März";
 	"\\btxmonaprlong", "April";
 	"\\btxmonmaylong", "Mai";
 	"\\btxmonjunlong", "Juni";
@@ -727,7 +728,7 @@ let init_style_macros st =
 	"\\btxmonoctlong", "Oktober";
 	"\\btxmonnovlong", "November";
 	"\\btxmondeclong", "Dezember";
-	"\\btxmonmarshort", "M�rz";
+	"\\btxmonmarshort", "März";
 	"\\btxmonmayshort", "Mai";
 	"\\btxmonjunshort", "Juni";
 	"\\btxmonjulshort", "Juli";

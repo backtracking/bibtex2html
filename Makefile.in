@@ -155,9 +155,15 @@ bibtex_parser.mli bibtex_parser.ml: bibtex_parser.mly
 condition_parser.mli condition_parser.ml: condition_parser.mly
 	ocamlyacc condition_parser.mly
 
+ifdef SOURCE_DATE_EPOCH
+BUILD_DATE=$(shell date -u -d "@$(SOURCE_DATE_EPOCH)" 2>/dev/null || date -u -r "$(SOURCE_DATE_EPOCH)" 2>/dev/null || date)
+else
+BUILD_DATE=$(shell date)
+endif
+
 version.ml: Makefile
-	echo "let version = \""$(VERSION)"\"" > version.ml
-	echo "let date = \""`date`"\"" >> version.ml
+	echo "let version = \""$(VERSION)"\"" > $@
+	echo 'let date = "'"$(BUILD_DATE)"'"' >> $@
 
 version.tex: Makefile
 	printf "\\\newcommand{\\\version}{$(VERSION)}" > version.tex
