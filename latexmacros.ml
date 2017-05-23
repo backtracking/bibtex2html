@@ -1,6 +1,6 @@
 (**************************************************************************)
 (*  bibtex2html - A BibTeX to HTML translator                             *)
-(*  Copyright (C) 1997-2014 Jean-Christophe FilliÃ¢tre and Claude MarchÃ©   *)
+(*  Copyright (C) 1997-2014 Jean-Christophe Filliâtre and Claude Marché   *)
 (*                                                                        *)
 (*  This software is free software; you can redistribute it and/or        *)
 (*  modify it under the terms of the GNU General Public                   *)
@@ -451,7 +451,7 @@ def "\\symbol"
   [Raw_arg (function s ->
 	      try let n = int_of_string s in print_c (Char.chr n)
 	      with _ -> ())];
-def "\\html" [Raw_arg print_s];			   
+def "\\html" [Raw_arg print_s];
 def "\\textcopyright" [Print "&copy;"];
 def "\\textordfeminine" [Print "&ordf;"];
 def "\\textordmasculine" [Print "&ordm;"];

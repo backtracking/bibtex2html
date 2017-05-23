@@ -22,7 +22,7 @@ open Bibtex
 type fields = (string * string) list
 
 type entry = entry_type * key * fields
-		
+
 
 let abbrev_table = Hashtbl.create 97
 
@@ -31,7 +31,7 @@ let add_abbrev a s = Hashtbl.add abbrev_table a s
 let find_abbrev s = Hashtbl.find abbrev_table s
 
 (* months are predefined abbreviations *)
-let () = 
+let () =
   List.iter (fun (id,m) -> add_abbrev id m)
   [ "jan", "January" ;
     "feb", "February" ;
@@ -47,7 +47,7 @@ let () =
     "dec", "December" ]
 
 let rec expand_list = function
-  | [] -> 
+  | [] ->
       ""
   | (Id s) :: rem ->
       (try find_abbrev s with Not_found -> s) ^ (expand_list rem)
@@ -55,9 +55,9 @@ let rec expand_list = function
       s ^ (expand_list rem)
 
 let rec expand_fields = function
-  | [] -> 
+  | [] ->
       []
-  | (n,l) :: rem -> 
+  | (n,l) :: rem ->
       (n,expand_list l) :: (expand_fields rem)
 
 let macros_in_preamble s =
@@ -65,13 +65,13 @@ let macros_in_preamble s =
     let lb = Lexing.from_string s in Latexscan.read_macros lb
   with _ -> ()
 
-let rec expand biblio = 
-  Bibtex.fold 
+let rec expand biblio =
+  Bibtex.fold
     (fun command accu ->
        match command with
 	 | Abbrev (a,l) ->
 	     let s = expand_list l in
-	     add_abbrev a s; 
+	     add_abbrev a s;
 	     accu
 	 | Entry (t,k,f) ->
 	     (t,k,expand_fields f) :: accu
@@ -79,7 +79,7 @@ let rec expand biblio =
 	     let s = expand_list l in
 	     macros_in_preamble s;
 	     accu
-	 | Comment _ -> accu)	
+	 | Comment _ -> accu)
     biblio
     []
 
@@ -96,7 +96,7 @@ let int_of_month = function
   | "Août" | "August" -> 7
   | "Septembre" | "September" -> 8
   | "Octobre" | "October" -> 9
-  | "Novembre" | "November" -> 10 
+  | "Novembre" | "November" -> 10
   | "Décembre" | "December" -> 11
   | _ -> invalid_arg "int_of_month"
 
@@ -112,8 +112,7 @@ let parse_month m =
   else if Str.string_match month_anything m 0 then
     try
       int_of_month (find_abbrev (Str.matched_group 1 m)), 1
-    with
-      | Not_found ->
+    with Not_found -> (* be Mendeley-friendly *)
       int_of_month (Str.matched_group 1 m), 1
   else
     int_of_month m, 1
@@ -125,7 +124,7 @@ let dummy_date = { year = 0; month = 0; day = 0 }
 let extract_year k f =
   try
     int_of_string (List.assoc "year" f)
-  with Failure "int_of_string" ->
+  with Failure _ ->
     if not !Options.quiet then
       eprintf "Warning: incorrect year in entry %s@." k;
     if !Options.warn_error then exit 2;
@@ -134,12 +133,12 @@ let extract_year k f =
 let extract_month k f =
   try
     parse_month (List.assoc "month" f)
-  with 
+  with
     | Not_found ->
 	0,1
     | _ ->
 	if not !Options.quiet then
-	  eprintf "Warning: incorrect month in entry %s\n" k; 
+	  eprintf "Warning: incorrect month in entry %s\n" k;
 	if !Options.warn_error then exit 2;
 	0,1
 
@@ -170,9 +169,9 @@ let combine_comp c d =
 let date_compare el e1 e2 =
   let d1 = extract_date el e1 in
   let d2 = extract_date el e2 in
-  combine_comp 
+  combine_comp
     (d1.year - d2.year)
-    (combine_comp 
+    (combine_comp
        (d1.month - d2.month)
        (d1.day - d2.day))
 
@@ -188,4 +187,3 @@ let get_year e = get_lowercase_field e "year"
 let get_month e = get_lowercase_field e "month"
 
 let get_author e = get_lowercase_field e "author"
-
