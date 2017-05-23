@@ -158,6 +158,9 @@ let header ch =
      (see http://www.lri.fr/~filliatr/bibtex2html/),
      with the following command:
      " Version.version;
+  let argv = Sys.argv in
+  let filename = Array.get argv 0 in
+  Array.set argv 0 (Filename.basename filename);
   Array.iter print_arg Sys.argv;
   output_string ch " -->\n\n"
 
@@ -450,7 +453,7 @@ let one_entry_summary ch biblio (_,b,((_,k,f) as e)) =
     let links = if !bib_entries then bibtex_entry k :: links else links in
     match make_abstract e with
       | Atext a ->
-	  display_links ch links; display_abstract ch a; Html.paragraph ch
+	  display_links ch links; display_abstract ch a (*; Html.paragraph ch*)
       | Alink l -> display_links ch (links @ [l])
       | No_abstract -> display_links ch links
   end;
