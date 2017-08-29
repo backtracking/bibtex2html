@@ -1,4 +1,5 @@
 
+ o fixed scanning of macro arguments (with long BibTeX fields)
  o fixed translation of \@ (to print a space)
 
 Version 1.98, July 4, 2014

@@ -110,7 +110,7 @@
     let rec exec = function
     | Print str -> print_s str
     | Print_arg -> print_arg lexbuf
-    | Raw_arg f -> f (raw_arg lexbuf)
+    | Raw_arg f -> let s = raw_arg lexbuf in f s
     | Skip_arg -> save_nesting skip_arg lexbuf
     | Recursive s -> main (Lexing.from_string s)
     | Parameterized f ->
@@ -324,7 +324,7 @@ and skip_arg = parse
   | _           { if !brace_nesting > 0 then skip_arg lexbuf }
 
 and raw_arg = parse
-    " "         { raw_arg lexbuf }
+  | " " | "\n"  { raw_arg lexbuf }
   | '{'         { nested_arg lexbuf }
   | "["         { skip_optional_arg lexbuf; raw_arg lexbuf }
   | '\\' ['A'-'Z' 'a'-'z']+
