@@ -45,15 +45,17 @@ INSTALLATION
 
   You need Objective Caml >= 3.07 to compile the sources.
  
-  1. Configure with "./configure"
+  1. Create the configure script with `autoconf`
+  
+  2. Configure with "./configure"
 
-  2. Compile with "make".  
+  3. Compile with "make".  
      It creates two binary files, "bibtex2html" and "bib2bib" .
 
      If you want  to build the documentation, do  "make doc" (You need
      both LaTeX and Hevea).
 
-  2. Install with "make install".  You may need superuser permissions.
+  4. Install with "make install".  You may need superuser permissions.
 
      (Note:  you  can  also  just  copy the  two  executables  in  any
       directory of your choice)
