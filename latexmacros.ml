@@ -188,6 +188,7 @@ def "\\DH" [Print "&ETH;"];
 def "\\dj" [Print "&#273;"];
 def "\\DJ" [Print "&#272;"];
 def "\\ss" [Print "&szlig;"];
+def "\\rq" [Print "&rsquo;"];
 def "\\'" [Raw_arg(function "e" -> print_s "&eacute;"
                           | "E" -> print_s "&Eacute;"
 			  | "a" -> print_s "&aacute;"
