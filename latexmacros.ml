@@ -113,7 +113,7 @@ def "\\textsi" [Print "<i>" ; Print_arg ; Print "</i>"];
 (* Basic color support. *)
 
 def "\\textcolor" [ Parameterized (function name ->
-  match String.lowercase name with
+  match String.lowercase_ascii name with
   (* At the moment, we support only the 16 named colors defined in HTML 4.01. *)
   | "black" | "silver" | "gray" | "white" | "maroon" | "red" | "purple" | "fuchsia"
   | "green" | "lime" | "olive" | "yellow" | "navy" | "blue" | "teal" | "aqua" ->

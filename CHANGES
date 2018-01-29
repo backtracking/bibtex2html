@@ -1,4 +1,6 @@
 
+ * fixed unsafe use of strings; now requires OCaml 4.03 or higher
+ o removed many warnings
  o added translation of \rq
  o fixed scanning of macro arguments (with long BibTeX fields)
  o fixed translation of \@ (to print a space)

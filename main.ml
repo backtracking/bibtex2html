@@ -89,7 +89,7 @@ let sort_entries entries bibitems =
   in
   let sl =
     if !sort = By_date then
-      Sort.list (fun (_,_,e1) (_,_,e2) -> Expand.date_order entries e1 e2) el
+      List.sort (fun (_,_,e1) (_,_,e2) -> Expand.date_compare entries e1 e2) el
     else
       el
   in

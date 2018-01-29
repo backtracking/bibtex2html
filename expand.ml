@@ -177,7 +177,7 @@ let date_compare el e1 e2 =
 
 (*s Access to the fields. *)
 
-let get_field (_,_,f) s = List.assoc (String.lowercase s) f
+let get_field (_,_,f) s = List.assoc (String.lowercase_ascii s) f
 let get_lowercase_field (_,_,f) s = List.assoc s f
 
 let get_title e = get_lowercase_field e "title"
