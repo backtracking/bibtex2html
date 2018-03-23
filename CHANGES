@@ -1,5 +1,7 @@
 
- * fixed unsafe use of strings; now requires OCaml 4.03 or higher
+Version 1.99, March 23, 2018
+============================
+ * fixed unsafe use of strings; now requires OCaml >= 4.03
  o removed many warnings
  o added translation of \rq
  o fixed scanning of macro arguments (with long BibTeX fields)

@@ -37,7 +37,7 @@ OSTYPE=linux
 # End of configuration part
 #########################################
 
-VERSION=1.98
+VERSION=1.99
 
 OCAMLC   = @OCAMLC@
 OCAMLOPT = @OCAMLOPT@
