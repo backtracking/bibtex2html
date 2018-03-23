@@ -1,4 +1,6 @@
 
+ o added a 'make uninstall'
+
 Version 1.99, March 23, 2018
 ============================
  * fixed unsafe use of strings; now requires OCaml >= 4.03
