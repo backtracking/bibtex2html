@@ -32,12 +32,13 @@ let get_input_file_name f =
   input_file_names := f :: !input_file_names
 
 let condition = ref Condition.True
+let warn_condition = ref Condition.True
 
-let add_condition c =
+let add_condition rc c =
   try
     let c = Parse_condition.condition c in
-    condition := if !condition = Condition.True then c
-    else Condition.And(!condition,c)
+    rc := if !rc = Condition.True then c
+    else Condition.And(!rc,c)
   with
       Condition_lexer.Lex_error msg ->
 	prerr_endline ("Lexical error in condition: "^msg);
@@ -71,7 +72,11 @@ let args_spec =
      "<f> uses <f> as name for output citations file");
     ("--php-output", Arg.String (fun f -> php_output_file_name := f),
      "<f> outputs resulting bibliography in PHP syntax in file <f>");
-    ("-c", Arg.String (add_condition),"<c> adds <c> as a filter condition");
+    ("-c", Arg.String (add_condition condition),
+     "<c> adds <c> as a filter condition");
+    ("-wc", Arg.String (add_condition warn_condition),
+     "<c> generates a warning for each entry that does not satisfy condition \
+<c>");
     ("-w", Arg.Set Options.warn_error, "stop on warning");
     ("--warn-error", Arg.Set Options.warn_error, "stop on warning");
     ("-d", Arg.Set Options.debug, "debug flag");
@@ -265,8 +270,17 @@ let main () =
   let abbrv_expanded = Bibtex.expand_abbrevs all_entries in
   let xref_expanded = Bibtex.expand_crossrefs abbrv_expanded in
   let matching_keys =
-    Bibfilter.filter xref_expanded
-      (fun e k f -> Condition.evaluate_cond e k f !condition)
+    Bibfilter.filter
+      xref_expanded
+      (fun e k f ->
+        if not (Condition.evaluate_cond e k f !warn_condition) then begin
+          if not !Options.quiet then
+            eprintf
+              "Warning: entry %s does not satisfy the input condition.\n"
+              k;
+          if !Options.warn_error then exit 2
+        end;
+        Condition.evaluate_cond e k f !condition)
   in
   if KeySet.cardinal matching_keys = 0 then
     begin
