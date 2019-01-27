@@ -1,4 +1,5 @@
-
+ o default DOI prefix is now https://doi.org/, as recommended in the official
+   crossref guidelines
  o option "--expand" also expands each abbreviation between keyword "and" in
    an author list
  o bib2bib: added option -wc <c> that emits a warning if condition <c> is not

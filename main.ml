@@ -365,7 +365,7 @@ Usage: bibtex2html <options> [filename]
              do not print the keywords (if any)
   -nodoi     do not insert the DOI links
   -doi-prefix url
-             set the DOI links prefix (default is http://dx.doi.org/)
+             set the DOI links prefix (default is https://doi.org/)
   -noeprint  do not insert the eprint links
   -eprint-prefix url
              set the eprint links prefix (default is http://arxiv.org/abs/)
