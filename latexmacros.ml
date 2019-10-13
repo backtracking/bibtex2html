@@ -189,6 +189,13 @@ def "\\dj" [Print "&#273;"];
 def "\\DJ" [Print "&#272;"];
 def "\\ss" [Print "&szlig;"];
 def "\\rq" [Print "&rsquo;"];
+def "\\spadesuit" [Print "&#x2660;"];
+def "\\heartsuit" [Print "&#x2661;"];
+def "\\diamondsuit" [Print "&#x2662;"];
+def "\\clubsuit" [Print "&#x2663;"];
+def "\\flat" [Print "&#x266d;"];
+def "\\natural" [Print "&#x266e;"];
+def "\\sharp" [Print "&#x266f;"];
 def "\\'" [Raw_arg(function "e" -> print_s "&eacute;"
                           | "E" -> print_s "&Eacute;"
 			  | "a" -> print_s "&aacute;"
@@ -218,7 +225,7 @@ def "\\'" [Raw_arg(function "e" -> print_s "&eacute;"
 			  | "z" -> print_s "&#x179;"
 			  | "Z" -> print_s "&#x17a;"
 			  | ""  -> print_c '\''
-                          | s   -> print_s s)];
+                          | s   -> print_s s ; print_s "&#x0301;")];
 def "\\`" [Raw_arg(function "e" -> print_s "&egrave;"
                           | "E" -> print_s "&Egrave;"
                           | "a" -> print_s "&agrave;"
@@ -232,7 +239,7 @@ def "\\`" [Raw_arg(function "e" -> print_s "&egrave;"
                           | "U" -> print_s "&Ugrave;"
 			  | "`"  -> print_s "&ldquo;"
 			  | ""  -> print_s "&lsquo;"
-                          | s   -> print_s s)];
+			  | s -> print_s s ; print_s "&#x0300;")];
 def "\\~" [Raw_arg(function "n" -> print_s "&ntilde;"
 		          | "N" -> print_s "&Ntilde;"
 		          | "o" -> print_s "&otilde;"
@@ -242,10 +249,11 @@ def "\\~" [Raw_arg(function "n" -> print_s "&ntilde;"
 			  | "I" -> print_s "&#x128;"
 		          | "a" -> print_s "&atilde;"
 		          | "A" -> print_s "&Atilde;"
-			  | "u" -> print_s "&#169;"
-			  | "U" -> print_s "&#168;"
+			  | "u" -> print_s "&#x169;"
+			  | "U" -> print_s "&#x168;"
 		          | ""  -> print_s "&tilde;"
-                          | s   -> print_s s)];
+                          | s -> print_s s ; print_s "&#x0303;")];
+def "\\=" [Raw_arg(function s -> print_s s ; print_s "&#x0304;")];
 def "\\k" [Raw_arg(function "A" -> print_s "&#260;"
                           | "a" -> print_s "&#261;"
                           | "i" -> print_s "&#302;"
@@ -270,7 +278,110 @@ def "\\^" [Raw_arg(function "a" -> print_s "&acirc;"
                           | "y" -> print_s "&#x177;"
                           | "Y" -> print_s "&#x176;"
 			  | ""  -> print_c '^'
-                          | s   -> print_s s)];
+                          | "j" -> print_s "&#x0237;&#x0302;"
+                          | s   -> print_s s ; print_s "&#x0302;")];
+def "\\c" [Raw_arg(function "C" -> print_s "&#x00c7;" (* cedilla accent *)
+                          | "C" -> print_s "&#x00C7;"
+                          | "c" -> print_s "&#x00E7;"
+                          | "D" -> print_s "&#x1E10;"
+                          | "d" -> print_s "&#x1E11;"
+                          | "E" -> print_s "&#x0228;"
+                          | "e" -> print_s "&#x0229;"
+                          | "G" -> print_s "&#x0122;"
+                          | "g" -> print_s "&#x0123;"
+                          | "H" -> print_s "&#x1E28;"
+                          | "h" -> print_s "&#x1E29;"
+                          | "K" -> print_s "&#x0136;"
+                          | "k" -> print_s "&#x0137;"
+                          | "L" -> print_s "&#x013B;"
+                          | "l" -> print_s "&#x013C;"
+                          | "N" -> print_s "&#x0145;"
+                          | "n" -> print_s "&#x0146;"
+                          | "R" -> print_s "&#x0156;"
+                          | "r" -> print_s "&#x0157;"
+                          | "S" -> print_s "&#x015E;"
+                          | "s" -> print_s "&#x015F;"
+                          | "T" -> print_s "&#x0162;"
+                          | "t" -> print_s "&#x0163;"
+			  | s -> print_s s ; print_s "&#x0327;")];
+def "\\d" [Raw_arg(function "A" -> print_s "&#x1EA0;" (* dot-under accent *)
+                         | "a" -> print_s "&#x1EA1;"
+                         | "B" -> print_s "&#x1E04;"
+                         | "b" -> print_s "&#x1E05;"
+                         | "D" -> print_s "&#x1E0C;"
+                         | "d" -> print_s "&#x1E0D;"
+                         | "E" -> print_s "&#x1EB8;"
+                         | "e" -> print_s "&#x1EB9;"
+                         | "H" -> print_s "&#x1E24;"
+                         | "h" -> print_s "&#x1E25;"
+                         | "I" -> print_s "&#x1ECA;"
+                         | "i" -> print_s "&#x1ECB;"
+                         | "K" -> print_s "&#x1E32;"
+                         | "k" -> print_s "&#x1E33;"
+                         | "L" -> print_s "&#x1E36;"
+                         | "l" -> print_s "&#x1E37;"
+                         | "M" -> print_s "&#x1E42;"
+                         | "m" -> print_s "&#x1E43;"
+                         | "N" -> print_s "&#x1E46;"
+                         | "n" -> print_s "&#x1E47;"
+                         | "O" -> print_s "&#x1ECC;"
+                         | "o" -> print_s "&#x1ECD;"
+                         | "R" -> print_s "&#x1E5A;"
+                         | "r" -> print_s "&#x1E5B;"
+                         | "S" -> print_s "&#x1E62;"
+                         | "s" -> print_s "&#x1E63;"
+                         | "T" -> print_s "&#x1E6C;"
+                         | "t" -> print_s "&#x1E6D;"
+                         | "U" -> print_s "&#x1EE4;"
+                         | "u" -> print_s "&#x1EE5;"
+                         | "V" -> print_s "&#x1E7E;"
+                         | "v" -> print_s "&#x1E7F;"
+                         | "W" -> print_s "&#x1E88;"
+                         | "w" -> print_s "&#x1E89;"
+                         | "Y" -> print_s "&#x1EF4;"
+                         | "y" -> print_s "&#x1EF5;"
+                         | "Z" -> print_s "&#x1E92;"
+                         | "z" -> print_s "&#x1E93;"
+                         |  s -> print_s s ; print_s "&#x0323;")];
+def "\\b" [Raw_arg(function "B" -> print_s "&#x1E06;"  (* bar-under accent *)
+                         | "b" -> print_s "&#x1E07;"
+                         | "D" -> print_s "&#x1E0E;"
+                         | "d" -> print_s "&#x1E0F;"
+                         | "h" -> print_s "&#x1E96;"
+                         | "K" -> print_s "&#x1E34;"
+                         | "k" -> print_s "&#x1E35;"
+                         | "L" -> print_s "&#x1E3A;"
+                         | "l" -> print_s "&#x1E3B;"
+                         | "N" -> print_s "&#x1E48;"
+                         | "n" -> print_s "&#x1E49;"
+                         | "R" -> print_s "&#x1E5E;"
+                         | "r" -> print_s "&#x1E5F;"
+                         | "T" -> print_s "&#x1E6E;"
+                         | "t" -> print_s "&#x1E6F;"
+                         | "Z" -> print_s "&#x1E94;"
+                         | "z" -> print_s "&#x1E95;"
+                         | s -> print_s s ; print_s "&#x0331;")];
+def "\\t" [Raw_arg(function s   -> print_s s ; print_s "&#x0361;")]; (* tie-after accent *)
+  def "\\tilde"          [Raw_arg (function "i" -> print_s "<em>&#x129;</em>"
+                                          | "j" -> print_s "<em>&#x237;&#x0303;</em>"
+                                          | s -> print_s "<em>" ; print_s s ; print_s "&#x0303;</em>")];
+  def "\\bar"		 [Raw_arg (function "i" -> print_s "<em>&#x131;&#x0304;</em>"
+                                          | "j" -> print_s "<em>&#x237;&#x0304;</em>"
+                                          | s -> print_s "<em>" ; print_s s ; print_s "&#x0304;</em>")];
+  def "\\overbar"	 [Raw_arg (function "i" -> print_s "<em>&#x131;&#x0305;</em>"
+                                          | "j" -> print_s "<em>&#x237;&#x0305;</em>"
+                                          | s -> print_s "<em>" ; print_s s ; print_s "&#x0305;</em>")];
+  def "\\vec"		 [Raw_arg (function "i" -> print_s "<em>&#x131;&#x20d7;</em>"
+                                          | "j" -> print_s "<em>&#x237;&#x20d7;</em>"
+                                          | s -> print_s "<em>" ; print_s s ; print_s "&#x20d7;</em>")];
+  def "\\overrightarrow" [Raw_arg (function "i" -> print_s "<em>&#x131;&#x20d7;</em>"
+                                          | "j" -> print_s "<em>&#x237;&#x20d7;</em>"
+                                          | s -> print_s "<em>" ; print_s s ; print_s "&#x20d7;</em>")];
+  def "\\overleftarrow"	 [Raw_arg (function "i" -> print_s "<em>&#x131;&#x20d6;</em>"             
+                                         | "j" -> print_s "<em>&#x237;&#x20d6;</em>"			  
+                                         | s -> print_s "<em>" ; print_s s ; print_s "&#x20d6;</em>")];
+def "\\grave" [Raw_arg(function s -> print_s "<em>" ; print_s s ; print_s "&#x0300;</em>")];
+def "\\acute" [Raw_arg(function s -> print_s "<em>" ; print_s s ; print_s "&#x0301;</em>")];
 def "\\hat" [Raw_arg(function "a" -> print_s "<em>&acirc;</em>"
                           | "A" -> print_s "<em>&Acirc;</em>"
                           | "e" -> print_s "<em>&ecirc;</em>"
@@ -283,7 +394,47 @@ def "\\hat" [Raw_arg(function "a" -> print_s "<em>&acirc;</em>"
                           | "u" -> print_s "<em>&ucirc;</em>"
                           | "U" -> print_s "<em>&Ucirc;</em>"
 			  | ""  -> print_c '^'
-                          | s   -> print_s s)];
+                          | s   -> print_s "<em>" ; print_s s ; print_s "&#x0302;</em>")];
+def "\\breve" [Raw_arg(function "a" -> print_s "<em>&abreve;</em>"
+                          | "A" -> print_s "<em>&Abreve;</em>"
+                          | "u" -> print_s "<em>&ubreve;</em>"
+                          | "U" -> print_s "<em>&Ubreve;</em>"
+			  | ""  -> print_c '^'
+                          | s   -> print_s "<em>" ; print_s s ; print_s "&#x0306;</em>")];
+def "\\dot" [Raw_arg(function "C" -> print_s "<em>&Cdot;</em>"
+                          | "c" -> print_s "<em>&cdot;</em>"
+                          | "e" -> print_s "<em>&edot;</em>"
+                          | "E" -> print_s "<em>&Edot;</em>"
+                          | "g" -> print_s "<em>&gdot;</em>"
+                          | "G" -> print_s "<em>&Gdot;</em>"
+                          | "I" -> print_s "<em>&Idot;</em>"
+                          | "Z" -> print_s "<em>&Zdot;</em>"
+                          | "z" -> print_s "<em>&zdot;</em>"
+                          | ""  -> print_s "<em>&#x02d9;</em>"
+                          | s   -> print_s "<em>" ; print_s s ; print_s "&#x0307;</em>")];
+def "\\ddot" [Raw_arg(function "i" -> print_s "<em>&#x0131;&#x0308;</em>"
+                            | "j" -> print_s "<em>&#x0237;&#x0308;</em>"
+                            | s   ->  print_s "<em>" ; print_s s ; print_s "&#x0308;</em>")];
+def "\\check" [Raw_arg(function "C" -> print_s "<em>&Ccaron;</em>"
+                          | "c" -> print_s "<em>&ccaron;</em>"
+                          | "D" -> print_s "<em>&Dcaron;</em>"
+                          | "d" -> print_s "<em>&dcaron;</em>"
+                          | "E" -> print_s "<em>&Ecaron;</em>"
+                          | "e" -> print_s "<em>&ecaron;</em>"
+                          | "L" -> print_s "<em>&Lcaron;</em>"
+                          | "l" -> print_s "<em>&lcaron;</em>"
+                          | "N" -> print_s "<em>&Ncaron;</em>"
+                          | "n" -> print_s "<em>&ncaron;</em>"
+                          | "R" -> print_s "<em>&Rcaron;</em>"
+                          | "r" -> print_s "<em>&rcaron;</em>"
+                          | "S" -> print_s "<em>&Scaron;</em>"
+                          | "s" -> print_s "<em>&scaron;</em>"
+                          | "T" -> print_s "<em>&Tcaron;</em>"
+                          | "t" -> print_s "<em>&tcaron;</em>"
+                          | "Z" -> print_s "<em>&Zcaron;</em>"
+                          | "z" -> print_s "<em>&zcaron;</em>"
+                          | ""  -> print_s "<em>&#x02c7;</em>"
+                          | s   -> print_s "<em>" ; print_s s ; print_s "&#x030c;</em>")];
 def "\\\"" [Raw_arg(function "e" -> print_s "&euml;"
                           | "E" -> print_s "&Euml;"
                           | "a" -> print_s "&auml;"
@@ -297,7 +448,7 @@ def "\\\"" [Raw_arg(function "e" -> print_s "&euml;"
                           | "U" -> print_s "&Uuml;"
                           | "y" -> print_s "&yuml;"
                           | "Y" -> print_s "&Yuml;"
-                          | s   -> print_s s)];
+                          | s   -> print_s s ; print_s "&#x0308;")];
 def "\\d" [Raw_arg print_s ];
 def "\\." [Raw_arg (function "a" -> print_s "&#x227;"
 			   | "A" -> print_s "&#x226;"
@@ -314,21 +465,21 @@ def "\\." [Raw_arg (function "a" -> print_s "&#x227;"
 			   | "O" -> print_s "&#558;"
 			   | "z" -> print_s "&#380;"
 			   | "Z" -> print_s "&#379;"
-			   | s   -> print_s s)];
+			   | s   -> print_s s ; print_s "&#x0307;")];
 def "\\u" [Raw_arg(function "a" -> print_s "&#x103;"
 			   | "A" -> print_s "&#x102;"
 			   | "e" -> print_s "&#x115;"
 			   | "E" -> print_s "&#x114;"
-			   | "i" -> print_s "&#x12C;"
-			   | "\\i" -> print_s "&#x12C;"
-			   | "I" -> print_s "&#x12D;"
+			   | "i" -> print_s "&#x12d;"
+			   | "\\i" -> print_s "&#x12d;"
+			   | "I" -> print_s "&#x12c;"
 			   | "g" -> print_s "&#x11F;"
 			   | "G" -> print_s "&#x11E;"
 			   | "o" -> print_s "&#x14F;"
 			   | "O" -> print_s "&#x14E;"
 			   | "u" -> print_s "&#x16D;"
 			   | "U" -> print_s "&#x16C;"
-			   | s   -> print_s s)];
+			   | s   -> print_s s ; print_s "&#x0306;")];
 def "\\v" [Raw_arg(function
                      | "C" -> print_s "&#x010C;"
 		     | "c" -> print_s "&#x010D;"
@@ -349,13 +500,13 @@ def "\\v" [Raw_arg(function
                      | "I" -> print_s "&#X012C;"
                      | "Z" -> print_s "&#381;"
 		     | "z" -> print_s "&#382;"
-		     | s   -> print_s s)];
+		     | s   -> print_s s ; print_s "&#x030c;")];
 def "\\H" [Raw_arg (function
 		      | "O" -> print_s "&#336;"
 		      | "o" -> print_s "&#337;"
 		      | "U" -> print_s "&#368;"
 		      | "u" -> print_s "&#369;"
-		      | s -> print_s s)];
+		      | s -> print_s s ; print_s "&#x030b;")];
 def "\\r" [Raw_arg (function
 		      | "U" -> print_s "&#366;"
 		      | "u" -> print_s "&#367;"
@@ -414,6 +565,33 @@ def "\\tan" [Print "tan "];
 def "\\over" [Print "/"];
 def "\\lbrace" [Print "{"];
 def "\\rbrace" [Print "}"];
+def "\\cap" [Print "&#x2229;"];
+def "\\wr" [Print "&#x2240;"];
+def "\\uplus" [Print "&#x228e;"];
+def "\\sqcap" [Print "&#x2293;"];
+def "\\sqcup" [Print "&#x2294;"];
+def "\\ominus" [Print "&#x2296;"];
+def "\\oslash" [Print "&#x2298;"];
+def "\\odot" [Print "&#x2299;"];
+def "\\star" [Print "&#x22c6;"];
+def "\\bigtriangleup" [Print "&#x25b3;"];
+def "\\bigtriangleright" [Print "&#x25b7;"];
+def "\\bigtriangledown" [Print "&#x25bd;"];
+def "\\bigtriangleleft" [Print "&#x25c1;"];
+def "\\setminus" [Print "&#x29f5;"];
+def "\\amalg" [Print "&#x2a3f;"];
+def "\\prime" [Print "&#x2032;"];
+def "\\surd" [Print "&#x221a;"];
+def "\\top" [Print "&#x22a4;"];
+def "\\bot" [Print "&#x22a5;"];
+def "\\hookleftarrow" [Print "&#x21a9;"];
+def "\\hookrightarrow" [Print "&#x21aa;"];
+def "\\leftharpoonup" [Print "&#x21bc;"];
+def "\\leftharpoondown" [Print "&#x21bd;"];
+def "\\rightharpoonup" [Print "&#x21c0;"];
+def "\\rightharpoondown" [Print "&#x21c1;"];
+def "\\imath" [Print "&#x1d6a4;"];
+def "\\jmath" [Print "&#x1d6a5;"];
 
 (* Math symbols printed as texts (could we do better?) *)
 def "\\ne" [Print "=/="];
@@ -444,6 +622,10 @@ def "\\parallel" [Print "||"];
 def "\\mid" [Print "|"];
 def "\\cup" [Print "U"];
 def "\\inf" [Print "inf"];
+def "\\div" [Print "/"];
+def "\\quad" [Print "&nbsp;"];
+def "\\qquad" [Print "&nbsp;&nbsp;"];
+
 
 (* Misc. macros. *)
 def "\\TeX" [Print "T<sub>E</sub>X"];
@@ -464,7 +646,6 @@ def "\\bigskip" [];
 def "\\relax" [];
 def "\\markboth" [Skip_arg; Skip_arg];
 def "\\dots" [Print "..."];
-def "\\dot" [Print "."];
 def "\\simeq" [Print "&tilde;="];
 def "\\approx" [Print "&tilde;"];
 def "\\^circ" [Print "&deg;"];
@@ -587,30 +768,94 @@ def "\\citename" [];
 (* dashes *)
 def "--" [Print "--"];
 def "---" [Print "---"];
-
 ()
 
 (* Unicode entities *)
 
 let unicode_entities () =
-  def "\\models" [Print "&#X22A8;"];
+  def "\\models" [Print "&#X22A7;"];
   def "\\curlyvee" [Print "&#X22CE;"];
   def "\\curlywedge" [Print "&#X22CF"];
   def "\\bigcirc" [Print "&#9711;"];
   def "\\varepsilon" [Print "&#603;"];
-  def "\\not" [Raw_arg (function
-    | "\\models" -> print_s "&#8877;"
-    | s -> print_s "not "; print_s s)];
   def "--" [Print "&#x2013;"];
   def "---" [Print "&#x2014;"];
-  def "\\ll" [Print "&#X226a;"];
-  def "\\gg" [Print "&#X226b;"];
+  def "\\ddagger" [Print "&#x2021;"];
+  def "\\leftarrow" [Print "&#x2190;"];
+  def "\\uparrow" [Print "&#x2191;"];
+  def "\\rightarrow" [Print "&#x2192;"];
+  def "\\downarrow" [Print "&#x2193;"];
+  def "\\leftrightarrow" [Print "&#x2194;"];
+  def "\\updownarrow" [Print "&#x2195;"];
+  def "\\nwarrow" [Print "&#x2196;"];
+  def "\\nearrow" [Print "&#x2197;"];
+  def "\\searrow" [Print "&#x2198;"];
+  def "\\swarrow" [Print "&#x2199;"];
+  def "\\mapsto" [Print "&#x21a6;"];
+  def "\\cup" [Print "&#x222a;"];
+  def "\\infty" [Print "&#x221e;"];
+  def "\\angle" [Print "&#x2220;"];
+  def "\\Leftarrow" [Print "&#x21d0;"];
+  def "\\Uparrow" [Print "&#x21d1;"];
+  def "\\Rightarrow" [Print "&#x21d2;"];
+  def "\\Downarrow" [Print "&#x21d3;"];
+  def "\\Leftrightarrow" [Print "&#x21d4;"];
+  def "\\Updownarrow" [Print "&#x21d5;"];
+  def "\\propto" [Print "&#x221d;"];
+  def "\\mid" [Print "&#x2223;"];
+  def "\\parallel" [Print "&#x2225;"];
+  def "\\sim" [Print "&#x223c;"];
+  def "\\simeq" [Print "&#x2243;"];
+  def "\\approx" [Print "&#x2248;"];
+  def "\\asymp" [Print "&#x224d;"];
+  def "\\ne" [Print "&#x2260;"];
+  def "\\equiv" [Print "&#x2261;"];
+  def "\\le" [Print "&#x2264;"];
+  def "\\leq" [Print "&#x2264;"];
+  def "\\ge" [Print "&#x2265;"];
+  def "\\geq" [Print "&#x2265;"];
+  def "\\ll" [Print "&#x226a;"];
+  def "\\gg" [Print "&#x226b;"];
   def "\\ell" [Print "&#X2113;"];
   def "\\int" [Print "&#X222b;"];
   def "\\sum" [Print "&#X2211;"];
   def "\\prod" [Print "&#X220f;"];
   def "\\langle" [Print "&#X27e8;"];
   def "\\rangle" [Print "&#X27e9;"];
+  def "\\prec" [Print "&#x227a;"];
+  def "\\succ" [Print "&#x227b;"];
+  def "\\subset" [Print "&#x2282;"];
+  def "\\supset" [Print "&#x2283;"];
+  def "\\subseteq" [Print "&#x2286;"];
+  def "\\supseteq" [Print "&#x2287;"];
+  def "\\sqsubseteq" [Print "&#x2291;"];
+  def "\\sqsupseteq" [Print "&#x2292;"];
+  def "\\vdash" [Print "&#x22a2;"];
+  def "\\dashv" [Print "&#x22a3;"];
+  def "\\bowtie" [Print "&#x22c8;"];
+  def "\\vdots" [Print "&#x22ee;"];
+  def "\\ddots" [Print "&#x22f1;"];
+  def "\\frown" [Print "&#x2322;"];
+  def "\\smile" [Print "&#x2323;"];
+  def "\\perp" [Print "&#x27c2;"];
+  def "\\longleftarrow" [Print "&#x27f5;"];
+  def "\\longrightarrow" [Print "&#x27f6;"];
+  def "\\longleftrightarrow" [Print "&#x27f7;"];
+  def "\\Longleftarrow" [Print "&#x27f8;"];
+  def "\\Longrightarrow" [Print "&#x27f9;"];
+  def "\\Longleftrightarrow" [Print "&#x27fa;"];
+  def "\\longmapsto" [Print "&#x27fc;"];
+  def "\\preceq" [Print "&#x2aaf;"];
+  def "\\succeq" [Print "&#x2ab0;"];
+  def "\\Im" [Print "&#x2111;"];
+  def "\\wp" [Print "&#x2118;"];
+  def "\\Re" [Print "&#x211c;"];
+  def "\\aleph" [Print "&#x2135;"];
+  def "\\partial" [Print "&#x2202;"];
+  def "\\nabla" [Print "&#x2207;"];
+  def "\\not" [Raw_arg (function s -> print_s "not "; print_s s)];
+  def "\\i" [Print "&#x0131;"];
+  def "\\j" [Print "&#x0237;"];
   ()
 
 let html_entities () =
@@ -627,8 +872,13 @@ let html_entities () =
   def "\\leq" [Print "&le;"];
   def "\\ge" [Print "&ge;"];
   def "\\geq" [Print "&ge;"];
+  def "\\ll" [Print "&NestedLessLess;"];
+  def "\\gg" [Print "&NestedGreaterGreater;"];
+  def "\\prec" [Print "&prec;"];
+  def "\\succ" [Print "&succ;"];
   def "\\neq" [Print "&ne;"];
   def "\\approx" [Print "&asymp;"];
+  def "\\asymp" [Print "&CupCap;"];
   def "\\cong" [Print "&cong;"];
   def "\\equiv" [Print "&equiv;"];
   def "\\propto" [Print "&prop;"];
@@ -636,10 +886,20 @@ let html_entities () =
   def "\\subseteq" [Print "&sube;"];
   def "\\supset" [Print "&sup;"];
   def "\\supseteq" [Print "&supe;"];
+  def "\\sqsubseteq" [Print "&sqsubseteq;"];
+  def "\\sqsupseteq" [Print "&sqsupseteq;"];
+  def "\\vdash" [Print "&vdash;"];
+  def "\\dashv" [Print "&dashv;"];
+  def "\\bowtie" [Print "&bowtie;"];
+  def "\\vdots" [Print "&#x22ee;"]; (* fails: def "\\vdots" [Print "&velip;"]; *)
+  def "\\ddots" [Print "&dtdot;"];
+  def "\\frown" [Print "&frown;"];
+  def "\\smile" [Print "&smile;"];
   def "\\ang" [Print "&ang;"];
   def "\\perp" [Print "&perp;"];
   def "\\therefore" [Print "&there4;"];
   def "\\sim" [Print "&sim;"];
+  def "\\div" [Print "&divide;"];
   def "\\times" [Print "&times;"];
   def "\\ast" [Print "&lowast;"];
   def "\\otimes" [Print "&otimes;"];
@@ -649,6 +909,7 @@ let html_entities () =
   def "\\neg" [Print "&not;"];
   def "\\pm" [Print "&plusmn;"];
   def "\\dagger" [Print "&dagger;"];
+  def "\\ddagger" [Print "&Dagger;"];
   def "\\ne" [Print "&ne;"];
   def "\\in" [Print "&isin;"];
   def "\\notin" [Print "&notin;"];
@@ -661,14 +922,31 @@ let html_entities () =
   def "\\wp" [Print "&weierp;"];
   def "\\emptyset" [Print "&empty;"];
   def "\\nabla" [Print "&nabla;"];
-  def "\\rightarrow" [Print "&rarr;"];
   def "\\to" [Print "&rarr;"];
-  def "\\longrightarrow" [Print "&rarr;"];
-  def "\\Rightarrow" [Print "&rArr;"];
+  def "\\longleftarrow" [Print "&longleftarrow;"];
+  def "\\longrightarrow" [Print "&longrightarrow;"];
+  def "\\longleftrightarrow" [Print "&longleftrightarrow;"];
+  def "\\Longleftarrow" [Print "&#x27f8;"];
+  def "\\Longrightarrow" [Print "&#x27f9;"];
+  def "\\Longleftrightarrow" [Print "&#x27fa;"];
+  def "\\longmapsto" [Print "&longmapsto;"];
+  def "\\preceq" [Print "&PrecedesEqual;"];
+  def "\\succeq" [Print "&SucceedsEqual;"];
   def "\\leftarrow" [Print "&larr;"];
-  def "\\longleftarrow" [Print "&larr;"];
-  def "\\Leftarrow" [Print "&lArr;"];
+  def "\\uparrow"[Print "&uarr;"];
+  def "\\rightarrow" [Print "&rarr;"];
+  def "\\downarrow"[Print "&darr;"];
   def "\\leftrightarrow" [Print "&harr;"];
+  def "\\updownarrow" [Print "&varr;"];
+  def "\\nwarrow" [Print "&nwarr;"];
+  def "\\nearrow" [Print "&nearr;"];
+  def "\\searrow" [Print "&searr;"];
+  def "\\swarrow" [Print "&swarr;"];
+  def "\\mapsto" [Print "&RightTeeArrow;"];
+  def "\\Leftarrow" [Print "&lArr;"];
+  def "\\Uparrow" [Print "&DoubleUpArrow;"];
+  def "\\Rightarrow" [Print "&rArr;"];
+  def "\\Downarrow" [Print "&DoubleDownArrow;"];
   def "\\sum" [Print "&sum;"];
   def "\\prod" [Print "&prod;"];
   def "\\int" [Print "&int;"];
@@ -684,10 +962,6 @@ let html_entities () =
   def "\\cdots" [Print "&sdot;&sdot;&sdot;"];
   def "\\vartheta" [Print "&thetasym;"];
   def "\\angle" [Print "&ang;"];
-  def "\\=" [Raw_arg(function
-    | "a" -> print_s "&abar;"
-    | "A" -> print_s "&Abar;"
-    | s   -> print_s s)];
   def "--" [Print "&ndash;"];
   def "---" [Print "&mdash;"];
   def "\\ll" [Print "&ll;"];
@@ -695,6 +969,8 @@ let html_entities () =
   def "\\ell" [Print "&ell;"];
   def "\\langle" [Print "&langle;"];
   def "\\rangle" [Print "&rangle;"];
+  def "\\i" [Print "&imath;"];
+  def "\\j" [Print "&#x0237;"];
   ()
 
 (*s Macros for German BibTeX style. *)
