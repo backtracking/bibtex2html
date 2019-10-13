@@ -366,7 +366,7 @@ def "\\[" [Print "<blockquote>"];
 def "\\]" [Print "\n</blockquote>"];
 def "\\le" [Print "&lt;="];
 def "\\leq" [Print "&lt;="];
-def "\\log" [Print "log"];
+def "\\log" [Print "log "];
 def "\\ge" [Print "&gt;="];
 def "\\geq" [Print "&gt;="];
 def "\\neq" [Print "&lt;&gt;"];
@@ -380,6 +380,40 @@ def "\\times" [Print "&#215;"];
 def "\\neg" [Print "&#172;"];
 def "\\frac" [Print "("; Print_arg; Print ")/("; Print_arg; Print ")"];
 def "\\not" [Print "not "];
+def "\\arccos" [Print "arccos "];
+def "\\arcsin" [Print "arcsin "];
+def "\\arctan" [Print "arctan "];
+def "\\arg" [Print "arg "];
+def "\\cos" [Print "cos "];
+def "\\cosh" [Print "cosh "];
+def "\\coth" [Print "coth "];
+def "\\cot" [Print "cot "];
+def "\\csc" [Print "csc "];
+def "\\deg" [Print "deg "];
+def "\\det" [Print "det "];
+def "\\dim" [Print "dim "];
+def "\\exp" [Print "exp "];
+def "\\gcd" [Print "gcd "];
+def "\\hom" [Print "hom "];
+def "\\inf" [Print "inf "];
+def "\\ker" [Print "ker "];
+def "\\lg" [Print "lg "];
+def "\\lim" [Print "lim "];
+def "\\liminf" [Print "liminf "];
+def "\\limsup" [Print "limsup "];
+def "\\ln" [Print "ln "];
+def "\\max" [Print "max "];
+def "\\min" [Print "min "];
+def "\\Pr" [Print "Pr "];
+def "\\sec" [Print "sec "];
+def "\\sin" [Print "sin "];
+def "\\sinh" [Print "sinh "];
+def "\\sup" [Print "sup "];
+def "\\tanh" [Print "tanh "];
+def "\\tan" [Print "tan "];
+def "\\over" [Print "/"];
+def "\\lbrace" [Print "{"];
+def "\\rbrace" [Print "}"];
 
 (* Math symbols printed as texts (could we do better?) *)
 def "\\ne" [Print "=/="];
@@ -569,6 +603,14 @@ let unicode_entities () =
     | s -> print_s "not "; print_s s)];
   def "--" [Print "&#x2013;"];
   def "---" [Print "&#x2014;"];
+  def "\\ll" [Print "&#X226a;"];
+  def "\\gg" [Print "&#X226b;"];
+  def "\\ell" [Print "&#X2113;"];
+  def "\\int" [Print "&#X222b;"];
+  def "\\sum" [Print "&#X2211;"];
+  def "\\prod" [Print "&#X220f;"];
+  def "\\langle" [Print "&#X27e8;"];
+  def "\\rangle" [Print "&#X27e9;"];
   ()
 
 let html_entities () =
@@ -648,6 +690,11 @@ let html_entities () =
     | s   -> print_s s)];
   def "--" [Print "&ndash;"];
   def "---" [Print "&mdash;"];
+  def "\\ll" [Print "&ll;"];
+  def "\\gg" [Print "&gg;"];
+  def "\\ell" [Print "&ell;"];
+  def "\\langle" [Print "&langle;"];
+  def "\\rangle" [Print "&rangle;"];
   ()
 
 (*s Macros for German BibTeX style. *)
