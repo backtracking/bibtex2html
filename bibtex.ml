@@ -188,9 +188,9 @@ let rec expand_list ?(concat=true) = function
 
 let rec expand_fields = function
   | [] ->  []
-  | (n,l) :: rem ->
-    if n = "author" then
-      (* replace abbreviations in the list of authors *)
+  | (n,l) as f :: rem ->
+    if n = "author" || n = "editor" then
+      (* replace abbreviations in the lists of authors and editors  *)
       match l with
       | [ String s ] ->
         (* not very efficient, but the list of authors should be small anyway *)
@@ -203,6 +203,9 @@ let rec expand_fields = function
           | _ -> assert false
         in
         (n, [ String (rebuild l) ]) :: expand_fields rem
+      | [ Id _ ] ->
+        (* possible in case of an invalid cross-reference: just skip it *)
+        f :: expand_fields rem
       | _ -> assert false
     else
       (n, expand_list l) :: (expand_fields rem)
