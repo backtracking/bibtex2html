@@ -1,3 +1,9 @@
+
+ o add some translations of accentuated characters
+   (patch submitted by James Van Zandt, through Debian)
+ o add Unicode translations for all the accents / math accents from
+   the TeXbook (Ralf Treinen)
+ o fixed translation of \~u, \~U, \dot, \models (Ralf Treinen)
  o default DOI prefix is now https://doi.org/, as recommended in the official
    crossref guidelines
  o option "--expand" also expands each abbreviation between keyword "and" in
