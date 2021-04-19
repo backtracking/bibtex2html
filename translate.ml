@@ -188,6 +188,9 @@ let file_suffixes =
        [ ".dvi"; ".DVI"; ".ps"; ".PS"; ".pdf"; ".PDF";
 	 ".rtf"; ".RTF"; ".txt"; ".TXT"; ".html"; ".HTML" ])
 
+let is_https s =
+  String.length s > 4 && String.lowercase_ascii (String.sub s 0 5) = "https"
+
 let is_http s =
   String.length s > 3 && String.lowercase_ascii (String.sub s 0 4) = "http"
 
@@ -203,7 +206,9 @@ let file_type f =
   try
     List.find (Filename.check_suffix f) file_suffixes
   with Not_found ->
-    if is_http f then "http" else if is_ftp f then "ftp" else "www:"
+    if is_https f then "https"
+    else if is_http f then "http"
+    else if is_ftp f then "ftp" else "www:"
 
 let get_url s =
   if String.length s > 3 && String.lowercase_ascii (String.sub s 0 3) = "www"

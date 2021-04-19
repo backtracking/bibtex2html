@@ -27,7 +27,7 @@ let needs_output k = function
   | None -> true
   | Some s -> KeySet.mem k s
 
-let url_re = Str.regexp "\\(ftp\\|http\\)://.*"
+let url_re = Str.regexp "\\(ftp\\|http\\|https\\)://.*"
 let is_url s = Str.string_match url_re s 0
 
 let print_atom html ch = function

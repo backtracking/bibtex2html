@@ -1,4 +1,5 @@
 
+ o recognize and translate https links (#15)
  o add some translations of accentuated characters
    (patch submitted by James Van Zandt, through Debian)
  o add Unicode translations for all the accents / math accents from
