@@ -60,11 +60,11 @@ close COND;
 # get the string of path names of the bib files
 $bibfilesbib = "";
 foreach $bibfile (@bibfiles) {
-    $bibfilesbib .= "$bibfile.bib "
+    $bibfilesbib .= "$bibfile "
 }
 
 $bibfilestring = "";
-open(CMD,"kpsewhich $bibfilesbib|");
+open(CMD,"kpsewhich -format bib $bibfilesbib|");
 while (<CMD>){
     chop;
     $bibfilestring .= "$_ ";
